@@ -7,7 +7,6 @@ export class LinksController {
 
   @Post()
   public async create(@Body() data) {
-    await this.linksService.create(data);
-    return {};
+    return await this.linksService.create(data);
   }
 }

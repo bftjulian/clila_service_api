@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../../models/users.model';
+import { UserRepository } from '../../repositories/implementation/user.repository';
+import { IUserRepository } from '../../repositories/user-repository.interface';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
+  constructor(
+    @Inject(UserRepository)
+    private readonly userRepository: IUserRepository,
+  ) {}
 
-  public async create(userData) {
-    const user = new this.userModel(userData);
-    return await user.save();
+  public async create(userData): Promise<User> {
+    return this.userRepository.create(userData);
   }
 }
