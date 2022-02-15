@@ -1,26 +1,18 @@
-import {
-  Entity,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ObjectIdColumn,
-} from 'typeorm';
-import { ObjectID } from 'mongodb';
+import * as mongoose from 'mongoose';
 
-@Entity('tasks')
-export class User {
-  @ObjectIdColumn()
-  id: ObjectID;
+export const UserSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    index: {
+      unique: true,
+    },
+  },
 
-  @Column()
-  email: string;
-
-  @Column()
-  password: string;
-
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
-}
+  password: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+});
