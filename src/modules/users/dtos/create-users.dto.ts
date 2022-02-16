@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, Matches, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -12,6 +12,11 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
-  // @Matches('password')
   confirmation_password: string;
+
+  api_token: string;
+
+  refresh_token: string;
+
+  _id: string;
 }

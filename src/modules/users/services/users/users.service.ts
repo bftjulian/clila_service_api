@@ -2,11 +2,13 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { I18nService } from 'nestjs-i18n';
 import { Result } from 'src/shared/models/result';
 import { CreateUserDto } from '../../dtos/create-users.dto';
-import { User } from '../../models/users.model';
 import { UserRepository } from '../../repositories/implementation/user.repository';
 import { IUserRepository } from '../../repositories/user-repository.interface';
 import { verifyPasswordConfirmation } from '../../../../utils/verify-password-confirmation';
 import * as bcrypt from 'bcrypt';
+import { LoginUserDto } from '../../dtos/login-users.dto';
+import { JwtService } from '@nestjs/jwt';
+import { Md5 } from 'ts-md5/dist/md5';
 
 @Injectable()
 export class UsersService {
@@ -14,6 +16,7 @@ export class UsersService {
     @Inject(UserRepository)
     private readonly userRepository: IUserRepository,
     private readonly i18n: I18nService,
+    private readonly jwtService: JwtService,
   ) {}
 
   public async create(userData: CreateUserDto, lang: string) {
@@ -48,12 +51,14 @@ export class UsersService {
     }
     delete userData.confirmation_password;
     userData.password = await bcrypt.hash(userData.password, 10);
+    userData.api_token = Md5.hashStr(userData + Date()).toString();
+
     try {
       await this.userRepository.create(userData);
       return new Result(
         await this.i18n.translate('users.INSERT_SUCCESSFULLY', { lang }),
         true,
-        {},
+        { api_token: userData.api_token },
         null,
       );
     } catch (err) {
@@ -64,6 +69,55 @@ export class UsersService {
           {},
           err.message,
         ),
+      );
+    }
+  }
+
+  public async login(data: LoginUserDto, lang: string) {
+    const user = await this.userRepository.findByEmail(data.email);
+
+    if (!user) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('users.USER_NOT_FOUND', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    const isMatchPassword = await bcrypt.compare(data.password, user.password);
+    if (!isMatchPassword) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('users.USER_NOT_FOUND', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    const payload = { email: user.email };
+    const refreshToken = Md5.hashStr(user.email + Date()).toString();
+    try {
+      await this.userRepository.setRefreshToken(user._id, refreshToken);
+      return new Result(
+        '',
+        true,
+        {
+          access_token: this.jwtService.sign(payload),
+          api_token: user.api_token,
+          refresh_token: refreshToken,
+        },
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result('Error in transaction', false, {}, null),
       );
     }
   }

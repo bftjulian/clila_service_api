@@ -14,6 +14,9 @@ import {
   QueryResolver,
 } from 'nestjs-i18n';
 import { join } from 'path';
+import { AuthModule } from './modules/auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -40,6 +43,7 @@ import { join } from 'path';
     MongooseModule.forRoot(process.env.DATABASE_MONGODB_CONNECTION_STRING),
     UsersModule,
     LinksModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

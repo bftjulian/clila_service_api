@@ -20,4 +20,14 @@ export class UserRepository implements IUserRepository {
   public async findAll(): Promise<User[]> {
     return await this.userModel.find();
   }
+
+  public async setRefreshToken(
+    id: string,
+    refresh_token: string,
+  ): Promise<void> {
+    await this.userModel.findByIdAndUpdate(
+      { _id: id },
+      { refresh_token: refresh_token },
+    );
+  }
 }
