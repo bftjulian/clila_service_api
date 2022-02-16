@@ -1,0 +1,6 @@
+{
+    "EMAIL_EXISTS": "Email already exists",
+    "ERROR_INSERT_USER": "Error for insert user",
+    "PASSWORD_CONFIRMATION": "Passwords must be the same",
+    "INSERT_SUCCESSFULLY": "User insert successfully"
+}
