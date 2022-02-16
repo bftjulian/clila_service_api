@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from '../../dtos/login-users.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Md5 } from 'ts-md5/dist/md5';
+import { CreateRefreshTokenDto } from '../../dtos/create-refresh-token.dto';
 
 @Injectable()
 export class UsersService {
@@ -101,7 +102,47 @@ export class UsersService {
         ),
       );
     }
-    const payload = { email: user.email };
+    const payload = { id: user._id, email: user.email };
+    const refreshToken = Md5.hashStr(user.email + Date()).toString();
+    try {
+      await this.userRepository.setRefreshToken(user._id, refreshToken);
+      return new Result(
+        '',
+        true,
+        {
+          access_token: this.jwtService.sign(payload),
+          api_token: user.api_token,
+          refresh_token: refreshToken,
+        },
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result('Error in transaction', false, {}, null),
+      );
+    }
+  }
+
+  public async refreshToken(
+    refresh_token: CreateRefreshTokenDto,
+    lang: string,
+  ) {
+    const user = await this.userRepository.findByRefreshToken(
+      refresh_token.refresh_token,
+    );
+    if (!user) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('users.TOKEN_INVALID', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    const payload = { id: user._id, email: user.email };
     const refreshToken = Md5.hashStr(user.email + Date()).toString();
     try {
       await this.userRepository.setRefreshToken(user._id, refreshToken);

@@ -30,4 +30,10 @@ export class UserRepository implements IUserRepository {
       { refresh_token: refresh_token },
     );
   }
+
+  public async findByRefreshToken(
+    refresh_token: string,
+  ): Promise<User | undefined> {
+    return await this.userModel.findOne({ refresh_token });
+  }
 }

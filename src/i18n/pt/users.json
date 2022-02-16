@@ -3,5 +3,6 @@
     "ERROR_INSERT_USER": "Erro ao iniserir um usuário",
     "PASSWORD_CONFIRMATION": "As senhas precisam ser iguais",
     "INSERT_SUCCESSFULLY": "Usuário inserido com sucesso",
-    "USER_NOT_FOUND": "Usuário ou senha incorretos"
+    "USER_NOT_FOUND": "Usuário ou senha incorretos",
+    "TOKEN_INVALID": "Token invalido"
 }

@@ -3,5 +3,6 @@
     "ERROR_INSERT_USER": "Error for insert user",
     "PASSWORD_CONFIRMATION": "Passwords must be the same",
     "INSERT_SUCCESSFULLY": "User insert successfully",
-    "USER_NOT_FOUND": "User or password incorrect"
+    "USER_NOT_FOUND": "User or password incorrect",
+    "TOKEN_INVALID": "Invalid token"
 }

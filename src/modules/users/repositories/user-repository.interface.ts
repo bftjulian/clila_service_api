@@ -5,4 +5,5 @@ export interface IUserRepository {
   findByEmail(email: string): Promise<User | undefined>;
   findAll(): Promise<User[]>;
   setRefreshToken(id: string, refresh_token: string): Promise<void>;
+  findByRefreshToken(refresh_token: string): Promise<User | undefined>;
 }
