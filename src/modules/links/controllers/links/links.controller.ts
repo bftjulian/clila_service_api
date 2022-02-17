@@ -17,7 +17,6 @@ export class LinksController {
     @I18nLang() lang: string,
   ) {
     const user: IUserTokenDto = request.user;
-    // const u
     return await this.linksService.create(data, user, lang);
   }
 }

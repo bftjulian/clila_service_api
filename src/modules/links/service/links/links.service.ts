@@ -42,7 +42,11 @@ export class LinksService {
           ),
         );
       }
-      data.short_link = 'http://localhost:3000/' + data.surname;
+      if (process.env.NODE_ENV === 'DEV') {
+        data.short_link = 'http://localhost:3000/' + data.surname;
+      } else {
+        data.short_link = 'https://cli.la/' + data.surname;
+      }
     } else {
       let hash = '';
       while (true) {
@@ -55,7 +59,11 @@ export class LinksService {
           break;
         }
       }
-      data.short_link = 'http://localhost:3000/' + hash;
+      if (process.env.NODE_ENV === 'DEV') {
+        data.short_link = 'http://localhost:3000/' + hash;
+      } else {
+        data.short_link = 'https://cli.la/' + hash;
+      }
     }
 
     const userModel = await this.usersRepository.findById(user.id);
@@ -63,7 +71,7 @@ export class LinksService {
     if (!userModel) {
       throw new UnauthorizedException('');
     }
-
+    data.create_at = new Date(Date.now());
     data.user = userModel;
     try {
       await this.linksRepository.create(data);

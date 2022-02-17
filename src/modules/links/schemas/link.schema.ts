@@ -42,7 +42,10 @@ export const LinkSchema = new mongoose.Schema({
     trim: true,
     default: 0,
   },
-
+  create_at: {
+    type: Date,
+    trim: true,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

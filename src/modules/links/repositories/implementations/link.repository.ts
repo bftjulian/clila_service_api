@@ -15,4 +15,11 @@ export class LinkRepository {
   public async findByHash(hash_link: string): Promise<Link | undefined> {
     return await this.linkModel.findOne({ hash_link });
   }
+
+  public async setClickLink(id: string): Promise<void> {
+    await this.linkModel.findByIdAndUpdate(
+      { _id: id },
+      { $inc: { numbers_clicks: 1 } },
+    );
+  }
 }

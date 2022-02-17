@@ -1,6 +1,8 @@
 import { User } from 'src/modules/users/models/users.model';
 
 export class Link {
+  _id: string;
+
   name: string;
 
   surname?: string;
@@ -14,4 +16,6 @@ export class Link {
   numbers_clicks: number;
 
   user: User;
+
+  create_at: Date;
 }

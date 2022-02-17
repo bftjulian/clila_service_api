@@ -2,6 +2,8 @@ import { IsEmpty, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { User } from 'src/modules/users/models/users.model';
 
 export class CreateLinkDto {
+  _id: string;
+
   name: string;
 
   short_link: string;
@@ -19,4 +21,6 @@ export class CreateLinkDto {
   @IsNotEmpty()
   @IsString()
   original_link: string;
+
+  create_at: Date;
 }

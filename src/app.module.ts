@@ -17,6 +17,9 @@ import { join } from 'path';
 import { AuthModule } from './modules/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
+import { LinkRepository } from './modules/links/repositories/implementations/link.repository';
+import { LinkSchema } from './modules/links/schemas/link.schema';
+import { UserSchema } from './modules/users/schemas/user.schema';
 
 @Module({
   imports: [
@@ -41,11 +44,15 @@ import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
       ],
     }),
     MongooseModule.forRoot(process.env.DATABASE_MONGODB_CONNECTION_STRING),
+    MongooseModule.forFeature([
+      { name: 'Link', schema: LinkSchema },
+      { name: 'User', schema: UserSchema },
+    ]),
     UsersModule,
     LinksModule,
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, LinkRepository],
 })
 export class AppModule {}

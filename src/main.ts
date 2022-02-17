@@ -12,7 +12,7 @@ async function bootstrap() {
     }),
   );
 
-  app.setGlobalPrefix('api', { exclude: ['docs'] });
+  app.setGlobalPrefix('api', { exclude: ['docs', '/:hash'] });
   await app.listen(3000);
 }
 bootstrap();
