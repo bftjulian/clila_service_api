@@ -1,7 +1,14 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { I18nService } from 'nestjs-i18n';
 import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
 import { UserRepository } from 'src/modules/users/repositories/implementation/user.repository';
 import { IUserRepository } from 'src/modules/users/repositories/user-repository.interface';
+import { Result } from 'src/shared/models/result';
 import { Md5 } from 'ts-md5';
 import { CreateLinkDto } from '../../dtos/create-link.dto';
 import { LinkRepository } from '../../repositories/implementations/link.repository';
@@ -14,39 +21,57 @@ export class LinksService {
     private readonly linksRepository: ILinkRepository,
     @Inject(UserRepository)
     private readonly usersRepository: IUserRepository,
+    private readonly i18n: I18nService,
   ) {}
 
-  public async create(data: CreateLinkDto, user: IUserTokenDto) {
+  public async create(data: CreateLinkDto, user: IUserTokenDto, lang: string) {
     if (data.surname) {
       data.hash_link = data.surname;
       const surname_link = await this.linksRepository.findByHash(
         data.hash_link,
       );
       if (surname_link) {
-        return false;
+        throw new BadRequestException(
+          new Result(
+            await this.i18n.translate('links.ERROR_SURNAME', {
+              lang,
+            }),
+            false,
+            {},
+            null,
+          ),
+        );
       }
-      data.short_link = data.original_link + '/' + data.surname;
+      data.short_link = 'http://localhost:3000/' + data.surname;
     } else {
-      const hash = Md5.hashStr(data.original_link + Date())
-        .slice(0, 6)
-        .toString();
-      data.hash_link = hash;
-      const hash_link = await this.linksRepository.findByHash(data.hash_link);
-      console.log(hash_link);
-      if (hash_link) {
-        return false;
+      let hash = '';
+      while (true) {
+        hash = Md5.hashStr(data.original_link + Date())
+          .slice(0, 6)
+          .toString();
+        data.hash_link = hash;
+        const hash_link = await this.linksRepository.findByHash(data.hash_link);
+        if (!hash_link) {
+          break;
+        }
       }
-      data.short_link = data.original_link + '/' + hash;
+      data.short_link = 'http://localhost:3000/' + hash;
     }
 
-    const userModel = await this.usersRepository.findById(user._id);
+    const userModel = await this.usersRepository.findById(user.id);
 
     if (!userModel) {
       throw new UnauthorizedException('');
     }
 
     data.user = userModel;
-    return;
-    return this.linksRepository.create(data);
+    try {
+      await this.linksRepository.create(data);
+      return new Result('', true, { short_link: data.short_link }, null);
+    } catch (error) {
+      throw new BadRequestException(
+        new Result('Error in transaction', false, {}, null),
+      );
+    }
   }
 }
