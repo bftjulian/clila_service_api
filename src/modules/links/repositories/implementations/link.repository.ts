@@ -11,4 +11,8 @@ export class LinkRepository {
     const link = new this.linkModel(linkData);
     return await link.save();
   }
+
+  public async findByHash(hash_link: string): Promise<Link | undefined> {
+    return await this.linkModel.findOne({ hash_link });
+  }
 }

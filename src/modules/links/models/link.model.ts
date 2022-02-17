@@ -3,6 +3,8 @@ import { User } from 'src/modules/users/models/users.model';
 export class Link {
   name: string;
 
+  surname?: string;
+
   original_link: string;
 
   short_link: string;

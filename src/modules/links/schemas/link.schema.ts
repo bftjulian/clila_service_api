@@ -3,8 +3,14 @@ import * as mongoose from 'mongoose';
 export const LinkSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
     trim: true,
+    default: null,
+  },
+
+  surname: {
+    type: String,
+    trim: true,
+    default: null,
   },
 
   original_link: {
@@ -33,8 +39,8 @@ export const LinkSchema = new mongoose.Schema({
 
   numbers_clicks: {
     type: Number,
-    required: true,
     trim: true,
+    default: 0,
   },
 
   user: {
