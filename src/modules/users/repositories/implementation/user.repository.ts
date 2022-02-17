@@ -17,6 +17,10 @@ export class UserRepository implements IUserRepository {
     return await this.userModel.findOne({ email });
   }
 
+  public async findById(id: string): Promise<User | undefined> {
+    return await this.userModel.findOne({ _id: id });
+  }
+
   public async findAll(): Promise<User[]> {
     return await this.userModel.find();
   }

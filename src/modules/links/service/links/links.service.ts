@@ -1,5 +1,7 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
+import { UserRepository } from 'src/modules/users/repositories/implementation/user.repository';
+import { IUserRepository } from 'src/modules/users/repositories/user-repository.interface';
 import { Md5 } from 'ts-md5';
 import { CreateLinkDto } from '../../dtos/create-link.dto';
 import { LinkRepository } from '../../repositories/implementations/link.repository';
@@ -10,6 +12,8 @@ export class LinksService {
   constructor(
     @Inject(LinkRepository)
     private readonly linksRepository: ILinkRepository,
+    @Inject(UserRepository)
+    private readonly usersRepository: IUserRepository,
   ) {}
 
   public async create(data: CreateLinkDto, user: IUserTokenDto) {
@@ -34,7 +38,14 @@ export class LinksService {
       }
       data.short_link = data.original_link + '/' + hash;
     }
-    data.user = user._id;
+
+    const userModel = await this.usersRepository.findById(user._id);
+
+    if (!userModel) {
+      throw new UnauthorizedException('');
+    }
+
+    data.user = userModel;
     return;
     return this.linksRepository.create(data);
   }
