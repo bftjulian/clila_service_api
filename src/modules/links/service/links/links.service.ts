@@ -83,7 +83,6 @@ export class LinksService {
 
   public async listLinksUser(user: IUserTokenDto, params) {
     const userModel = await this.usersRepository.findById(user.id);
-    // console.log(params);
     if (!userModel) {
       throw new UnauthorizedException('');
     }

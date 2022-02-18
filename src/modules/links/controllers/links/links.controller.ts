@@ -31,7 +31,6 @@ export class LinksController {
   @UseGuards(JwtAuthGuard)
   @Get()
   public async listLinksUser(@Req() request, @Query() query) {
-    console.log(query);
     const user: IUserTokenDto = request.user;
     return await this.linksService.listLinksUser(user, query);
   }
