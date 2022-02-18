@@ -32,12 +32,16 @@ export class LinkRepository {
   ): Promise<any> {
     const count = (await this.linkModel.find({ user })).length;
     const totalPages = Math.round(count / limit);
-    const links = await this.linkModel.find({ user }).limit(limit).skip(page);
+    const currentPage = limit * Math.max(0, page);
+    const links = await this.linkModel
+      .find({ user })
+      .limit(limit)
+      .skip(currentPage)
+      .sort({ _id: 'asc' });
     const data = {
       data: links,
       total_pages: totalPages,
       count,
-      current_page: page,
     };
     return data;
   }
