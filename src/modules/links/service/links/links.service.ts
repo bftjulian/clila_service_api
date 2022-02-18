@@ -9,7 +9,7 @@ import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
 import { UserRepository } from 'src/modules/users/repositories/implementation/user.repository';
 import { IUserRepository } from 'src/modules/users/repositories/user-repository.interface';
 import { Result } from 'src/shared/models/result';
-import { Md5 } from 'ts-md5';
+import { generateHash } from 'src/utils/generate-hash';
 import { CreateLinkDto } from '../../dtos/create-link.dto';
 import { LinkRepository } from '../../repositories/implementations/link.repository';
 import { ILinkRepository } from '../../repositories/link-repository.interface';
@@ -50,9 +50,7 @@ export class LinksService {
     } else {
       let hash = '';
       while (true) {
-        hash = Md5.hashStr(data.original_link + Date())
-          .slice(0, 6)
-          .toString();
+        hash = generateHash(6).toString();
         data.hash_link = hash;
         const hash_link = await this.linksRepository.findByHash(data.hash_link);
         if (!hash_link) {
@@ -81,5 +79,19 @@ export class LinksService {
         new Result('Error in transaction', false, {}, null),
       );
     }
+  }
+
+  public async listLinksUser(user: IUserTokenDto, params) {
+    const userModel = await this.usersRepository.findById(user.id);
+    // console.log(params);
+    if (!userModel) {
+      throw new UnauthorizedException('');
+    }
+    const links = await this.linksRepository.findAllByUser(
+      userModel,
+      params.limit,
+      params.page,
+    );
+    return links;
   }
 }

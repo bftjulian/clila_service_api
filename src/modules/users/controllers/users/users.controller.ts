@@ -4,7 +4,6 @@ import {
   Get,
   Patch,
   Post,
-  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -16,7 +15,7 @@ import { CreateUserDto } from '../../dtos/create-users.dto';
 import { LoginUserDto } from '../../dtos/login-users.dto';
 import { UsersService } from '../../services/users/users.service';
 
-@Controller('users')
+@Controller('api/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

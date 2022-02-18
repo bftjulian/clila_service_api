@@ -4,4 +4,5 @@ export class User {
   password: string;
   api_token: string;
   refresh_token: string;
+  __v: number;
 }

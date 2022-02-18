@@ -19,4 +19,6 @@ export class CreateUserDto {
   refresh_token: string;
 
   _id: string;
+
+  __v: number;
 }
