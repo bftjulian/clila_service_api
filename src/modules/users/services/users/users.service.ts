@@ -1,4 +1,9 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { I18nService } from 'nestjs-i18n';
 import { Result } from 'src/shared/models/result';
 import { CreateUserDto } from '../../dtos/create-users.dto';
@@ -10,7 +15,6 @@ import { LoginUserDto } from '../../dtos/login-users.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Md5 } from 'ts-md5/dist/md5';
 import { CreateRefreshTokenDto } from '../../dtos/create-refresh-token.dto';
-import { ValidateApiTokenDto } from '../../dtos/validate-api-token.dto';
 import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
 
 @Injectable()
@@ -185,10 +189,14 @@ export class UsersService {
     }
   }
 
-  // public async validateToken(
-  //   user: IUserTokenDto,
-  //   api_token: ValidateApiTokenDto,
-  // ) {
-  //   return true;
-  // }
+  public async validateToken(user: IUserTokenDto, api_token) {
+    const userValidToken = await this.userRepository.findByIdApiToken(
+      user.id,
+      api_token.api_token,
+    );
+    if (!userValidToken) {
+      throw new UnauthorizedException('');
+    }
+    return true;
+  }
 }

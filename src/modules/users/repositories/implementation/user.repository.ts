@@ -44,4 +44,11 @@ export class UserRepository implements IUserRepository {
   ): Promise<User | undefined> {
     return await this.userModel.findOne({ refresh_token });
   }
+
+  public async findByIdApiToken(
+    id: string,
+    api_token: string,
+  ): Promise<User | undefined> {
+    return await this.userModel.findOne({ _id: id, api_token: api_token });
+  }
 }
