@@ -4,6 +4,7 @@ import {
   Get,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -12,6 +13,7 @@ import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
 import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
 import { CreateRefreshTokenDto } from '../../dtos/create-refresh-token.dto';
 import { CreateUserDto } from '../../dtos/create-users.dto';
+import { ValidateApiTokenDto } from '../../dtos/validate-api-token.dto';
 import { LoginUserDto } from '../../dtos/login-users.dto';
 import { UsersService } from '../../services/users/users.service';
 
@@ -45,4 +47,23 @@ export class UsersController {
   ) {
     return await this.usersService.refreshToken(refreshToken, lang);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('invalidate-token')
+  public async invalidateToken(@I18nLang() lang: string, @Req() request) {
+    const user: IUserTokenDto = request.user;
+    return await this.usersService.invalidateToken(user, lang);
+  }
+
+  // @UseGuards(JwtAuthGuard)
+  // @Get('validate-token')
+  // public async validateToken(
+  //   @Query() api_token: ValidateApiTokenDto,
+  //   @Req() request,
+  // ) {
+  //   console.log(api_token);
+  //   return;
+  //   const user: IUserTokenDto = request.user;
+  //   return await this.usersService.validateToken(user, api_token);
+  // }
 }

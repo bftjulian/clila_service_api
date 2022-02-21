@@ -35,6 +35,10 @@ export class UserRepository implements IUserRepository {
     );
   }
 
+  public async setApiToken(id: string, api_token: string): Promise<void> {
+    await this.userModel.findByIdAndUpdate({ _id: id }, { api_token });
+  }
+
   public async findByRefreshToken(
     refresh_token: string,
   ): Promise<User | undefined> {

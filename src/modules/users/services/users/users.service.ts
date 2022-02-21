@@ -10,6 +10,8 @@ import { LoginUserDto } from '../../dtos/login-users.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Md5 } from 'ts-md5/dist/md5';
 import { CreateRefreshTokenDto } from '../../dtos/create-refresh-token.dto';
+import { ValidateApiTokenDto } from '../../dtos/validate-api-token.dto';
+import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
 
 @Injectable()
 export class UsersService {
@@ -162,4 +164,31 @@ export class UsersService {
       );
     }
   }
+
+  public async invalidateToken(user: IUserTokenDto, lang: string) {
+    const userExists = await this.userRepository.findById(user.id);
+    if (userExists) {
+      try {
+        const api_token = Md5.hashStr(userExists + Date()).toString();
+        await this.userRepository.setApiToken(user.id, api_token);
+        return new Result(
+          await this.i18n.translate('users.TOKEN_REVOGED', { lang }),
+          true,
+          {},
+          null,
+        );
+      } catch (error) {
+        throw new BadRequestException(
+          new Result('Error in transaction', false, {}, null),
+        );
+      }
+    }
+  }
+
+  // public async validateToken(
+  //   user: IUserTokenDto,
+  //   api_token: ValidateApiTokenDto,
+  // ) {
+  //   return true;
+  // }
 }

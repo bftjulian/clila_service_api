@@ -4,5 +4,6 @@
     "PASSWORD_CONFIRMATION": "Passwords must be the same",
     "INSERT_SUCCESSFULLY": "User insert successfully",
     "USER_NOT_FOUND": "User or password incorrect",
-    "TOKEN_INVALID": "Invalid token"
+    "TOKEN_INVALID": "Invalid token",
+    "TOKEN_REVOGED": "Token revoged successfully"
 }

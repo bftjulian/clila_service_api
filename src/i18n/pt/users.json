@@ -4,5 +4,6 @@
     "PASSWORD_CONFIRMATION": "As senhas precisam ser iguais",
     "INSERT_SUCCESSFULLY": "Usuário inserido com sucesso",
     "USER_NOT_FOUND": "Usuário ou senha incorretos",
-    "TOKEN_INVALID": "Token invalido"
+    "TOKEN_INVALID": "Token invalido",
+    "TOKEN_REVOGED": "Token revogado com sucesso"
 }
