@@ -11,6 +11,7 @@ import { IUserRepository } from 'src/modules/users/repositories/user-repository.
 import { Result } from 'src/shared/models/result';
 import { generateHash } from 'src/utils/generate-hash';
 import { CreateLinkDto } from '../../dtos/create-link.dto';
+import { PaginationParamsDto } from '../../dtos/pagination-params.dto';
 import { LinkRepository } from '../../repositories/implementations/link.repository';
 import { ILinkRepository } from '../../repositories/link-repository.interface';
 
@@ -81,7 +82,7 @@ export class LinksService {
     }
   }
 
-  public async listLinksUser(user: IUserTokenDto, params) {
+  public async listLinksUser(user: IUserTokenDto, params: PaginationParamsDto) {
     const userModel = await this.usersRepository.findById(user.id);
     if (!userModel) {
       throw new UnauthorizedException('');
@@ -91,6 +92,11 @@ export class LinksService {
       params.limit,
       params.page,
     );
-    return links;
+    return new Result('', true, links, null);
+  }
+
+  public async listLinkUser(id: string, user: IUserTokenDto) {
+    const link = await this.linksRepository.findById(id);
+    return new Result('', true, link, null);
   }
 }

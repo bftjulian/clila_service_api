@@ -18,6 +18,10 @@ export class LinkRepository {
     return await this.linkModel.findOne({ hash_link });
   }
 
+  public async findById(id: string): Promise<Link | undefined> {
+    return await this.linkModel.findOne({ _id: id });
+  }
+
   public async setClickLink(id: string): Promise<void> {
     await this.linkModel.findByIdAndUpdate(
       { _id: id },
@@ -32,7 +36,7 @@ export class LinkRepository {
   ): Promise<any> {
     const count = (await this.linkModel.find({ user })).length;
     const totalPages = Math.round(count / limit);
-    const currentPage = limit * Math.max(0, page);
+    const currentPage = (Math.max(1, page) - 1) * limit;
     const links = await this.linkModel
       .find({ user })
       .limit(limit)
