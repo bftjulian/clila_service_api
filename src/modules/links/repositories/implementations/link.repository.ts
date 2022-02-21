@@ -60,4 +60,8 @@ export class LinkRepository {
     };
     return data;
   }
+
+  public async findAllByUserDownload(user: User): Promise<any> {
+    return await this.linkModel.find({ user });
+  }
 }

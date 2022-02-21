@@ -43,16 +43,22 @@ export class LinksController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  public async listLinkUser(@Req() request, @Param('id') id: string) {
+  @Get('download')
+  public async linksDownload(@Req() request) {
     const user: IUserTokenDto = request.user;
-    return await this.linksService.listLinkUser(id, user);
+    return await this.linksService.downloadLinks(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  public async listLinkUser(@Req() request, @Param('id') id) {
+    return await this.linksService.listLinkUser(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   public async updateLink(
-    @Param('id') id: string,
+    @Param('id') id,
     @Body() data: UpdateLinkDto,
     @I18nLang() lang: string,
   ) {

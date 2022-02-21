@@ -74,8 +74,13 @@ export class LinksService {
     data.create_at = new Date(Date.now());
     data.user = userModel;
     try {
-      await this.linksRepository.create(data);
-      return new Result('', true, { short_link: data.short_link }, null);
+      const createLink = await this.linksRepository.create(data);
+      return new Result(
+        '',
+        true,
+        { short_link: data.short_link, id: createLink._id },
+        null,
+      );
     } catch (error) {
       throw new BadRequestException(
         new Result('Error in transaction', false, {}, null),
@@ -96,7 +101,7 @@ export class LinksService {
     return new Result('', true, links, null);
   }
 
-  public async listLinkUser(id: string, user: IUserTokenDto) {
+  public async listLinkUser(id: string) {
     const link = await this.linksRepository.findById(id);
     return new Result('', true, link, null);
   }
@@ -140,5 +145,14 @@ export class LinksService {
         new Result('Error in transaction', false, {}, null),
       );
     }
+  }
+
+  public async downloadLinks(user: IUserTokenDto) {
+    const userModel = await this.usersRepository.findById(user.id);
+    if (!userModel) {
+      throw new UnauthorizedException('');
+    }
+    const links = await this.linksRepository.findAllByUserDownload(userModel);
+    return new Result('', true, links, null);
   }
 }

@@ -1,5 +1,4 @@
 import { User } from 'src/modules/users/models/users.model';
-import { UpdateLinkDto } from '../dtos/update-link.dto';
 import { Link } from '../models/link.model';
 
 export interface ILinkRepository {
@@ -9,4 +8,5 @@ export interface ILinkRepository {
   setClickLink(id: string): Promise<void>;
   setNameSurname(id: string, data): Promise<void>;
   findAllByUser(user: User, limit: number, page: number): Promise<any>;
+  findAllByUserDownload(user: User): Promise<any>;
 }
