@@ -1,3 +1,4 @@
 {
-    "ERROR_SURNAME": "Link already exists try another"
+    "ERROR_SURNAME": "Link already exists try another",
+    "LINK_UPDATED_SUCCESS": "Link successfully updated"
 }

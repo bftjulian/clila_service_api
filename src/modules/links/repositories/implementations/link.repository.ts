@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { exec } from 'child_process';
 import { Model } from 'mongoose';
 import { User } from 'src/modules/users/models/users.model';
 import { Link } from '../../models/link.model';
@@ -26,6 +25,18 @@ export class LinkRepository {
     await this.linkModel.findByIdAndUpdate(
       { _id: id },
       { $inc: { numbers_clicks: 1 } },
+    );
+  }
+
+  public async setNameSurname(id: string, data): Promise<void> {
+    await this.linkModel.findByIdAndUpdate(
+      { _id: id },
+      {
+        name: data.name,
+        surname: data.surname,
+        short_link: data.short_link,
+        hash_link: data.hash_link,
+      },
     );
   }
 

@@ -12,6 +12,7 @@ import { Result } from 'src/shared/models/result';
 import { generateHash } from 'src/utils/generate-hash';
 import { CreateLinkDto } from '../../dtos/create-link.dto';
 import { PaginationParamsDto } from '../../dtos/pagination-params.dto';
+import { UpdateLinkDto } from '../../dtos/update-link.dto';
 import { LinkRepository } from '../../repositories/implementations/link.repository';
 import { ILinkRepository } from '../../repositories/link-repository.interface';
 
@@ -98,5 +99,46 @@ export class LinksService {
   public async listLinkUser(id: string, user: IUserTokenDto) {
     const link = await this.linksRepository.findById(id);
     return new Result('', true, link, null);
+  }
+
+  public async updateLink(id: string, data: UpdateLinkDto, lang: string) {
+    if (data.surname) {
+      data.hash_link = data.surname;
+      const surname_link = await this.linksRepository.findByHash(
+        data.hash_link,
+      );
+      if (surname_link) {
+        throw new BadRequestException(
+          new Result(
+            await this.i18n.translate('links.ERROR_SURNAME', {
+              lang,
+            }),
+            false,
+            {},
+            null,
+          ),
+        );
+      }
+      if (process.env.NODE_ENV === 'DEV') {
+        data.short_link = 'http://localhost:3000/' + data.surname;
+      } else {
+        data.short_link = 'https://cli.la/' + data.surname;
+      }
+    }
+    try {
+      await this.linksRepository.setNameSurname(id, data);
+      return new Result(
+        await this.i18n.translate('links.LINK_UPDATED_SUCCESS', {
+          lang,
+        }),
+        true,
+        {},
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result('Error in transaction', false, {}, null),
+      );
+    }
   }
 }
