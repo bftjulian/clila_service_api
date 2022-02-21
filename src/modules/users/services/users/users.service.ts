@@ -189,9 +189,8 @@ export class UsersService {
     }
   }
 
-  public async validateToken(user: IUserTokenDto, api_token) {
-    const userValidToken = await this.userRepository.findByIdApiToken(
-      user.id,
+  public async validateToken(api_token) {
+    const userValidToken = await this.userRepository.findByApiToken(
       api_token.api_token,
     );
     if (!userValidToken) {

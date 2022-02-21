@@ -55,13 +55,8 @@ export class UsersController {
     return await this.usersService.invalidateToken(user, lang);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('validate-token')
-  public async validateToken(
-    @Query() api_token: ValidateApiTokenDto,
-    @Req() request,
-  ) {
-    const user: IUserTokenDto = request.user;
-    return await this.usersService.validateToken(user, api_token);
+  public async validateToken(@Query() api_token: ValidateApiTokenDto) {
+    return await this.usersService.validateToken(api_token);
   }
 }
