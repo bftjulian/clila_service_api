@@ -155,4 +155,36 @@ export class LinksService {
     const links = await this.linksRepository.findAllByUserDownload(userModel);
     return new Result('', true, links, null);
   }
+
+  public async createShortLandpage(data: CreateLinkDto) {
+    let hash = '';
+    while (true) {
+      hash = generateHash(6).toString();
+      data.hash_link = hash;
+      const hash_link = await this.linksRepository.findByHash(data.hash_link);
+      if (!hash_link) {
+        break;
+      }
+    }
+    if (process.env.NODE_ENV === 'DEV') {
+      data.short_link = 'http://localhost:3000/' + hash;
+    } else {
+      data.short_link = 'https://cli.la/' + hash;
+    }
+
+    data.create_at = new Date(Date.now());
+    try {
+      const createLink = await this.linksRepository.create(data);
+      return new Result(
+        '',
+        true,
+        { short_link: data.short_link, id: createLink._id },
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result('Error in transaction', false, {}, null),
+      );
+    }
+  }
 }

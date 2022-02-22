@@ -70,4 +70,9 @@ export class LinksController {
   ) {
     return await this.linksService.updateLink(id, data, lang);
   }
+
+  @Post('shorten/landpage')
+  public async createShortLandpage(@Body() data: CreateLinkDto) {
+    return await this.linksService.createShortLandpage(data);
+  }
 }
