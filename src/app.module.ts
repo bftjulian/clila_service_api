@@ -15,16 +15,20 @@ import {
 } from 'nestjs-i18n';
 import { join } from 'path';
 import { AuthModule } from './modules/auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { LinkRepository } from './modules/links/repositories/implementations/link.repository';
 import { LinkSchema } from './modules/links/schemas/link.schema';
 import { UserSchema } from './modules/users/schemas/user.schema';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
     }),
     I18nModule.forRoot({
       fallbackLanguage: 'en',
@@ -53,6 +57,13 @@ import { UserSchema } from './modules/users/schemas/user.schema';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, LinkRepository],
+  providers: [
+    AppService,
+    LinkRepository,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

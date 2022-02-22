@@ -9,6 +9,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { I18nLang } from 'nestjs-i18n';
 import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
 import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
@@ -21,6 +22,7 @@ import { LinksService } from '../../service/links/links.service';
 export class LinksController {
   constructor(private readonly linksService: LinksService) {}
 
+  @SkipThrottle()
   @UseGuards(JwtAuthGuard)
   @Post('shorten')
   public async create(
@@ -32,6 +34,7 @@ export class LinksController {
     return await this.linksService.create(data, user, lang);
   }
 
+  @SkipThrottle()
   @UseGuards(JwtAuthGuard)
   @Get()
   public async listLinksUser(
@@ -42,6 +45,7 @@ export class LinksController {
     return await this.linksService.listLinksUser(user, query);
   }
 
+  @SkipThrottle()
   @UseGuards(JwtAuthGuard)
   @Get('download')
   public async linksDownload(@Req() request) {
@@ -49,12 +53,14 @@ export class LinksController {
     return await this.linksService.downloadLinks(user);
   }
 
+  @SkipThrottle()
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   public async listLinkUser(@Req() request, @Param('id') id) {
     return await this.linksService.listLinkUser(id);
   }
 
+  @SkipThrottle()
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   public async updateLink(

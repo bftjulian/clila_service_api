@@ -16,6 +16,7 @@ import { CreateUserDto } from '../../dtos/create-users.dto';
 import { ValidateApiTokenDto } from '../../dtos/validate-api-token.dto';
 import { LoginUserDto } from '../../dtos/login-users.dto';
 import { UsersService } from '../../services/users/users.service';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @Controller('api/users')
 export class UsersController {
@@ -32,6 +33,7 @@ export class UsersController {
     return await this.usersService.login(data, lang);
   }
 
+  @SkipThrottle()
   @UseGuards(JwtAuthGuard)
   @Get()
   public async getUsers(@Req() request) {
@@ -39,6 +41,7 @@ export class UsersController {
     return user;
   }
 
+  @SkipThrottle()
   @UseGuards(JwtAuthGuard)
   @Patch('refresh-token')
   public async refreshToken(
@@ -48,6 +51,7 @@ export class UsersController {
     return await this.usersService.refreshToken(refreshToken, lang);
   }
 
+  @SkipThrottle()
   @UseGuards(JwtAuthGuard)
   @Patch('invalidate-token')
   public async invalidateToken(@I18nLang() lang: string, @Req() request) {
