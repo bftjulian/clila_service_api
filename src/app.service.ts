@@ -14,9 +14,9 @@ export class AppService {
 
     if (!link) {
       if (process.env.NODE_ENV === 'DEV') {
-        return res.redirect('https://brasilfone.com.br');
+        return res.redirect('https://site.cli.la');
       } else {
-        return res.redirect('https://cli.la');
+        return res.redirect('https://site.cli.la');
       }
     }
     try {
