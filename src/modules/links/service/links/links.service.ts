@@ -78,7 +78,11 @@ export class LinksService {
       return new Result(
         '',
         true,
-        { short_link: data.short_link, id: createLink._id },
+        {
+          short_link: data.short_link,
+          id: createLink._id,
+          original_link: data.original_link,
+        },
         null,
       );
     } catch (error) {
@@ -178,7 +182,11 @@ export class LinksService {
       return new Result(
         '',
         true,
-        { short_link: data.short_link, id: createLink._id },
+        {
+          short_link: data.short_link,
+          id: createLink._id,
+          original_link: data.original_link,
+        },
         null,
       );
     } catch (error) {
