@@ -195,4 +195,88 @@ export class LinksService {
       );
     }
   }
+
+  public async listAllLinksApiToken(
+    apiToken: string,
+    lang,
+    params: PaginationParamsDto,
+  ) {
+    const user = await this.usersRepository.findByApiTokenPanel(apiToken);
+    const links = await this.linksRepository.findAllByUser(
+      user,
+      params.limit,
+      params.page,
+    );
+    return links;
+  }
+
+  public async createShortLinkApiToken(
+    data: CreateLinkDto,
+    apiToken: string,
+    lang: string,
+  ) {
+    if (data.surname) {
+      data.hash_link = data.surname;
+      const surname_link = await this.linksRepository.findByHash(
+        data.hash_link,
+      );
+      if (surname_link) {
+        throw new BadRequestException(
+          new Result(
+            await this.i18n.translate('links.ERROR_SURNAME', {
+              lang,
+            }),
+            false,
+            {},
+            null,
+          ),
+        );
+      }
+      if (process.env.NODE_ENV === 'DEV') {
+        data.short_link = 'http://localhost:3000/' + data.surname;
+      } else {
+        data.short_link = 'https://testeapi.cli.la/' + data.surname;
+      }
+    } else {
+      let hash = '';
+      while (true) {
+        hash = generateHash(6).toString();
+        data.hash_link = hash;
+        const hash_link = await this.linksRepository.findByHash(data.hash_link);
+        if (!hash_link) {
+          break;
+        }
+      }
+      if (process.env.NODE_ENV === 'DEV') {
+        data.short_link = 'http://localhost:3000/' + hash;
+      } else {
+        data.short_link = 'https://testeapi.cli.la/' + hash;
+      }
+    }
+
+    const user = await this.usersRepository.findByApiTokenPanel(apiToken);
+
+    if (!user) {
+      throw new UnauthorizedException('');
+    }
+    data.create_at = new Date(Date.now());
+    data.user = user;
+    try {
+      const createLink = await this.linksRepository.create(data);
+      return new Result(
+        '',
+        true,
+        {
+          short_link: data.short_link,
+          id: createLink._id,
+          original_link: data.original_link,
+        },
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result('Error in transaction', false, {}, null),
+      );
+    }
+  }
 }

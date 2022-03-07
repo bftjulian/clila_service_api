@@ -8,6 +8,7 @@ import {
   Query,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { SkipThrottle } from '@nestjs/throttler';
 import { I18nLang } from 'nestjs-i18n';
@@ -17,10 +18,51 @@ import { CreateLinkDto } from '../../dtos/create-link.dto';
 import { PaginationParamsDto } from '../../dtos/pagination-params.dto';
 import { UpdateLinkDto } from '../../dtos/update-link.dto';
 import { LinksService } from '../../service/links/links.service';
+import { LinksInterceptor } from '../../shared/interceptors/links.interceptor';
 
 @Controller('api/links')
 export class LinksController {
   constructor(private readonly linksService: LinksService) {}
+
+  /**
+   * Required api token from authorization obtained from panel
+   * Route used only in the panel service
+   */
+  @UseInterceptors(LinksInterceptor)
+  @Get('token-api/list')
+  public async listAllLinksApiToken(
+    @Req() request,
+    @I18nLang() lang: string,
+    @Query() query: PaginationParamsDto,
+  ) {
+    const {
+      headers: { authorization },
+    } = request;
+    const apiToken = authorization.split(' ')[1];
+    return await this.linksService.listAllLinksApiToken(apiToken, lang, query);
+  }
+
+  /**
+   * Required api token from authorization obtained from panel
+   * Route used only in the panel service
+   */
+  @UseInterceptors(LinksInterceptor)
+  @Post('token-api/shorten')
+  public async createShortLinkApiToken(
+    @Req() request,
+    @I18nLang() lang: string,
+    @Body() data: CreateLinkDto,
+  ) {
+    const {
+      headers: { authorization },
+    } = request;
+    const apiToken = authorization.split(' ')[1];
+    return await this.linksService.createShortLinkApiToken(
+      data,
+      apiToken,
+      lang,
+    );
+  }
 
   @SkipThrottle()
   @UseGuards(JwtAuthGuard)

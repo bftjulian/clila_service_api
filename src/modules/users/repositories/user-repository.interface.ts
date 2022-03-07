@@ -9,4 +9,5 @@ export interface IUserRepository {
   setRefreshToken(id: string, refresh_token: string): Promise<void>;
   setApiToken(id: string, api_token: string): Promise<void>;
   findByRefreshToken(refresh_token: string): Promise<User | undefined>;
+  findByApiTokenPanel(api_token: string);
 }

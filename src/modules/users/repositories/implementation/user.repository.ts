@@ -48,4 +48,8 @@ export class UserRepository implements IUserRepository {
   public async findByApiToken(api_token: string): Promise<User | undefined> {
     return await this.userModel.findOne({ api_token });
   }
+
+  public async findByApiTokenPanel(api_token: string) {
+    return await this.userModel.findOne({ api_token });
+  }
 }

@@ -194,7 +194,7 @@ export class UsersService {
       api_token.api_token,
     );
     if (!userValidToken) {
-      throw new UnauthorizedException('');
+      return false;
     }
     return true;
   }
