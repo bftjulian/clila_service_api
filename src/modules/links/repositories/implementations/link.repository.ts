@@ -46,7 +46,8 @@ export class LinkRepository {
     page: number,
   ): Promise<any> {
     const count = (await this.linkModel.find({ user })).length;
-    const totalPages = Math.round(count / limit);
+    // const div = count / limit;
+    const totalPages = Math.ceil(count / limit);
     const currentPage = (Math.max(1, page) - 1) * limit;
     const links = await this.linkModel
       .find({ user })
