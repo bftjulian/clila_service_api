@@ -117,4 +117,9 @@ export class LinksController {
   public async createShortLandpage(@Body() data: CreateLinkDto) {
     return await this.linksService.createShortLandpage(data);
   }
+
+  @Patch('inactivate/:id')
+  public async inactivateLink(@Param() id) {
+    return await this.linksService.inactivateLink(id.id);
+  }
 }

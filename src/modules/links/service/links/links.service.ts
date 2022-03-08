@@ -279,4 +279,9 @@ export class LinksService {
       );
     }
   }
+
+  public async inactivateLink(id: string) {
+    console.log(id);
+    return true;
+  }
 }
