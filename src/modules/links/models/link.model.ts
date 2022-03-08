@@ -18,4 +18,6 @@ export class Link {
   user: User;
 
   create_at: Date;
+
+  active?: boolean;
 }

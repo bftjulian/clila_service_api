@@ -46,7 +46,7 @@ export const LinkSchema = new mongoose.Schema({
     ref: 'User',
     required: false,
   },
-  ative: {
+  active: {
     type: Boolean,
     trim: true,
     default: true,

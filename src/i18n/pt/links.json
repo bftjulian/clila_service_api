@@ -1,4 +1,6 @@
 {
     "ERROR_SURNAME": "Link já existe tente outro",
-    "LINK_UPDATED_SUCCESS": "Link atualizado com sucesso"
+    "LINK_UPDATED_SUCCESS": "Link atualizado com sucesso",
+    "LINK_NOT_FOUND": "Link não encontrado",
+    "LINK_INACTIVATED": "Link inativado com sucesso"
 }

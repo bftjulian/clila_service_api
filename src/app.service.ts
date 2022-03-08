@@ -12,7 +12,7 @@ export class AppService {
   public async redirectOriginalLink(hash: string, res) {
     const link = await this.linksRepository.findByHash(hash);
 
-    if (!link) {
+    if (!link || link.active === false) {
       if (process.env.NODE_ENV === 'DEV') {
         return res.redirect('https://site.cli.la');
       } else {

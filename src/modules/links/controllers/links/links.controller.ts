@@ -118,8 +118,10 @@ export class LinksController {
     return await this.linksService.createShortLandpage(data);
   }
 
-  @Patch('inactivate/:id')
-  public async inactivateLink(@Param() id) {
-    return await this.linksService.inactivateLink(id.id);
+  @SkipThrottle()
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/inactivate')
+  public async inactivateLink(@Param() id, @I18nLang() lang: string) {
+    return await this.linksService.inactivateLink(id.id, lang);
   }
 }

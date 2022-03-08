@@ -280,8 +280,22 @@ export class LinksService {
     }
   }
 
-  public async inactivateLink(id: string) {
-    console.log(id);
-    return true;
+  public async inactivateLink(id: string, lang: string) {
+    try {
+      const status = false;
+      await this.linksRepository.setStatusLinkInactive(id, status);
+      return new Result(
+        await this.i18n.translate('links.LINK_INACTIVATED', {
+          lang,
+        }),
+        true,
+        {},
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result('Error in transaction', false, {}, null),
+      );
+    }
   }
 }

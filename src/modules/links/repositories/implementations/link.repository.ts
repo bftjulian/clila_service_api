@@ -40,6 +40,18 @@ export class LinkRepository {
     );
   }
 
+  public async setStatusLinkInactive(
+    id: string,
+    status: boolean,
+  ): Promise<void> {
+    await this.linkModel.findByIdAndUpdate(
+      { _id: id },
+      {
+        active: status,
+      },
+    );
+  }
+
   public async findAllByUser(
     user: User,
     limit: number,
