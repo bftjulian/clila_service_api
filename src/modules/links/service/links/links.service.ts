@@ -283,7 +283,7 @@ export class LinksService {
   public async inactivateLink(id: string, lang: string) {
     try {
       const status = false;
-      await this.linksRepository.setStatusLinkStatus(id, status);
+      await this.linksRepository.setStatusLink(id, status);
       return new Result(
         await this.i18n.translate('links.LINK_INACTIVATED', {
           lang,
@@ -302,9 +302,27 @@ export class LinksService {
   public async activateLink(id: string, lang: string) {
     try {
       const status = true;
-      await this.linksRepository.setStatusLinkStatus(id, status);
+      await this.linksRepository.setStatusLink(id, status);
       return new Result(
         await this.i18n.translate('links.LINK_ACTIVATED', {
+          lang,
+        }),
+        true,
+        {},
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result('Error in transaction', false, {}, null),
+      );
+    }
+  }
+
+  public async removeLink(id: string, lang: string) {
+    try {
+      await this.linksRepository.removeLinkById(id);
+      return new Result(
+        await this.i18n.translate('links.LINK_REMOVED', {
           lang,
         }),
         true,

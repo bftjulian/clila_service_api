@@ -40,13 +40,17 @@ export class LinkRepository {
     );
   }
 
-  public async setStatusLinkStatus(id: string, status: boolean): Promise<void> {
+  public async setStatusLink(id: string, status: boolean): Promise<void> {
     await this.linkModel.findByIdAndUpdate(
       { _id: id },
       {
         active: status,
       },
     );
+  }
+
+  public async removeLinkById(id: string): Promise<void> {
+    await this.linkModel.findByIdAndDelete({ _id: id });
   }
 
   public async findAllByUser(

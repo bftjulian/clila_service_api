@@ -9,5 +9,6 @@ export interface ILinkRepository {
   setNameSurname(id: string, data): Promise<void>;
   findAllByUser(user: User, limit: number, page: number): Promise<any>;
   findAllByUserDownload(user: User): Promise<any>;
-  setStatusLinkStatus(id: string, status: boolean): Promise<void>;
+  setStatusLink(id: string, status: boolean): Promise<void>;
+  removeLinkById(id: string): Promise<void>;
 }

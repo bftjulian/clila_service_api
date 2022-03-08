@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -130,5 +131,12 @@ export class LinksController {
   @Patch(':id/activate')
   public async activateLink(@Param() id, @I18nLang() lang: string) {
     return await this.linksService.activateLink(id.id, lang);
+  }
+
+  @SkipThrottle()
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  public async removeLink(@Param() id, @I18nLang() lang: string) {
+    return await this.linksService.removeLink(id.id, lang);
   }
 }
