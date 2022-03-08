@@ -124,4 +124,11 @@ export class LinksController {
   public async inactivateLink(@Param() id, @I18nLang() lang: string) {
     return await this.linksService.inactivateLink(id.id, lang);
   }
+
+  @SkipThrottle()
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/activate')
+  public async activateLink(@Param() id, @I18nLang() lang: string) {
+    return await this.linksService.activateLink(id.id, lang);
+  }
 }

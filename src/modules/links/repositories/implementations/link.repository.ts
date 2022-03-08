@@ -40,10 +40,7 @@ export class LinkRepository {
     );
   }
 
-  public async setStatusLinkInactive(
-    id: string,
-    status: boolean,
-  ): Promise<void> {
+  public async setStatusLinkStatus(id: string, status: boolean): Promise<void> {
     await this.linkModel.findByIdAndUpdate(
       { _id: id },
       {
