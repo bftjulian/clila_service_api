@@ -65,6 +65,16 @@ export class LinksController {
     );
   }
 
+  @UseInterceptors(LinksInterceptor)
+  @Patch('token-api/:id/update-link')
+  public async updateLinkApiToken(
+    @I18nLang() lang: string,
+    @Body() data: UpdateLinkDto,
+    @Param('id') id,
+  ) {
+    return await this.linksService.updateLinkApiToken(data, lang, id);
+  }
+
   @SkipThrottle()
   @UseGuards(JwtAuthGuard)
   @Post('shorten')
@@ -138,5 +148,12 @@ export class LinksController {
   @Delete(':id')
   public async removeLink(@Param() id, @I18nLang() lang: string) {
     return await this.linksService.removeLink(id.id, lang);
+  }
+
+  @SkipThrottle()
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/infos')
+  public async listLinksInfos(@Param() id) {
+    return await this.linksService.listLinksInfos(id.id);
   }
 }

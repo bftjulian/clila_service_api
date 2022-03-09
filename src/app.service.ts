@@ -9,7 +9,7 @@ export class AppService {
     @Inject(LinkRepository)
     private readonly linksRepository: ILinkRepository,
   ) {}
-  public async redirectOriginalLink(hash: string, res) {
+  public async redirectOriginalLink(hash: string, res, ip: string) {
     const link = await this.linksRepository.findByHash(hash);
 
     if (!link || link.active === false) {
@@ -19,7 +19,14 @@ export class AppService {
         return res.redirect('https://site.cli.la');
       }
     }
+    const date = new Date(Date.now());
+    const data = {
+      ip: ip,
+      create_at: date,
+      link,
+    };
     try {
+      await this.linksRepository.createLinkInfo(data);
       await this.linksRepository.setClickLink(link._id);
       return res.redirect(`${link.original_link}`);
     } catch (error) {

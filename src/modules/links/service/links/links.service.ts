@@ -151,6 +151,51 @@ export class LinksService {
     }
   }
 
+  public async updateLinkApiToken(
+    data: UpdateLinkDto,
+    lang: string,
+    id: string,
+  ) {
+    if (data.surname) {
+      data.hash_link = data.surname;
+      const surname_link = await this.linksRepository.findByHash(
+        data.hash_link,
+      );
+      if (surname_link) {
+        throw new BadRequestException(
+          new Result(
+            await this.i18n.translate('links.ERROR_SURNAME', {
+              lang,
+            }),
+            false,
+            {},
+            null,
+          ),
+        );
+      }
+      if (process.env.NODE_ENV === 'DEV') {
+        data.short_link = 'http://localhost:3000/' + data.surname;
+      } else {
+        data.short_link = 'https://testeapi.cli.la/' + data.surname;
+      }
+    }
+    try {
+      await this.linksRepository.setNameSurname(id, data);
+      return new Result(
+        await this.i18n.translate('links.LINK_UPDATED_SUCCESS', {
+          lang,
+        }),
+        true,
+        {},
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result('Error in transaction', false, {}, null),
+      );
+    }
+  }
+
   public async downloadLinks(user: IUserTokenDto) {
     const userModel = await this.usersRepository.findById(user.id);
     if (!userModel) {
@@ -334,5 +379,13 @@ export class LinksService {
         new Result('Error in transaction', false, {}, null),
       );
     }
+  }
+
+  public async listLinksInfos(id) {
+    const link = await this.linksRepository.findById(id);
+    if (link) {
+      return await this.linksRepository.findAllLinkInfosByLink(link);
+    }
+    return false;
   }
 }

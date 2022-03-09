@@ -4,6 +4,7 @@ import { UserRepository } from '../users/repositories/implementation/user.reposi
 import { UserSchema } from '../users/schemas/user.schema';
 import { LinksController } from './controllers/links/links.controller';
 import { LinkRepository } from './repositories/implementations/link.repository';
+import { LinkInfosSchema } from './schemas/link-infos.schema';
 import { LinkSchema } from './schemas/link.schema';
 import { LinksService } from './service/links/links.service';
 
@@ -11,6 +12,7 @@ import { LinksService } from './service/links/links.service';
   imports: [
     MongooseModule.forFeature([
       { name: 'Link', schema: LinkSchema },
+      { name: 'LinkInfos', schema: LinkInfosSchema },
       { name: 'User', schema: UserSchema },
     ]),
   ],

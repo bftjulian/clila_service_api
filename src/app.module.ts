@@ -20,6 +20,7 @@ import { LinkSchema } from './modules/links/schemas/link.schema';
 import { UserSchema } from './modules/users/schemas/user.schema';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { LinkInfosSchema } from './modules/links/schemas/link-infos.schema';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { APP_GUARD } from '@nestjs/core';
     MongooseModule.forFeature([
       { name: 'Link', schema: LinkSchema },
       { name: 'User', schema: UserSchema },
+      { name: 'LinkInfos', schema: LinkInfosSchema },
     ]),
     UsersModule,
     LinksModule,

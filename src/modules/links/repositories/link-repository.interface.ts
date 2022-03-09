@@ -1,4 +1,5 @@
 import { User } from 'src/modules/users/models/users.model';
+import { LinkInfos } from '../models/link-infos.model';
 import { Link } from '../models/link.model';
 
 export interface ILinkRepository {
@@ -11,4 +12,6 @@ export interface ILinkRepository {
   findAllByUserDownload(user: User): Promise<any>;
   setStatusLink(id: string, status: boolean): Promise<void>;
   removeLinkById(id: string): Promise<void>;
+  createLinkInfo(linkInfoData: LinkInfos): Promise<LinkInfos>;
+  findAllLinkInfosByLink(link: Link): Promise<any>;
 }

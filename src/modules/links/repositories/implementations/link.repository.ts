@@ -3,10 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/modules/users/models/users.model';
 import { Link } from '../../models/link.model';
+import { LinkInfos } from '../../models/link-infos.model';
 
 @Injectable()
 export class LinkRepository {
-  constructor(@InjectModel('Link') private readonly linkModel: Model<Link>) {}
+  constructor(
+    @InjectModel('Link') private readonly linkModel: Model<Link>,
+    @InjectModel('LinkInfos') private readonly linkInfosModel: Model<LinkInfos>,
+  ) {}
 
   public async create(linkData: Link): Promise<Link> {
     const link = new this.linkModel(linkData);
@@ -77,5 +81,14 @@ export class LinkRepository {
 
   public async findAllByUserDownload(user: User): Promise<any> {
     return await this.linkModel.find({ user });
+  }
+
+  public async createLinkInfo(linkInfoData: LinkInfos): Promise<LinkInfos> {
+    const linkInfos = new this.linkInfosModel(linkInfoData);
+    return await linkInfos.save();
+  }
+
+  public async findAllLinkInfosByLink(link: Link): Promise<any> {
+    return await this.linkInfosModel.find({ link });
   }
 }
