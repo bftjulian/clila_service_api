@@ -17,4 +17,19 @@ export class MailService {
       },
     });
   }
+
+  async sendValidationEmail(email: string, code: string, id: string) {
+    await this.mailerService.sendMail({
+      to: email,
+      // from: '"Support Team" <support@example.com>', // override default from
+      subject: 'Ativação de e-mail Cli.la',
+      template: 'validation-email', // `.hbs` extension is appended automatically
+      context: {
+        // ✏️ filling curly brackets with content
+        name: email,
+        code,
+        id,
+      },
+    });
+  }
 }

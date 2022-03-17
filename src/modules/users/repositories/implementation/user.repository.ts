@@ -65,6 +65,15 @@ export class UserRepository implements IUserRepository {
     );
   }
 
+  public async setCodeActivationEmail(id: string): Promise<void> {
+    await this.userModel.findByIdAndUpdate(
+      { _id: id },
+      {
+        code_validation_email: 'A',
+      },
+    );
+  }
+
   public async findByRefreshToken(
     refresh_token: string,
   ): Promise<User | undefined> {

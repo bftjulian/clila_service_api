@@ -19,4 +19,5 @@ export interface IUserRepository {
     recover_password_token: string,
   ): Promise<User | undefined>;
   findByApiTokenPanel(api_token: string): Promise<User | undefined>;
+  setCodeActivationEmail(id: string): Promise<void>;
 }

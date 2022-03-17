@@ -70,7 +70,7 @@ export class LinksController {
   public async updateLinkApiToken(
     @I18nLang() lang: string,
     @Body() data: UpdateLinkDto,
-    @Param('id') id,
+    @Param('id') id: string,
   ) {
     return await this.linksService.updateLinkApiToken(data, lang, id);
   }

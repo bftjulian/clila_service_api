@@ -9,5 +9,10 @@
     "RECOVER_PASSWORD": "An email has been sent to",
     "UPDATE_PASSWORD": "Change password successfully",
     "TOKEN_RECOVER_PASS_EXPIRED": "Token expired",
-    "EMAIL_INVALID": "Email invalid"
+    "EMAIL_INVALID": "Email invalid",
+    "NOT_FOUND_USER": "User not found",
+    "INVALID_CODE": "Invalid code",
+    "USER_ALREADY_ACTIVE": "User is already active",
+    "EMAIL_ACTIVE": "Email activated successfully",
+    "REQUIRED_VALIDATE_EMAIL": "Need to validate email"
 }

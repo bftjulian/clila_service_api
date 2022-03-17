@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Patch,
   Post,
   Query,
@@ -20,6 +21,7 @@ import { SkipThrottle } from '@nestjs/throttler';
 import { RecoverPasswordDto } from '../../dtos/recover-password.dto';
 import { QueryUpdateRecoverPasswordDto } from '../../dtos/query-update-recover-password.dto';
 import { UpdatePasswordDto } from '../../dtos/update-password.dto';
+import { ValidateEmailDto } from '../../dtos/validate-email.dto';
 
 @Controller('api/users')
 export class UsersController {
@@ -87,5 +89,14 @@ export class UsersController {
       data.password,
       lang,
     );
+  }
+
+  @Patch(':id/validate-email')
+  public async validateEmail(
+    @I18nLang() lang: string,
+    @Param('id') id: string,
+    @Body() data: ValidateEmailDto,
+  ) {
+    return this.usersService.validateEmail(id, data.code, lang);
   }
 }

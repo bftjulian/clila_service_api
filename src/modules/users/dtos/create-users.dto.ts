@@ -13,12 +13,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   confirmation_password: string;
-
   api_token: string;
-
   refresh_token: string;
-
+  code_validation_email: string;
   _id: string;
-
   __v: number;
 }

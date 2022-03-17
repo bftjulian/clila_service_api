@@ -39,4 +39,10 @@ export const UserSchema = new mongoose.Schema({
     trim: true,
     default: null,
   },
+
+  code_validation_email: {
+    type: String,
+    trim: true,
+    default: null,
+  },
 });

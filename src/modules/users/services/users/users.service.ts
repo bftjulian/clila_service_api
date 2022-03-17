@@ -53,16 +53,30 @@ export class UsersService {
         ),
       );
     }
+
+    const code = this.generateCodeEmail();
+
     delete userData.confirmation_password;
+
     userData.password = await bcrypt.hash(userData.password, 10);
     userData.api_token = Md5.hashStr(userData + Date()).toString();
-
+    userData.code_validation_email = code;
     try {
-      await this.userRepository.create(userData);
+      const user = await this.userRepository.create(userData);
+      await this.mailService.sendValidationEmail(
+        userData.email,
+        code,
+        user._id,
+      );
+
       return new Result(
         await this.i18n.translate('users.INSERT_SUCCESSFULLY', { lang }),
         true,
-        { api_token: userData.api_token },
+        {
+          api_token: userData.api_token,
+          user_id: user._id,
+          user_email: user.email,
+        },
         null,
       );
     } catch (err) {
@@ -92,6 +106,7 @@ export class UsersService {
         ),
       );
     }
+
     const isMatchPassword = await bcrypt.compare(data.password, user.password);
     if (!isMatchPassword) {
       throw new BadRequestException(
@@ -105,6 +120,20 @@ export class UsersService {
         ),
       );
     }
+
+    if (user.code_validation_email != 'A') {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('users.REQUIRED_VALIDATE_EMAIL', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+
     const payload = { id: user._id, email: user.email };
     const refreshToken = Md5.hashStr(user.email + Date()).toString();
     try {
@@ -301,5 +330,68 @@ export class UsersService {
         new Result('Error in transaction', false, {}, null),
       );
     }
+  }
+
+  public async validateEmail(user_id: string, code: string, lang: string) {
+    const user = await this.userRepository.findById(user_id);
+    if (!user) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('users.NOT_FOUND_USER', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    if (user.code_validation_email === 'A') {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('users.USER_ALREADY_ACTIVE', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    if (user.code_validation_email != code) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('users.INVALID_CODE', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    try {
+      await this.userRepository.setCodeActivationEmail(user_id);
+      return new Result(
+        await this.i18n.translate('users.EMAIL_ACTIVE', { lang }),
+        true,
+        {},
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result('Error in transaction', false, {}, null),
+      );
+    }
+  }
+
+  private generateCodeEmail() {
+    const val1 = Math.floor(Math.random() * (9 - 0 + 1));
+    const val2 = Math.floor(Math.random() * (9 - 0 + 1));
+    const val3 = Math.floor(Math.random() * (9 - 0 + 1));
+    const val4 = Math.floor(Math.random() * (9 - 0 + 1));
+    const val5 = Math.floor(Math.random() * (9 - 0 + 1));
+    const val6 = Math.floor(Math.random() * (9 - 0 + 1));
+    return `${val1}${val2}${val3}${val4}${val5}${val6}`;
   }
 }
