@@ -27,4 +27,16 @@ export const UserSchema = new mongoose.Schema({
     trim: true,
     default: null,
   },
+
+  recover_password_token: {
+    type: String,
+    trim: true,
+    default: null,
+  },
+
+  date_generate_recover_password_token: {
+    type: Date,
+    trim: true,
+    default: null,
+  },
 });

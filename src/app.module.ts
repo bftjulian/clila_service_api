@@ -21,6 +21,7 @@ import { UserSchema } from './modules/users/schemas/user.schema';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { LinkInfosSchema } from './modules/links/schemas/link-infos.schema';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { LinkInfosSchema } from './modules/links/schemas/link-infos.schema';
     UsersModule,
     LinksModule,
     AuthModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [

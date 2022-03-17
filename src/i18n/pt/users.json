@@ -5,5 +5,9 @@
     "INSERT_SUCCESSFULLY": "Usuário inserido com sucesso",
     "USER_NOT_FOUND": "Usuário ou senha incorretos",
     "TOKEN_INVALID": "Token invalido",
-    "TOKEN_REVOGED": "Token revogado com sucesso"
+    "TOKEN_REVOGED": "Token revogado com sucesso",
+    "RECOVER_PASSWORD": "Um e-mail foi enviado para",
+    "UPDATE_PASSWORD": "Senha alterada com sucesso",
+    "TOKEN_RECOVER_PASS_EXPIRED": "Token expirou",
+    "EMAIL_INVALID": "Email invalido"
 }

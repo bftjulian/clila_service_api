@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CreateTokenRecoverPasswordDto } from '../../dtos/create-token-recover-password.dto';
 import { User } from '../../models/users.model';
 import { IUserRepository } from '../user-repository.interface';
 
@@ -39,6 +40,31 @@ export class UserRepository implements IUserRepository {
     await this.userModel.findByIdAndUpdate({ _id: id }, { api_token });
   }
 
+  public async setRecoverPasswordToken(
+    id: string,
+    data: CreateTokenRecoverPasswordDto,
+  ): Promise<void> {
+    await this.userModel.findByIdAndUpdate(
+      { _id: id },
+      {
+        recover_password_token: data.recover_password_token,
+        date_generate_recover_password_token:
+          data.date_generate_recover_password_token,
+      },
+    );
+  }
+
+  public async setPassword(id: string, password: string): Promise<void> {
+    await this.userModel.findByIdAndUpdate(
+      { _id: id },
+      {
+        password,
+        recover_password_token: null,
+        date_generate_recover_password_token: null,
+      },
+    );
+  }
+
   public async findByRefreshToken(
     refresh_token: string,
   ): Promise<User | undefined> {
@@ -51,5 +77,9 @@ export class UserRepository implements IUserRepository {
 
   public async findByApiTokenPanel(api_token: string) {
     return await this.userModel.findOne({ api_token });
+  }
+
+  public async findByRecoverPasswordToken(recover_password_token: string) {
+    return await this.userModel.findOne({ recover_password_token });
   }
 }

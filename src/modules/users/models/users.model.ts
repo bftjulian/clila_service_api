@@ -5,4 +5,6 @@ export class User {
   api_token: string;
   refresh_token: string;
   __v: number;
+  recover_password_token?: string;
+  date_generate_recover_password_token?: Date;
 }

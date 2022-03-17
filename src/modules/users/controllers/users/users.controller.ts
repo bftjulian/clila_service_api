@@ -17,6 +17,9 @@ import { ValidateApiTokenDto } from '../../dtos/validate-api-token.dto';
 import { LoginUserDto } from '../../dtos/login-users.dto';
 import { UsersService } from '../../services/users/users.service';
 import { SkipThrottle } from '@nestjs/throttler';
+import { RecoverPasswordDto } from '../../dtos/recover-password.dto';
+import { QueryUpdateRecoverPasswordDto } from '../../dtos/query-update-recover-password.dto';
+import { UpdatePasswordDto } from '../../dtos/update-password.dto';
 
 @Controller('api/users')
 export class UsersController {
@@ -62,5 +65,27 @@ export class UsersController {
   @Get('validate-token')
   public async validateToken(@Query() api_token: ValidateApiTokenDto) {
     return await this.usersService.validateToken(api_token);
+  }
+
+  @Post('recover-password')
+  public async recoverPassword(
+    @I18nLang() lang: string,
+    @Body() data: RecoverPasswordDto,
+  ) {
+    return await this.usersService.recoverPassword(data.email, lang);
+  }
+
+  @Post('update-password-recover')
+  public async updatePasswordRecover(
+    @I18nLang() lang: string,
+    @Query() query: QueryUpdateRecoverPasswordDto,
+    @Body() data: UpdatePasswordDto,
+  ) {
+    return this.usersService.updatePasswordRecover(
+      query.token,
+      query.email,
+      data.password,
+      lang,
+    );
   }
 }
