@@ -202,7 +202,7 @@ export class UsersService {
     if (!user) {
       throw new BadRequestException(
         new Result(
-          await this.i18n.translate('users.USER_NOT_FOUND', {
+          await this.i18n.translate('users.EMAIL_INVALID', {
             lang,
           }),
           false,
