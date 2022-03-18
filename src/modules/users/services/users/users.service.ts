@@ -245,7 +245,7 @@ export class UsersService {
         recover_password_token: token,
         date_generate_recover_password_token: new Date(),
       });
-      const url = `${process.env.URL_SYSTEM}/passwordRecovery/new?email=${email}&token=${token}`;
+      const url = `${process.env.URL_SYSTEM}/recoverPassword?email=${email}&token=${token}`;
       await this.mailService.sendRecoverPassword(email, url);
       return new Result(
         await this.i18n.translate('users.RECOVER_PASSWORD', { lang }),
