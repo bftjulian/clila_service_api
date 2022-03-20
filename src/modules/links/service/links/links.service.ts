@@ -47,7 +47,7 @@ export class LinksService {
       if (process.env.NODE_ENV === 'DEV') {
         data.short_link = 'http://localhost:3000/' + data.surname;
       } else {
-        data.short_link = 'https://testeapi.cli.la/' + data.surname;
+        data.short_link = 'https://cli.la/' + data.surname;
       }
     } else {
       let hash = '';
@@ -62,7 +62,7 @@ export class LinksService {
       if (process.env.NODE_ENV === 'DEV') {
         data.short_link = 'http://localhost:3000/' + hash;
       } else {
-        data.short_link = 'https://testeapi.cli.la/' + hash;
+        data.short_link = 'https://cli.la/' + hash;
       }
     }
 
@@ -131,7 +131,7 @@ export class LinksService {
       if (process.env.NODE_ENV === 'DEV') {
         data.short_link = 'http://localhost:3000/' + data.surname;
       } else {
-        data.short_link = 'https://testeapi.cli.la/' + data.surname;
+        data.short_link = 'https://cli.la/' + data.surname;
       }
     }
     try {
@@ -176,7 +176,7 @@ export class LinksService {
       if (process.env.NODE_ENV === 'DEV') {
         data.short_link = 'http://localhost:3000/' + data.surname;
       } else {
-        data.short_link = 'https://testeapi.cli.la/' + data.surname;
+        data.short_link = 'https://cli.la/' + data.surname;
       }
     }
     try {
@@ -218,7 +218,7 @@ export class LinksService {
     if (process.env.NODE_ENV === 'DEV') {
       data.short_link = 'http://localhost:3000/' + hash;
     } else {
-      data.short_link = 'https://testeapi.cli.la/' + hash;
+      data.short_link = 'https://cli.la/' + hash;
     }
 
     data.create_at = new Date(Date.now());
@@ -280,7 +280,7 @@ export class LinksService {
       if (process.env.NODE_ENV === 'DEV') {
         data.short_link = 'http://localhost:3000/' + data.surname;
       } else {
-        data.short_link = 'https://testeapi.cli.la/' + data.surname;
+        data.short_link = 'https://cli.la/' + data.surname;
       }
     } else {
       let hash = '';
@@ -295,7 +295,7 @@ export class LinksService {
       if (process.env.NODE_ENV === 'DEV') {
         data.short_link = 'http://localhost:3000/' + hash;
       } else {
-        data.short_link = 'https://testeapi.cli.la/' + hash;
+        data.short_link = 'https://cli.la/' + hash;
       }
     }
 
