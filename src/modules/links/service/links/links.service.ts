@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   UnauthorizedException,
@@ -69,7 +70,7 @@ export class LinksService {
     const userModel = await this.usersRepository.findById(user.id);
 
     if (!userModel) {
-      throw new UnauthorizedException('');
+      throw new ForbiddenException('');
     }
     data.create_at = new Date(Date.now());
     data.user = userModel;
@@ -95,7 +96,7 @@ export class LinksService {
   public async listLinksUser(user: IUserTokenDto, params: PaginationParamsDto) {
     const userModel = await this.usersRepository.findById(user.id);
     if (!userModel) {
-      throw new UnauthorizedException('');
+      throw new ForbiddenException('');
     }
     const links = await this.linksRepository.findAllByUser(
       userModel,
@@ -199,7 +200,7 @@ export class LinksService {
   public async downloadLinks(user: IUserTokenDto) {
     const userModel = await this.usersRepository.findById(user.id);
     if (!userModel) {
-      throw new UnauthorizedException('');
+      throw new ForbiddenException('');
     }
     const links = await this.linksRepository.findAllByUserDownload(userModel);
     return new Result('', true, links, null);
@@ -302,7 +303,7 @@ export class LinksService {
     const user = await this.usersRepository.findByApiTokenPanel(apiToken);
 
     if (!user) {
-      throw new UnauthorizedException('');
+      throw new ForbiddenException('');
     }
     data.create_at = new Date(Date.now());
     data.user = user;

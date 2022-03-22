@@ -47,7 +47,6 @@ export class UsersController {
   }
 
   @SkipThrottle()
-  @UseGuards(JwtAuthGuard)
   @Patch('refresh-token')
   public async refreshToken(
     @Body() refreshToken: CreateRefreshTokenDto,
