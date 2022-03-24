@@ -120,7 +120,6 @@ export class UsersService {
         ),
       );
     }
-
     if (user.code_validation_email != 'A') {
       throw new BadRequestException(
         new Result(
@@ -128,7 +127,7 @@ export class UsersService {
             lang,
           }),
           false,
-          {},
+          { user_id: user._id, api_token: user.api_token },
           null,
         ),
       );
