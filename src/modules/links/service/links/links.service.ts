@@ -28,7 +28,11 @@ export class LinksService {
   ) {}
 
   public async create(data: CreateLinkDto, user: IUserTokenDto, lang: string) {
+    if (data.original_link.indexOf('https') === -1) {
+      data.original_link = 'https://' + data.original_link;
+    }
     if (data.surname) {
+      await this.formatSurname(data.surname, 6, lang);
       data.hash_link = data.surname;
       const surname_link = await this.linksRepository.findByHash(
         data.hash_link,
@@ -207,6 +211,9 @@ export class LinksService {
   }
 
   public async createShortLandpage(data: CreateLinkDto) {
+    if (data.original_link.indexOf('https') === -1) {
+      data.original_link = 'https://' + data.original_link;
+    }
     let hash = '';
     while (true) {
       hash = generateHash(6).toString();
@@ -261,7 +268,12 @@ export class LinksService {
     apiToken: string,
     lang: string,
   ) {
+    if (data.original_link.indexOf('https') === -1) {
+      data.original_link = 'https://' + data.original_link;
+    }
     if (data.surname) {
+      await this.formatSurname(data.surname, 6, lang);
+
       data.hash_link = data.surname;
       const surname_link = await this.linksRepository.findByHash(
         data.hash_link,
@@ -388,5 +400,31 @@ export class LinksService {
       return await this.linksRepository.findAllLinkInfosByLink(link);
     }
     return false;
+  }
+
+  private async formatSurname(surname, minLength, lang) {
+    if (surname.length < minLength) {
+      throw new BadRequestException(
+        new Result(
+          'The minimum number of characters allowed is 6',
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    const regex = /([@!#$%^&*()/\\'="`{}~:;><])/g;
+    if (surname.match(regex)) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('links.CHARACTERES_INVALID', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
   }
 }
