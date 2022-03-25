@@ -22,6 +22,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { LinkInfosSchema } from './modules/links/schemas/link-infos.schema';
 import { MailModule } from './modules/mail/mail.module';
+import { RefreshTokenSchema } from './modules/users/schemas/refresh-tokens.schema';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { MailModule } from './modules/mail/mail.module';
       { name: 'Link', schema: LinkSchema },
       { name: 'User', schema: UserSchema },
       { name: 'LinkInfos', schema: LinkInfosSchema },
+      { name: 'RefreshToken', schema: RefreshTokenSchema },
     ]),
     UsersModule,
     LinksModule,

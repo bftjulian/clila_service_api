@@ -7,10 +7,14 @@ import { UserRepository } from './repositories/implementation/user.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../auth/constants';
 import { MailModule } from '../mail/mail.module';
+import { RefreshTokenSchema } from './schemas/refresh-tokens.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: 'User', schema: UserSchema },
+      { name: 'RefreshToken', schema: RefreshTokenSchema },
+    ]),
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '60s' },

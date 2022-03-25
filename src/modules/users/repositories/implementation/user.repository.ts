@@ -2,18 +2,26 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateTokenRecoverPasswordDto } from '../../dtos/create-token-recover-password.dto';
+import { RefreshToken } from '../../models/refresh-tokens';
 import { User } from '../../models/users.model';
 import { IUserRepository } from '../user-repository.interface';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
-  constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
+  constructor(
+    @InjectModel('User') private readonly userModel: Model<User>,
+    @InjectModel('RefreshToken')
+    private readonly refreshTokenModel: Model<RefreshToken>,
+  ) {}
 
   public async create(userData: User): Promise<User> {
     const user = new this.userModel(userData);
     return await user.save();
   }
-
+  public async createRefreshTokens(data: RefreshToken): Promise<RefreshToken> {
+    const refreshToken = new this.refreshTokenModel(data);
+    return await refreshToken.save();
+  }
   public async findByEmail(email: string): Promise<User | undefined> {
     return await this.userModel.findOne({ email });
   }
@@ -26,13 +34,20 @@ export class UserRepository implements IUserRepository {
     return await this.userModel.find();
   }
 
+  public async findRefreshTokenByUser(
+    user: User,
+  ): Promise<RefreshToken[] | undefined> {
+    return await this.refreshTokenModel.find({ user });
+  }
+
   public async setRefreshToken(
     id: string,
     refresh_token: string,
+    updated_at: Date,
   ): Promise<void> {
-    await this.userModel.findByIdAndUpdate(
+    await this.refreshTokenModel.findByIdAndUpdate(
       { _id: id },
-      { refresh_token: refresh_token },
+      { refresh_token: refresh_token, updated_at },
     );
   }
 
@@ -76,8 +91,8 @@ export class UserRepository implements IUserRepository {
 
   public async findByRefreshToken(
     refresh_token: string,
-  ): Promise<User | undefined> {
-    return await this.userModel.findOne({ refresh_token });
+  ): Promise<RefreshToken | undefined> {
+    return await this.refreshTokenModel.findOne({ refresh_token });
   }
 
   public async findByApiToken(api_token: string): Promise<User | undefined> {
@@ -90,5 +105,9 @@ export class UserRepository implements IUserRepository {
 
   public async findByRecoverPasswordToken(recover_password_token: string) {
     return await this.userModel.findOne({ recover_password_token });
+  }
+
+  public async deleteRefreshTokenById(id: string): Promise<void> {
+    return await this.refreshTokenModel.findByIdAndDelete({ _id: id });
   }
 }

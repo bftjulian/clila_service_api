@@ -12,6 +12,7 @@ import { CreateRefreshTokenDto } from '../../dtos/create-refresh-token.dto';
 import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
 import { Md5 } from 'ts-md5/dist/md5';
 import { MailService } from 'src/modules/mail/mail.service';
+import { differenceInMonths } from 'date-fns';
 
 @Injectable()
 export class UsersService {
@@ -132,11 +133,39 @@ export class UsersService {
         ),
       );
     }
+    const refTokens = await this.userRepository.findRefreshTokenByUser(user);
 
+    if (refTokens) {
+      for (let i = 0; i < refTokens.length; i++) {
+        if (refTokens[i].updated_at) {
+          const refTokensExpiresUpdated = differenceInMonths(
+            refTokens[i].updated_at,
+            new Date(Date.now()),
+          );
+          if (refTokensExpiresUpdated <= -1) {
+            await this.userRepository.deleteRefreshTokenById(refTokens[i]._id);
+          }
+        } else {
+          const refTokensExpiresCreated = differenceInMonths(
+            refTokens[i].created_at,
+            new Date(Date.now()),
+          );
+          if (refTokensExpiresCreated <= -1) {
+            await this.userRepository.deleteRefreshTokenById(refTokens[i]._id);
+          }
+        }
+      }
+    }
     const payload = { id: user._id, email: user.email };
     const refreshToken = Md5.hashStr(user.email + Date()).toString();
     try {
-      await this.userRepository.setRefreshToken(user._id, refreshToken);
+      const dataReTokens: CreateRefreshTokenDto = {
+        refresh_token: refreshToken,
+        user,
+        created_at: new Date(Date.now()),
+      };
+      await this.userRepository.createRefreshTokens(dataReTokens);
+      // await this.userRepository.setRefreshToken(user._id, refreshToken);
       return new Result(
         '',
         true,
@@ -158,10 +187,10 @@ export class UsersService {
     refresh_token: CreateRefreshTokenDto,
     lang: string,
   ) {
-    const user = await this.userRepository.findByRefreshToken(
+    const refToken = await this.userRepository.findByRefreshToken(
       refresh_token.refresh_token,
     );
-    if (!user) {
+    if (!refToken) {
       throw new BadRequestException(
         new Result(
           await this.i18n.translate('users.TOKEN_INVALID', {
@@ -173,10 +202,16 @@ export class UsersService {
         ),
       );
     }
+    const user = await this.userRepository.findById(refToken.user._id);
+
     const payload = { id: user._id, email: user.email };
     const refreshToken = Md5.hashStr(user.email + Date()).toString();
     try {
-      await this.userRepository.setRefreshToken(user._id, refreshToken);
+      await this.userRepository.setRefreshToken(
+        refToken._id,
+        refreshToken,
+        new Date(Date.now()),
+      );
       return new Result(
         '',
         true,
