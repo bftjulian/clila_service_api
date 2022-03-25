@@ -29,6 +29,7 @@ export class LinksController {
    * Required api token from authorization obtained from panel
    * Route used only in the panel service
    */
+  @SkipThrottle()
   @UseInterceptors(LinksInterceptor)
   @Get('token-api/list')
   public async listAllLinksApiToken(
@@ -47,6 +48,7 @@ export class LinksController {
    * Required api token from authorization obtained from panel
    * Route used only in the panel service
    */
+  @SkipThrottle()
   @UseInterceptors(LinksInterceptor)
   @Post('token-api/shorten')
   public async createShortLinkApiToken(
@@ -64,7 +66,7 @@ export class LinksController {
       lang,
     );
   }
-
+  @SkipThrottle()
   @UseInterceptors(LinksInterceptor)
   @Patch('token-api/:id/update-link')
   public async updateLinkApiToken(
