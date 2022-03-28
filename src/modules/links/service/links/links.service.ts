@@ -28,9 +28,7 @@ export class LinksService {
   ) {}
 
   public async create(data: CreateLinkDto, user: IUserTokenDto, lang: string) {
-    if (data.original_link.indexOf('https') === -1) {
-      data.original_link = 'https://' + data.original_link;
-    }
+    data.original_link = await this.formatLink(data.original_link);
     if (data.surname) {
       await this.formatSurname(data.surname, 6, lang);
       data.hash_link = data.surname;
@@ -211,9 +209,8 @@ export class LinksService {
   }
 
   public async createShortLandpage(data: CreateLinkDto) {
-    if (data.original_link.indexOf('https') === -1) {
-      data.original_link = 'https://' + data.original_link;
-    }
+    data.original_link = await this.formatLink(data.original_link);
+
     let hash = '';
     while (true) {
       hash = generateHash(6).toString();
@@ -268,9 +265,8 @@ export class LinksService {
     apiToken: string,
     lang: string,
   ) {
-    if (data.original_link.indexOf('https') === -1) {
-      data.original_link = 'https://' + data.original_link;
-    }
+    data.original_link = await this.formatLink(data.original_link);
+
     if (data.surname) {
       await this.formatSurname(data.surname, 6, lang);
 
@@ -426,5 +422,24 @@ export class LinksService {
         ),
       );
     }
+  }
+
+  private async formatLink(link: string) {
+    if (link.indexOf('http//') >= 0) {
+      link = link.replace('http//', '');
+    }
+    if (link.indexOf('https//') >= 0) {
+      link = link.replace('https//', '');
+    }
+    if (link.indexOf('https') === -1) {
+      const regex = new RegExp('^(http|https)://', 'i');
+      link = link.replace(regex, '');
+      if (link.indexOf('http') >= 0) {
+        link = 'https://' + link;
+      } else {
+        link = 'https://' + link;
+      }
+    }
+    return link;
   }
 }
