@@ -22,6 +22,7 @@ import { RecoverPasswordDto } from '../../dtos/recover-password.dto';
 import { QueryUpdateRecoverPasswordDto } from '../../dtos/query-update-recover-password.dto';
 import { UpdatePasswordDto } from '../../dtos/update-password.dto';
 import { ValidateEmailDto } from '../../dtos/validate-email.dto';
+import { ResendEmailDto } from '../../dtos/resend-email.dto';
 
 @Controller('api/users')
 export class UsersController {
@@ -97,5 +98,13 @@ export class UsersController {
     @Body() data: ValidateEmailDto,
   ) {
     return this.usersService.validateEmail(id, data.code, lang);
+  }
+
+  @Post('resend-code-email')
+  public async resendCodeEmail(
+    @I18nLang() lang: string,
+    @Body() data: ResendEmailDto,
+  ) {
+    return this.usersService.resendCodeEmail(data.email, lang);
   }
 }

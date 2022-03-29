@@ -14,5 +14,6 @@
     "INVALID_CODE": "Código inválido",
     "USER_ALREADY_ACTIVE": "Usuário já está ativo",
     "EMAIL_ACTIVE": "Email ativo com sucesso",
-    "REQUIRED_VALIDATE_EMAIL": "Necessário validar o email"
+    "REQUIRED_VALIDATE_EMAIL": "Necessário validar o email",
+    "EMAIL_CODE_SEND": "Email enviado com sucesso"
 }

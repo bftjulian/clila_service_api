@@ -13,6 +13,7 @@ import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
 import { Md5 } from 'ts-md5/dist/md5';
 import { MailService } from 'src/modules/mail/mail.service';
 import { differenceInMonths } from 'date-fns';
+import { ResendEmailDto } from '../../dtos/resend-email.dto';
 
 @Injectable()
 export class UsersService {
@@ -427,5 +428,50 @@ export class UsersService {
     const val5 = Math.floor(Math.random() * (9 - 0 + 1));
     const val6 = Math.floor(Math.random() * (9 - 0 + 1));
     return `${val1}${val2}${val3}${val4}${val5}${val6}`;
+  }
+
+  public async resendCodeEmail(email: string, lang: string) {
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('users.NOT_FOUND_USER', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    if (user.code_validation_email === 'A') {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('users.USER_ALREADY_ACTIVE', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    try {
+      await this.mailService.sendValidationEmail(
+        email,
+        user.code_validation_email,
+        user._id,
+      );
+      return new Result(
+        await this.i18n.translate('users.EMAIL_CODE_SEND', { lang }),
+        true,
+        {},
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result('Error in transaction', false, {}, null),
+      );
+    }
   }
 }
