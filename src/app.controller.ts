@@ -5,6 +5,11 @@ import { RealIP } from 'nestjs-real-ip';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @Get()
+  public async redirectToSite(@Res() res) {
+    return res.redirect('https://site.cli.la');
+  }
+
   @Get(':hash')
   public async redirectOriginalLink(
     @Param('hash') hash: string,
