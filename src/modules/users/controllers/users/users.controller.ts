@@ -108,7 +108,7 @@ export class UsersController {
     return this.usersService.resendCodeEmail(data.email, lang);
   }
 
-  @Patch(':id/email')
+  @Patch(':id/email-activate')
   public async updateEmail(
     @I18nLang() lang: string,
     @Body() data: ResendEmailDto,
