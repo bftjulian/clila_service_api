@@ -474,4 +474,51 @@ export class UsersService {
       );
     }
   }
+
+  public async updateEmail(email: string, lang: string, id: string) {
+    const user = await this.userRepository.findById(id);
+    if (!user) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('users.NOT_FOUND_USER', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+
+    if (user.code_validation_email === 'A') {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('users.USER_ALREADY_ACTIVE', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    try {
+      await this.userRepository.setEmail(id, email);
+      await this.mailService.sendValidationEmail(
+        email,
+        user.code_validation_email,
+        user._id,
+      );
+      return new Result(
+        await this.i18n.translate('users.EMAIL_CODE_SEND', { lang }),
+        true,
+        {},
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result('Error in transaction', false, {}, null),
+      );
+    }
+  }
 }

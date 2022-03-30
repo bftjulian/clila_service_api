@@ -28,4 +28,5 @@ export interface IUserRepository {
   findRefreshTokenByUser(user: User): Promise<RefreshToken[] | undefined>;
   setCodeActivationEmail(id: string): Promise<void>;
   deleteRefreshTokenById(id: string): Promise<void>;
+  setEmail(id: string, email: string): Promise<void>;
 }

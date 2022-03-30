@@ -110,4 +110,13 @@ export class UserRepository implements IUserRepository {
   public async deleteRefreshTokenById(id: string): Promise<void> {
     return await this.refreshTokenModel.findByIdAndDelete({ _id: id });
   }
+
+  public async setEmail(id: string, email: string): Promise<void> {
+    await this.userModel.findByIdAndUpdate(
+      { _id: id },
+      {
+        email,
+      },
+    );
+  }
 }

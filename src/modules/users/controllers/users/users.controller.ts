@@ -107,4 +107,13 @@ export class UsersController {
   ) {
     return this.usersService.resendCodeEmail(data.email, lang);
   }
+
+  @Patch(':id/email')
+  public async updateEmail(
+    @I18nLang() lang: string,
+    @Body() data: ResendEmailDto,
+    @Param('id') id: string,
+  ) {
+    return this.usersService.updateEmail(data.email, lang, id);
+  }
 }
