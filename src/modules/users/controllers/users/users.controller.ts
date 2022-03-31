@@ -64,6 +64,7 @@ export class UsersController {
     return await this.usersService.invalidateToken(user, lang);
   }
 
+  @SkipThrottle()
   @Get('validate-token')
   public async validateToken(@Query() api_token: ValidateApiTokenDto) {
     return await this.usersService.validateToken(api_token);
