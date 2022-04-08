@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
 import { User } from 'src/modules/users/models/users.model';
 
 export class CreateLinkDto {
@@ -18,6 +18,7 @@ export class CreateLinkDto {
 
   user: User;
 
+  @IsUrl()
   @IsNotEmpty()
   @IsString()
   original_link: string;
