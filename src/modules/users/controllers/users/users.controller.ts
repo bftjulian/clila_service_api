@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -23,18 +24,31 @@ import { QueryUpdateRecoverPasswordDto } from '../../dtos/query-update-recover-p
 import { UpdatePasswordDto } from '../../dtos/update-password.dto';
 import { ValidateEmailDto } from '../../dtos/validate-email.dto';
 import { ResendEmailDto } from '../../dtos/resend-email.dto';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { User } from '../../models/users.model';
 
+@ApiTags('Users')
 @Controller('api/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @ApiResponse({
+    description: 'Create a new user',
+    type: User,
+    status: HttpStatus.OK,
+  })
   public async create(@Body() data: CreateUserDto, @I18nLang() lang: string) {
     const user = await this.usersService.create(data, lang);
     return user;
   }
 
   @Post('login')
+  @ApiResponse({
+    description: 'Login a user',
+    type: User,
+    status: HttpStatus.OK,
+  })
   public async login(@Body() data: LoginUserDto, @I18nLang() lang: string) {
     return await this.usersService.login(data, lang);
   }
@@ -42,6 +56,11 @@ export class UsersController {
   @SkipThrottle()
   @UseGuards(JwtAuthGuard)
   @Get()
+  @ApiResponse({
+    description: 'Brings information from an authenticated user',
+    type: User,
+    status: HttpStatus.OK,
+  })
   public async getUsers(@Req() request) {
     const user: IUserTokenDto = request.user;
     return user;
@@ -49,6 +68,11 @@ export class UsersController {
 
   @SkipThrottle()
   @Patch('refresh-token')
+  @ApiResponse({
+    description: 'Generate a refresh token',
+    type: User,
+    status: HttpStatus.OK,
+  })
   public async refreshToken(
     @Body() refreshToken: CreateRefreshTokenDto,
     @I18nLang() lang: string,
@@ -59,6 +83,11 @@ export class UsersController {
   @SkipThrottle()
   @UseGuards(JwtAuthGuard)
   @Patch('invalidate-token')
+  @ApiResponse({
+    description: 'Invalidates a token',
+    type: User,
+    status: HttpStatus.OK,
+  })
   public async invalidateToken(@I18nLang() lang: string, @Req() request) {
     const user: IUserTokenDto = request.user;
     return await this.usersService.invalidateToken(user, lang);
@@ -66,11 +95,21 @@ export class UsersController {
 
   @SkipThrottle()
   @Get('validate-token')
+  @ApiResponse({
+    description: 'Validates a token',
+    type: User,
+    status: HttpStatus.OK,
+  })
   public async validateToken(@Query() api_token: ValidateApiTokenDto) {
     return await this.usersService.validateToken(api_token);
   }
 
   @Post('recover-password')
+  @ApiResponse({
+    description: 'Recover password',
+    type: User,
+    status: HttpStatus.OK,
+  })
   public async recoverPassword(
     @I18nLang() lang: string,
     @Body() data: RecoverPasswordDto,
@@ -79,6 +118,11 @@ export class UsersController {
   }
 
   @Post('update-password-recover')
+  @ApiResponse({
+    description: 'Make password change',
+    type: User,
+    status: HttpStatus.OK,
+  })
   public async updatePasswordRecover(
     @I18nLang() lang: string,
     @Query() query: QueryUpdateRecoverPasswordDto,
@@ -93,6 +137,11 @@ export class UsersController {
   }
 
   @Patch(':id/validate-email')
+  @ApiResponse({
+    description: 'Do email validation',
+    type: User,
+    status: HttpStatus.OK,
+  })
   public async validateEmail(
     @I18nLang() lang: string,
     @Param('id') id: string,
@@ -102,6 +151,11 @@ export class UsersController {
   }
 
   @Post('resend-code-email')
+  @ApiResponse({
+    description: 'Resend the email code',
+    type: User,
+    status: HttpStatus.OK,
+  })
   public async resendCodeEmail(
     @I18nLang() lang: string,
     @Body() data: ResendEmailDto,
@@ -110,6 +164,11 @@ export class UsersController {
   }
 
   @Patch(':id/email-activate')
+  @ApiResponse({
+    description: 'Make changes to an email',
+    type: User,
+    status: HttpStatus.OK,
+  })
   public async updateEmail(
     @I18nLang() lang: string,
     @Body() data: ResendEmailDto,

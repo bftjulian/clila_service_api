@@ -29,6 +29,7 @@
     "@nestjs/mongoose": "^9.0.2",
     "@nestjs/passport": "^8.2.1",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/swagger": "^5.2.1",
     "@nestjs/throttler": "^2.0.0",
     "@types/date-fns": "^2.6.0",
     "@types/mongoose": "^5.11.97",
@@ -50,6 +51,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
+    "swagger-ui-express": "^4.3.0",
     "ts-md5": "^1.2.11"
   },
   "devDependencies": {
