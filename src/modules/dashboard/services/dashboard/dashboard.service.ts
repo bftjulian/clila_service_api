@@ -33,6 +33,7 @@ export class DashboardService {
     const data = {
       total_links: totalLinks.count,
       total_days_clicks: infosDate.length,
+      infosMonth,
     };
     // console.log(infosMonth);
     return data;

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Schema } from 'mongoose';
 import { User } from 'src/modules/users/models/users.model';
 import { Link } from '../../models/link.model';
 import { LinkInfos } from '../../models/link-infos.model';
@@ -8,11 +8,10 @@ import {
   addDays,
   endOfDay,
   endOfMonth,
-  format,
+  isSameDay,
   getDaysInMonth,
   startOfDay,
   startOfMonth,
-  startOfWeek,
 } from 'date-fns';
 
 @Injectable()
@@ -122,37 +121,26 @@ export class LinkRepository {
   }
   public async findAllLinkInfosByMonth(date: Date, user: User): Promise<any> {
     const links = await this.linkModel.find({ user });
-    const linksInfo = [];
-    for (const link of links) {
-      let infoLinks: any;
-      const info = await this.linkInfosModel.find({
-        create_at: { $gte: startOfMonth(date), $lte: endOfMonth(date) },
-        link: { $eq: link },
-      });
-      // console.log(info);
-      if (info.length > 0) {
-        for (let x = 0; x < info.length; x++) {
-          infoLinks = info[x];
-        }
-        linksInfo.push(infoLinks);
-      }
-    }
-    const firstDOW = startOfMonth(new Date());
-    const shortWeekDaysArray = Array.from(
-      Array(getDaysInMonth(new Date())),
-    ).map((e, i) => addDays(firstDOW, i).getDate());
+    const start = startOfMonth(date);
 
-    const countDay = [];
-    let c = 0;
-    linksInfo.forEach((link) => {
-      shortWeekDaysArray.map((day) => {
-        if (link.create_at.getDate() === day) {
-          c++;
-          countDay.push(day);
-        }
-      });
-    });
-    console.log(c);
-    return linksInfo;
+    const data = await Promise.all(
+      links.map((link) =>
+        Promise.resolve(
+          this.linkInfosModel.find({
+            create_at: { $gte: startOfMonth(date), $lte: endOfMonth(date) },
+            link: { $eq: link },
+          }),
+        ),
+      ),
+    );
+    const linksInfo = [].concat(...data);
+    const days = Array.from({ length: getDaysInMonth(date) }, (_, i) =>
+      addDays(start, i),
+    ).map((day) => ({
+      day,
+      clicks: linksInfo.filter((info) => isSameDay(day, info.create_at)).length,
+    }));
+
+    return days;
   }
 }
