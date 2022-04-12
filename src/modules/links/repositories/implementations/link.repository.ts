@@ -4,6 +4,16 @@ import { Model } from 'mongoose';
 import { User } from 'src/modules/users/models/users.model';
 import { Link } from '../../models/link.model';
 import { LinkInfos } from '../../models/link-infos.model';
+import {
+  addDays,
+  endOfDay,
+  endOfMonth,
+  format,
+  getDaysInMonth,
+  startOfDay,
+  startOfMonth,
+  startOfWeek,
+} from 'date-fns';
 
 @Injectable()
 export class LinkRepository {
@@ -90,5 +100,59 @@ export class LinkRepository {
 
   public async findAllLinkInfosByLink(link: Link): Promise<any> {
     return await this.linkInfosModel.find({ link });
+  }
+
+  public async findAllLinkInfosByDate(date: Date, user: User): Promise<any> {
+    const links = await this.linkModel.find({ user });
+    const linksInfo = [];
+    for (const link of links) {
+      let infoLinks: any;
+      const info = await this.linkInfosModel.find({
+        create_at: { $gte: startOfDay(date), $lte: endOfDay(date) },
+        link: { $eq: link },
+      });
+      if (info.length > 0) {
+        for (let x = 0; x < info.length; x++) {
+          infoLinks = info[x];
+        }
+        linksInfo.push(infoLinks);
+      }
+    }
+    return linksInfo;
+  }
+  public async findAllLinkInfosByMonth(date: Date, user: User): Promise<any> {
+    const links = await this.linkModel.find({ user });
+    const linksInfo = [];
+    for (const link of links) {
+      let infoLinks: any;
+      const info = await this.linkInfosModel.find({
+        create_at: { $gte: startOfMonth(date), $lte: endOfMonth(date) },
+        link: { $eq: link },
+      });
+      // console.log(info);
+      if (info.length > 0) {
+        for (let x = 0; x < info.length; x++) {
+          infoLinks = info[x];
+        }
+        linksInfo.push(infoLinks);
+      }
+    }
+    const firstDOW = startOfMonth(new Date());
+    const shortWeekDaysArray = Array.from(
+      Array(getDaysInMonth(new Date())),
+    ).map((e, i) => addDays(firstDOW, i).getDate());
+
+    const countDay = [];
+    let c = 0;
+    linksInfo.forEach((link) => {
+      shortWeekDaysArray.map((day) => {
+        if (link.create_at.getDate() === day) {
+          c++;
+          countDay.push(day);
+        }
+      });
+    });
+    console.log(c);
+    return linksInfo;
   }
 }

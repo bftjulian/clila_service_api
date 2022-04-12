@@ -14,4 +14,6 @@ export interface ILinkRepository {
   removeLinkById(id: string): Promise<void>;
   createLinkInfo(linkInfoData: LinkInfos): Promise<LinkInfos>;
   findAllLinkInfosByLink(link: Link): Promise<any>;
+  findAllLinkInfosByDate(date: Date, user: User): Promise<any>;
+  findAllLinkInfosByMonth(date: Date, user: User): Promise<any>;
 }
