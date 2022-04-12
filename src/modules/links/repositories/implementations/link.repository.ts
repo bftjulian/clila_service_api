@@ -4,6 +4,8 @@ import { Model } from 'mongoose';
 import { User } from 'src/modules/users/models/users.model';
 import { Link } from '../../models/link.model';
 import { LinkInfos } from '../../models/link-infos.model';
+import { QueryDto } from '../../shared/dtos/query.dto';
+import { queryHelper } from 'src/utils/queryHelper';
 
 @Injectable()
 export class LinkRepository {
@@ -57,18 +59,19 @@ export class LinkRepository {
     await this.linkModel.findByIdAndDelete({ _id: id });
   }
 
-  public async findAllByUser(
-    user: User,
-    limit: number,
-    page: number,
-  ): Promise<any> {
-    const count = (await this.linkModel.find({ user })).length;
+  public async findAllByUser(user: User, query: QueryDto): Promise<any> {
+    const queryParsed = queryHelper(query, {
+      allowedSearch: ['name', 'surname'],
+      defaultSearch: { user },
+    });
+    console.log(queryParsed);
+    const count = (await this.linkModel.find(queryParsed.find)).length;
     // const div = count / limit;
-    const totalPages = Math.ceil(count / limit);
-    const currentPage = (Math.max(1, page) - 1) * limit;
+    const totalPages = Math.ceil(count / query.limit);
+    const currentPage = (Math.max(1, query.page) - 1) * query.limit;
     const links = await this.linkModel
-      .find({ user })
-      .limit(limit)
+      .find(queryParsed.find)
+      .limit(query.limit)
       .skip(currentPage)
       .sort({ _id: 'asc' });
     const data = {

@@ -1,0 +1,1753 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>clila-service-api documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">clila-service-api documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>Injectables</li>
+  <li >UsersService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/modules/users/services/users/users.service.ts</code>
+        </p>
+
+
+
+
+
+            <section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#create" >create</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#generateCodeEmail" >generateCodeEmail</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#invalidateToken" >invalidateToken</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#login" >login</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#recoverPassword" >recoverPassword</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#refreshToken" >refreshToken</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#resendCodeEmail" >resendCodeEmail</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#updateEmail" >updateEmail</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#updatePasswordRecover" >updatePasswordRecover</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#validateEmail" >validateEmail</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#validateToken" >validateToken</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(userRepository: <a href="../injectables/UserRepository.html" target="_self">IUserRepository</a>, mailService: <a href="../injectables/MailService.html" target="_self">MailService</a>, i18n: I18nService, jwtService: JwtService)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/modules/users/services/users/users.service.ts:19</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>userRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/UserRepository.html" target="_self" >IUserRepository</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>mailService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MailService.html" target="_self" >MailService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>i18n</td>
+                                                  
+                                                        <td>
+                                                                    <code>I18nService</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>jwtService</td>
+                                                  
+                                                        <td>
+                                                                    <code>JwtService</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section>
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="create"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span class="modifier">Async</span>
+                        <span ><b>create</b></span>
+                        <a href="#create"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>create(userData: <a href="../classes/CreateUserDto.html" target="_self">CreateUserDto</a>, lang: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="28"
+                            class="link-to-prism">src/modules/users/services/users/users.service.ts:28</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>userData</td>
+                                    <td>
+                                                <code><a href="../classes/CreateUserDto.html" target="_self" >CreateUserDto</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>lang</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>unknown</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="generateCodeEmail"></a>
+                    <span class="name">
+                        <span class="modifier">Private</span>
+                        <span ><b>generateCodeEmail</b></span>
+                        <a href="#generateCodeEmail"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>generateCodeEmail()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="423"
+                            class="link-to-prism">src/modules/users/services/users/users.service.ts:423</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="invalidateToken"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span class="modifier">Async</span>
+                        <span ><b>invalidateToken</b></span>
+                        <a href="#invalidateToken"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>invalidateToken(user: <a href="../interfaces/IUserTokenDto.html" target="_self">IUserTokenDto</a>, lang: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="233"
+                            class="link-to-prism">src/modules/users/services/users/users.service.ts:233</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>user</td>
+                                    <td>
+                                                <code><a href="../interfaces/IUserTokenDto.html" target="_self" >IUserTokenDto</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>lang</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>unknown</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="login"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span class="modifier">Async</span>
+                        <span ><b>login</b></span>
+                        <a href="#login"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>login(data: <a href="../classes/LoginUserDto.html" target="_self">LoginUserDto</a>, lang: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="96"
+                            class="link-to-prism">src/modules/users/services/users/users.service.ts:96</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>data</td>
+                                    <td>
+                                                <code><a href="../classes/LoginUserDto.html" target="_self" >LoginUserDto</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>lang</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>unknown</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="recoverPassword"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span class="modifier">Async</span>
+                        <span ><b>recoverPassword</b></span>
+                        <a href="#recoverPassword"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>recoverPassword(email: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, lang: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="263"
+                            class="link-to-prism">src/modules/users/services/users/users.service.ts:263</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>email</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>lang</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>unknown</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="refreshToken"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span class="modifier">Async</span>
+                        <span ><b>refreshToken</b></span>
+                        <a href="#refreshToken"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>refreshToken(refresh_token: <a href="../classes/CreateRefreshTokenDto.html" target="_self">CreateRefreshTokenDto</a>, lang: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="187"
+                            class="link-to-prism">src/modules/users/services/users/users.service.ts:187</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>refresh_token</td>
+                                    <td>
+                                                <code><a href="../classes/CreateRefreshTokenDto.html" target="_self" >CreateRefreshTokenDto</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>lang</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>unknown</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="resendCodeEmail"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span class="modifier">Async</span>
+                        <span ><b>resendCodeEmail</b></span>
+                        <a href="#resendCodeEmail"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>resendCodeEmail(email: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, lang: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="433"
+                            class="link-to-prism">src/modules/users/services/users/users.service.ts:433</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>email</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>lang</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>unknown</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateEmail"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span class="modifier">Async</span>
+                        <span ><b>updateEmail</b></span>
+                        <a href="#updateEmail"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateEmail(email: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, lang: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="478"
+                            class="link-to-prism">src/modules/users/services/users/users.service.ts:478</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>email</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>lang</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>unknown</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updatePasswordRecover"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span class="modifier">Async</span>
+                        <span ><b>updatePasswordRecover</b></span>
+                        <a href="#updatePasswordRecover"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updatePasswordRecover(token: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, email: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, password: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, lang: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="298"
+                            class="link-to-prism">src/modules/users/services/users/users.service.ts:298</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>token</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>email</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>password</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>lang</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>unknown</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="validateEmail"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span class="modifier">Async</span>
+                        <span ><b>validateEmail</b></span>
+                        <a href="#validateEmail"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>validateEmail(user_id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, code: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, lang: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="370"
+                            class="link-to-prism">src/modules/users/services/users/users.service.ts:370</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>user_id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>code</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>lang</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>unknown</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="validateToken"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span class="modifier">Async</span>
+                        <span ><b>validateToken</b></span>
+                        <a href="#validateToken"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>validateToken(api_token)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="253"
+                            class="link-to-prism">src/modules/users/services/users/users.service.ts:253</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>api_token</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>unknown</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { BadRequestException, Inject, Injectable } from &#x27;@nestjs/common&#x27;;
+import { I18nService } from &#x27;nestjs-i18n&#x27;;
+import { Result } from &#x27;src/shared/models/result&#x27;;
+import { CreateUserDto } from &#x27;../../dtos/create-users.dto&#x27;;
+import { UserRepository } from &#x27;../../repositories/implementation/user.repository&#x27;;
+import { IUserRepository } from &#x27;../../repositories/user-repository.interface&#x27;;
+import { verifyPasswordConfirmation } from &#x27;../../../../utils/verify-password-confirmation&#x27;;
+import * as bcrypt from &#x27;bcrypt&#x27;;
+import { LoginUserDto } from &#x27;../../dtos/login-users.dto&#x27;;
+import { JwtService } from &#x27;@nestjs/jwt&#x27;;
+import { CreateRefreshTokenDto } from &#x27;../../dtos/create-refresh-token.dto&#x27;;
+import { IUserTokenDto } from &#x27;src/modules/auth/dtos/user-token.dto&#x27;;
+import { Md5 } from &#x27;ts-md5/dist/md5&#x27;;
+import { MailService } from &#x27;src/modules/mail/mail.service&#x27;;
+import { differenceInMonths } from &#x27;date-fns&#x27;;
+import { ResendEmailDto } from &#x27;../../dtos/resend-email.dto&#x27;;
+
+@Injectable()
+export class UsersService {
+  constructor(
+    @Inject(UserRepository)
+    private readonly userRepository: IUserRepository,
+    private mailService: MailService,
+    private readonly i18n: I18nService,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  public async create(userData: CreateUserDto, lang: string) {
+    const emailExists &#x3D; await this.userRepository.findByEmail(userData.email);
+    const verifyPassConfirmation &#x3D; verifyPasswordConfirmation(
+      userData.password,
+      userData.confirmation_password,
+    );
+    if (!verifyPassConfirmation) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.PASSWORD_CONFIRMATION&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    if (emailExists) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.EMAIL_EXISTS&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+
+    const code &#x3D; this.generateCodeEmail();
+
+    delete userData.confirmation_password;
+
+    userData.password &#x3D; await bcrypt.hash(userData.password, 10);
+    userData.api_token &#x3D; Md5.hashStr(userData + Date()).toString();
+    userData.code_validation_email &#x3D; code;
+    try {
+      const user &#x3D; await this.userRepository.create(userData);
+      await this.mailService.sendValidationEmail(
+        userData.email,
+        code,
+        user._id,
+      );
+
+      return new Result(
+        await this.i18n.translate(&#x27;users.INSERT_SUCCESSFULLY&#x27;, { lang }),
+        true,
+        {
+          api_token: userData.api_token,
+          user_id: user._id,
+          user_email: user.email,
+        },
+        null,
+      );
+    } catch (err) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.ERROR_INSERT_USER&#x27;, { lang }),
+          false,
+          {},
+          err.message,
+        ),
+      );
+    }
+  }
+
+  public async login(data: LoginUserDto, lang: string) {
+    const user &#x3D; await this.userRepository.findByEmail(data.email);
+
+    if (!user) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.USER_NOT_FOUND&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+
+    const isMatchPassword &#x3D; await bcrypt.compare(data.password, user.password);
+    if (!isMatchPassword) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.USER_NOT_FOUND&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    if (user.code_validation_email !&#x3D; &#x27;A&#x27;) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.REQUIRED_VALIDATE_EMAIL&#x27;, {
+            lang,
+          }),
+          false,
+          { user_id: user._id, api_token: user.api_token },
+          null,
+        ),
+      );
+    }
+    const refTokens &#x3D; await this.userRepository.findRefreshTokenByUser(user);
+
+    if (refTokens) {
+      for (let i &#x3D; 0; i &lt; refTokens.length; i++) {
+        if (refTokens[i].updated_at) {
+          const refTokensExpiresUpdated &#x3D; differenceInMonths(
+            refTokens[i].updated_at,
+            new Date(Date.now()),
+          );
+          if (refTokensExpiresUpdated &lt;&#x3D; -1) {
+            await this.userRepository.deleteRefreshTokenById(refTokens[i]._id);
+          }
+        } else {
+          const refTokensExpiresCreated &#x3D; differenceInMonths(
+            refTokens[i].created_at,
+            new Date(Date.now()),
+          );
+          if (refTokensExpiresCreated &lt;&#x3D; -1) {
+            await this.userRepository.deleteRefreshTokenById(refTokens[i]._id);
+          }
+        }
+      }
+    }
+    const payload &#x3D; { id: user._id, email: user.email };
+    const refreshToken &#x3D; Md5.hashStr(user.email + Date()).toString();
+    try {
+      const dataReTokens: CreateRefreshTokenDto &#x3D; {
+        refresh_token: refreshToken,
+        user,
+        created_at: new Date(Date.now()),
+      };
+      await this.userRepository.createRefreshTokens(dataReTokens);
+      // await this.userRepository.setRefreshToken(user._id, refreshToken);
+      return new Result(
+        &#x27;&#x27;,
+        true,
+        {
+          access_token: this.jwtService.sign(payload),
+          api_token: user.api_token,
+          refresh_token: refreshToken,
+        },
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result(&#x27;Error in transaction&#x27;, false, {}, null),
+      );
+    }
+  }
+
+  public async refreshToken(
+    refresh_token: CreateRefreshTokenDto,
+    lang: string,
+  ) {
+    const refToken &#x3D; await this.userRepository.findByRefreshToken(
+      refresh_token.refresh_token,
+    );
+    if (!refToken) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.TOKEN_INVALID&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    const user &#x3D; await this.userRepository.findById(refToken.user._id);
+
+    const payload &#x3D; { id: user._id, email: user.email };
+    const refreshToken &#x3D; Md5.hashStr(user.email + Date()).toString();
+    try {
+      await this.userRepository.setRefreshToken(
+        refToken._id,
+        refreshToken,
+        new Date(Date.now()),
+      );
+      return new Result(
+        &#x27;&#x27;,
+        true,
+        {
+          access_token: this.jwtService.sign(payload),
+          api_token: user.api_token,
+          refresh_token: refreshToken,
+        },
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result(&#x27;Error in transaction&#x27;, false, {}, null),
+      );
+    }
+  }
+
+  public async invalidateToken(user: IUserTokenDto, lang: string) {
+    const userExists &#x3D; await this.userRepository.findById(user.id);
+    if (userExists) {
+      try {
+        const api_token &#x3D; Md5.hashStr(userExists + Date()).toString();
+        await this.userRepository.setApiToken(user.id, api_token);
+        return new Result(
+          await this.i18n.translate(&#x27;users.TOKEN_REVOGED&#x27;, { lang }),
+          true,
+          {},
+          null,
+        );
+      } catch (error) {
+        throw new BadRequestException(
+          new Result(&#x27;Error in transaction&#x27;, false, {}, null),
+        );
+      }
+    }
+  }
+
+  public async validateToken(api_token) {
+    const userValidToken &#x3D; await this.userRepository.findByApiToken(
+      api_token.api_token,
+    );
+    if (!userValidToken) {
+      return false;
+    }
+    return true;
+  }
+
+  public async recoverPassword(email: string, lang: string) {
+    const user &#x3D; await this.userRepository.findByEmail(email);
+    const token &#x3D; Md5.hashStr(Math.random() + Date()).toString();
+    if (!user) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.EMAIL_INVALID&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    try {
+      await this.userRepository.setRecoverPasswordToken(user._id, {
+        recover_password_token: token,
+        date_generate_recover_password_token: new Date(),
+      });
+      const url &#x3D; &#x60;app.cli.la/recoverPassword?email&#x3D;${email}&amp;token&#x3D;${token}&#x60;;
+      await this.mailService.sendRecoverPassword(email, url);
+      return new Result(
+        await this.i18n.translate(&#x27;users.RECOVER_PASSWORD&#x27;, { lang }),
+        true,
+        { recover_password_token: token, email },
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result(&#x27;Error in transaction&#x27;, false, {}, null),
+      );
+    }
+  }
+
+  public async updatePasswordRecover(
+    token: string,
+    email: string,
+    password: string,
+    lang: string,
+  ) {
+    const recoverPasswordToken &#x3D;
+      await this.userRepository.findByRecoverPasswordToken(token);
+    const userEmail &#x3D; await this.userRepository.findByEmail(email);
+
+    if (!recoverPasswordToken) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.TOKEN_INVALID&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    if (!userEmail) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.EMAIL_INVALID&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+
+    const dateNow &#x3D; new Date();
+    const timeToken &#x3D; userEmail.date_generate_recover_password_token;
+    const timeExpires &#x3D;
+      dateNow.getTime() &gt; timeToken.getTime() + 24 * 60 * 60 * 1000
+        ? true
+        : false;
+
+    if (timeExpires) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.TOKEN_RECOVER_PASS_EXPIRED&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    try {
+      await this.userRepository.setPassword(
+        userEmail._id,
+        await bcrypt.hash(password, 10),
+      );
+      return new Result(
+        await this.i18n.translate(&#x27;users.UPDATE_PASSWORD&#x27;, { lang }),
+        true,
+        {},
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result(&#x27;Error in transaction&#x27;, false, {}, null),
+      );
+    }
+  }
+
+  public async validateEmail(user_id: string, code: string, lang: string) {
+    const user &#x3D; await this.userRepository.findById(user_id);
+    if (!user) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.NOT_FOUND_USER&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    if (user.code_validation_email &#x3D;&#x3D;&#x3D; &#x27;A&#x27;) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.USER_ALREADY_ACTIVE&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    if (user.code_validation_email !&#x3D; code) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.INVALID_CODE&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    try {
+      await this.userRepository.setCodeActivationEmail(user_id);
+      return new Result(
+        await this.i18n.translate(&#x27;users.EMAIL_ACTIVE&#x27;, { lang }),
+        true,
+        {},
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result(&#x27;Error in transaction&#x27;, false, {}, null),
+      );
+    }
+  }
+
+  private generateCodeEmail() {
+    const val1 &#x3D; Math.floor(Math.random() * (9 - 0 + 1));
+    const val2 &#x3D; Math.floor(Math.random() * (9 - 0 + 1));
+    const val3 &#x3D; Math.floor(Math.random() * (9 - 0 + 1));
+    const val4 &#x3D; Math.floor(Math.random() * (9 - 0 + 1));
+    const val5 &#x3D; Math.floor(Math.random() * (9 - 0 + 1));
+    const val6 &#x3D; Math.floor(Math.random() * (9 - 0 + 1));
+    return &#x60;${val1}${val2}${val3}${val4}${val5}${val6}&#x60;;
+  }
+
+  public async resendCodeEmail(email: string, lang: string) {
+    const user &#x3D; await this.userRepository.findByEmail(email);
+    if (!user) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.NOT_FOUND_USER&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    if (user.code_validation_email &#x3D;&#x3D;&#x3D; &#x27;A&#x27;) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.USER_ALREADY_ACTIVE&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    try {
+      await this.mailService.sendValidationEmail(
+        email,
+        user.code_validation_email,
+        user._id,
+      );
+      return new Result(
+        await this.i18n.translate(&#x27;users.EMAIL_CODE_SEND&#x27;, { lang }),
+        true,
+        {},
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result(&#x27;Error in transaction&#x27;, false, {}, null),
+      );
+    }
+  }
+
+  public async updateEmail(email: string, lang: string, id: string) {
+    const user &#x3D; await this.userRepository.findById(id);
+    if (!user) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.NOT_FOUND_USER&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+
+    if (user.code_validation_email &#x3D;&#x3D;&#x3D; &#x27;A&#x27;) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate(&#x27;users.USER_ALREADY_ACTIVE&#x27;, {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+    try {
+      await this.userRepository.setEmail(id, email);
+      await this.mailService.sendValidationEmail(
+        email,
+        user.code_validation_email,
+        user._id,
+      );
+      return new Result(
+        await this.i18n.translate(&#x27;users.EMAIL_CODE_SEND&#x27;, { lang }),
+        true,
+        {},
+        null,
+      );
+    } catch (error) {
+      throw new BadRequestException(
+        new Result(&#x27;Error in transaction&#x27;, false, {}, null),
+      );
+    }
+  }
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'UsersService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

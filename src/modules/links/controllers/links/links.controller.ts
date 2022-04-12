@@ -19,6 +19,7 @@ import { CreateLinkDto } from '../../dtos/create-link.dto';
 import { PaginationParamsDto } from '../../dtos/pagination-params.dto';
 import { UpdateLinkDto } from '../../dtos/update-link.dto';
 import { LinksService } from '../../service/links/links.service';
+import { QueryDto } from '../../shared/dtos/query.dto';
 import { LinksInterceptor } from '../../shared/interceptors/links.interceptor';
 
 @Controller('api/links')
@@ -35,7 +36,7 @@ export class LinksController {
   public async listAllLinksApiToken(
     @Req() request,
     @I18nLang() lang: string,
-    @Query() query: PaginationParamsDto,
+    @Query() query: QueryDto,
   ) {
     const {
       headers: { authorization },
@@ -92,10 +93,7 @@ export class LinksController {
   @SkipThrottle()
   @UseGuards(JwtAuthGuard)
   @Get()
-  public async listLinksUser(
-    @Req() request,
-    @Query() query: PaginationParamsDto,
-  ) {
+  public async listLinksUser(@Req() request, @Query() query: QueryDto) {
     const user: IUserTokenDto = request.user;
     return await this.linksService.listLinksUser(user, query);
   }
