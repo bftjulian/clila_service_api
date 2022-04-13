@@ -63,6 +63,7 @@ export class LinkRepository {
     const queryParsed = queryHelper(query, {
       allowedSearch: ['name', 'surname'],
       defaultSearch: { user },
+      defaultOrderBy: { create_at: 'desc' },
     });
     console.log(queryParsed);
     const count = (await this.linkModel.find(queryParsed.find)).length;
@@ -71,6 +72,7 @@ export class LinkRepository {
     const currentPage = (Math.max(1, query.page) - 1) * query.limit;
     const links = await this.linkModel
       .find(queryParsed.find)
+      .sort(queryParsed.sort)
       .limit(query.limit)
       .skip(currentPage)
       .sort({ _id: 'asc' });
