@@ -30,9 +30,15 @@ export class DashboardService {
       new Date(Date.now()),
       userModel,
     );
+    const infosWeek = await this.linksRepository.findAllLinkInfosByWeek(
+      new Date(Date.now()),
+      userModel,
+    );
+    // console.log(infosDate);
     const data = {
       total_links: totalLinks.count,
       total_days_clicks: infosDate.length,
+      infosWeek,
       infosMonth,
     };
     // console.log(infosMonth);

@@ -12,6 +12,8 @@ import {
   getDaysInMonth,
   startOfDay,
   startOfMonth,
+  startOfWeek,
+  endOfWeek,
 } from 'date-fns';
 
 @Injectable()
@@ -113,10 +115,11 @@ export class LinkRepository {
       if (info.length > 0) {
         for (let x = 0; x < info.length; x++) {
           infoLinks = info[x];
+          linksInfo.push(infoLinks);
         }
-        linksInfo.push(infoLinks);
       }
     }
+    console.log(linksInfo);
     return linksInfo;
   }
   public async findAllLinkInfosByMonth(date: Date, user: User): Promise<any> {
@@ -142,5 +145,28 @@ export class LinkRepository {
     }));
 
     return days;
+  }
+
+  public async findAllLinkInfosByWeek(date: Date, user: User): Promise<any> {
+    const links = await this.linkModel.find({ user });
+    const linksInfo = [];
+    for (const link of links) {
+      const infoLinks: any = {};
+      const info = await this.linkInfosModel
+        .find({
+          create_at: { $gte: startOfWeek(date), $lte: endOfWeek(date) },
+          link: { $eq: link },
+        })
+        .populate({ path: 'link', match: '_id' });
+
+      if (info.length > 0) {
+        for (let x = 0; x < info.length; x++) {
+          infoLinks.link = info[x].link;
+          infoLinks.count = x + 1;
+        }
+        linksInfo.push(infoLinks);
+      }
+    }
+    return linksInfo;
   }
 }

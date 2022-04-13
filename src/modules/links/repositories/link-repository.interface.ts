@@ -16,4 +16,5 @@ export interface ILinkRepository {
   findAllLinkInfosByLink(link: Link): Promise<any>;
   findAllLinkInfosByDate(date: Date, user: User): Promise<any>;
   findAllLinkInfosByMonth(date: Date, user: User): Promise<any>;
+  findAllLinkInfosByWeek(date: Date, user: User): Promise<any>;
 }
