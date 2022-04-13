@@ -119,7 +119,6 @@ export class LinkRepository {
         }
       }
     }
-    console.log(linksInfo);
     return linksInfo;
   }
   public async findAllLinkInfosByMonth(date: Date, user: User): Promise<any> {
