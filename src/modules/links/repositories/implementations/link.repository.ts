@@ -64,6 +64,7 @@ export class LinkRepository {
       allowedSearch: ['name', 'surname'],
       defaultSearch: { user },
       defaultOrderBy: { create_at: 'desc' },
+      allowedFilter: ['name', 'surname', 'create_at'],
     });
     console.log(queryParsed);
     const count = (await this.linkModel.find(queryParsed.find)).length;

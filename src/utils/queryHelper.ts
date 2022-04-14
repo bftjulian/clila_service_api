@@ -4,6 +4,7 @@ import { searchHelper } from './searchHelper';
 
 interface IOptions {
   allowedSearch: string[];
+  allowedFilter: string[];
   defaultSearch: object;
   defaultOrderBy: IOrderBy;
 }
@@ -15,10 +16,24 @@ interface IQueryParsed {
 
 export function queryHelper(
   query: QueryDto,
-  { allowedSearch = [], defaultSearch = {}, defaultOrderBy = {} }: IOptions,
+  {
+    allowedSearch = [],
+    defaultSearch = {},
+    defaultOrderBy = {},
+    allowedFilter = [],
+  }: IOptions,
 ): IQueryParsed {
+  console.log(query);
   return {
-    find: searchHelper({ search: query.search, allowedSearch, defaultSearch }),
+    find: searchHelper({
+      search: query.search,
+      allowedSearch,
+      defaultSearch,
+      filterParams: {
+        allowedColumns: allowedFilter,
+        params: query.filter,
+      },
+    }),
     sort:
       !!query?.order && query.order.length > 0
         ? orderByHelper(query.order)
