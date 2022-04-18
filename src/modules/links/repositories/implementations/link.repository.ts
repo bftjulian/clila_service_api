@@ -4,10 +4,8 @@ import { Model, Schema } from 'mongoose';
 import { User } from 'src/modules/users/models/users.model';
 import { Link } from '../../models/link.model';
 import { LinkInfos } from '../../models/link-infos.model';
-<<<<<<< HEAD
 import { QueryDto } from '../../shared/dtos/query.dto';
 import { queryHelper } from 'src/utils/queryHelper';
-=======
 import {
   addDays,
   endOfDay,
@@ -19,7 +17,6 @@ import {
   startOfWeek,
   endOfWeek,
 } from 'date-fns';
->>>>>>> main
 
 @Injectable()
 export class LinkRepository {
