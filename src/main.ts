@@ -11,17 +11,17 @@ async function bootstrap() {
   });
   // Swagger Configuration
   const config = new DocumentBuilder()
-    .setTitle('Panel API')
+    .setTitle('Clila API')
     .setDescription('')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('/docs', app, document);
 
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      // forbidNonWhitelisted: true,
+      forbidNonWhitelisted: true,
     }),
   );
 
