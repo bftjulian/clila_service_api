@@ -1,6 +1,8 @@
-import { Controller, Get, Param, Req, Res } from '@nestjs/common';
+import { Controller, Get, Param, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import { RealIP } from 'nestjs-real-ip';
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Redirect')
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}

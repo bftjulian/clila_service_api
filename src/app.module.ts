@@ -23,6 +23,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { LinkInfosSchema } from './modules/links/schemas/link-infos.schema';
 import { MailModule } from './modules/mail/mail.module';
 import { RefreshTokenSchema } from './modules/users/schemas/refresh-tokens.schema';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { RefreshTokenSchema } from './modules/users/schemas/refresh-tokens.schem
     LinksModule,
     AuthModule,
     MailModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [

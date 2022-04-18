@@ -1,11 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Schema } from 'mongoose';
 import { User } from 'src/modules/users/models/users.model';
 import { Link } from '../../models/link.model';
 import { LinkInfos } from '../../models/link-infos.model';
+<<<<<<< HEAD
 import { QueryDto } from '../../shared/dtos/query.dto';
 import { queryHelper } from 'src/utils/queryHelper';
+=======
+import {
+  addDays,
+  endOfDay,
+  endOfMonth,
+  isSameDay,
+  getDaysInMonth,
+  startOfDay,
+  startOfMonth,
+} from 'date-fns';
+>>>>>>> main
 
 @Injectable()
 export class LinkRepository {
@@ -96,5 +108,48 @@ export class LinkRepository {
 
   public async findAllLinkInfosByLink(link: Link): Promise<any> {
     return await this.linkInfosModel.find({ link });
+  }
+
+  public async findAllLinkInfosByDate(date: Date, user: User): Promise<any> {
+    const links = await this.linkModel.find({ user });
+    const linksInfo = [];
+    for (const link of links) {
+      let infoLinks: any;
+      const info = await this.linkInfosModel.find({
+        create_at: { $gte: startOfDay(date), $lte: endOfDay(date) },
+        link: { $eq: link },
+      });
+      if (info.length > 0) {
+        for (let x = 0; x < info.length; x++) {
+          infoLinks = info[x];
+        }
+        linksInfo.push(infoLinks);
+      }
+    }
+    return linksInfo;
+  }
+  public async findAllLinkInfosByMonth(date: Date, user: User): Promise<any> {
+    const links = await this.linkModel.find({ user });
+    const start = startOfMonth(date);
+
+    const data = await Promise.all(
+      links.map((link) =>
+        Promise.resolve(
+          this.linkInfosModel.find({
+            create_at: { $gte: startOfMonth(date), $lte: endOfMonth(date) },
+            link: { $eq: link },
+          }),
+        ),
+      ),
+    );
+    const linksInfo = [].concat(...data);
+    const days = Array.from({ length: getDaysInMonth(date) }, (_, i) =>
+      addDays(start, i),
+    ).map((day) => ({
+      day,
+      clicks: linksInfo.filter((info) => isSameDay(day, info.create_at)).length,
+    }));
+
+    return days;
   }
 }

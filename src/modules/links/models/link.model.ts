@@ -1,23 +1,34 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/modules/users/models/users.model';
 
 export class Link {
+  @ApiProperty()
   _id: string;
 
+  @ApiProperty()
   name: string;
 
+  @ApiProperty()
   surname?: string;
 
+  @ApiProperty()
   original_link: string;
 
+  @ApiProperty()
   short_link: string;
 
+  @ApiProperty()
   hash_link: string;
 
+  @ApiProperty()
   numbers_clicks: number;
 
+  @ApiProperty()
   user: User;
 
+  @ApiProperty()
   create_at: Date;
 
+  @ApiProperty()
   active?: boolean;
 }
