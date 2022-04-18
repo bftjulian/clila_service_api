@@ -17,11 +17,7 @@ export class DashboardService {
   ) {}
   public async dashboard(user: IUserTokenDto) {
     const userModel = await this.usersRepository.findById(user.id);
-    const totalLinks = await this.linksRepository.findAllByUser(
-      userModel,
-      0,
-      0,
-    );
+    const totalLinks = await this.linksRepository.findAllByUser(userModel);
     const infosDate = await this.linksRepository.findAllLinkInfosByDate(
       new Date(Date.now()),
       userModel,

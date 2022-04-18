@@ -70,14 +70,16 @@ export class LinkRepository {
     await this.linkModel.findByIdAndDelete({ _id: id });
   }
 
-  public async findAllByUser(user: User, query: QueryDto): Promise<any> {
+  public async findAllByUserWithQuery(
+    user: User,
+    query: QueryDto,
+  ): Promise<any> {
     const queryParsed = queryHelper(query, {
       allowedSearch: ['name', 'surname'],
       defaultSearch: { user },
       defaultOrderBy: { create_at: 'desc' },
       allowedFilter: ['name', 'surname', 'create_at'],
     });
-    console.log(queryParsed);
     const count = (await this.linkModel.find(queryParsed.find)).length;
     // const div = count / limit;
     const totalPages = Math.ceil(count / query.limit);
@@ -88,6 +90,19 @@ export class LinkRepository {
       .limit(query.limit)
       .skip(currentPage)
       .sort({ _id: 'asc' });
+    const data = {
+      data: links,
+      total_pages: totalPages,
+      count,
+    };
+    return data;
+  }
+
+  public async findAllByUser(user: User, query: QueryDto): Promise<any> {
+    const count = (await this.linkModel.find({ user })).length;
+    // const div = count / limit;
+    const totalPages = Math.ceil(count / query.limit);
+    const links = await this.linkModel.find({ user }).sort({ _id: 'asc' });
     const data = {
       data: links,
       total_pages: totalPages,

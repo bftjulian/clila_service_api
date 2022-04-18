@@ -101,7 +101,10 @@ export class LinksService {
     if (!userModel) {
       throw new ForbiddenException('');
     }
-    const links = await this.linksRepository.findAllByUser(userModel, query);
+    const links = await this.linksRepository.findAllByUserWithQuery(
+      userModel,
+      query,
+    );
     return new Result('', true, links, null);
   }
 
@@ -245,7 +248,10 @@ export class LinksService {
 
   public async listAllLinksApiToken(apiToken: string, lang, query: QueryDto) {
     const user = await this.usersRepository.findByApiTokenPanel(apiToken);
-    const links = await this.linksRepository.findAllByUser(user, query);
+    const links = await this.linksRepository.findAllByUserWithQuery(
+      user,
+      query,
+    );
     return links;
   }
 

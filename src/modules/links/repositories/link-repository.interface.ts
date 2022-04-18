@@ -9,11 +9,12 @@ export interface ILinkRepository {
   findById(id: string): Promise<Link | undefined>;
   setClickLink(id: string): Promise<void>;
   setNameSurname(id: string, data): Promise<void>;
-  findAllByUser(user: User, query: QueryDto): Promise<any>;
+  findAllByUser(user: User): Promise<any>;
   findAllByUserDownload(user: User): Promise<any>;
   setStatusLink(id: string, status: boolean): Promise<void>;
   removeLinkById(id: string): Promise<void>;
   createLinkInfo(linkInfoData: LinkInfos): Promise<LinkInfos>;
+  findAllByUserWithQuery(user: User, query: QueryDto): Promise<any>;
   findAllLinkInfosByLink(link: Link): Promise<any>;
   findAllLinkInfosByDate(date: Date, user: User): Promise<any>;
   findAllLinkInfosByMonth(date: Date, user: User): Promise<any>;
