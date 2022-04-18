@@ -2,7 +2,7 @@
     "EMAIL_EXISTS": "Email already exists",
     "ERROR_INSERT_USER": "Error for insert user",
     "PASSWORD_CONFIRMATION": "Passwords must be the same",
-    "INSERT_SUCCESSFULLY": "User insert successfully",
+    "INSERT_SUCCESSFULLY": "User entered successfully, check your email or spam box",
     "USER_NOT_FOUND": "User or password incorrect",
     "TOKEN_INVALID": "Invalid token",
     "TOKEN_REVOGED": "Token revoged successfully",
@@ -15,5 +15,5 @@
     "USER_ALREADY_ACTIVE": "User is already active",
     "EMAIL_ACTIVE": "Email activated successfully",
     "REQUIRED_VALIDATE_EMAIL": "Need to validate email",
-    "EMAIL_CODE_SEND": "Email successfully sent"
+    "EMAIL_CODE_SEND": "Email sent successfully, check your spam folder"
 }

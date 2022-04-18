@@ -69,6 +69,7 @@ export class UsersService {
         userData.email,
         code,
         user._id,
+        lang,
       );
 
       return new Result(
@@ -281,7 +282,7 @@ export class UsersService {
         date_generate_recover_password_token: new Date(),
       });
       const url = `app.cli.la/recoverPassword?email=${email}&token=${token}`;
-      await this.mailService.sendRecoverPassword(email, url);
+      await this.mailService.sendRecoverPassword(email, url, lang);
       return new Result(
         await this.i18n.translate('users.RECOVER_PASSWORD', { lang }),
         true,
@@ -461,6 +462,7 @@ export class UsersService {
         email,
         user.code_validation_email,
         user._id,
+        lang,
       );
       return new Result(
         await this.i18n.translate('users.EMAIL_CODE_SEND', { lang }),
@@ -508,6 +510,7 @@ export class UsersService {
         email,
         user.code_validation_email,
         user._id,
+        lang,
       );
       return new Result(
         await this.i18n.translate('users.EMAIL_CODE_SEND', { lang }),

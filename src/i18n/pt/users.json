@@ -1,19 +1,19 @@
 {
     "EMAIL_EXISTS": "O email já existe",
-    "ERROR_INSERT_USER": "Erro ao iniserir um usuário",
+    "ERROR_INSERT_USER": "Erro ao inserir um usuário",
     "PASSWORD_CONFIRMATION": "As senhas precisam ser iguais",
-    "INSERT_SUCCESSFULLY": "Usuário inserido com sucesso",
+    "INSERT_SUCCESSFULLY": "Usuário inserido com sucesso, verifique sua caixa de e-mail ou spam",
     "USER_NOT_FOUND": "Usuário ou senha incorretos",
-    "TOKEN_INVALID": "Token invalido",
+    "TOKEN_INVALID": "Token inválido",
     "TOKEN_REVOGED": "Token revogado com sucesso",
     "RECOVER_PASSWORD": "Um e-mail foi enviado para",
     "UPDATE_PASSWORD": "Senha alterada com sucesso",
     "TOKEN_RECOVER_PASS_EXPIRED": "Token expirou",
-    "EMAIL_INVALID": "Email invalido",
+    "EMAIL_INVALID": "Email inválido",
     "NOT_FOUND_USER": "Usuário não encontrado",
     "INVALID_CODE": "Código inválido",
     "USER_ALREADY_ACTIVE": "Usuário já está ativo",
-    "EMAIL_ACTIVE": "Email ativo com sucesso",
+    "EMAIL_ACTIVE": "Email ativado com sucesso",
     "REQUIRED_VALIDATE_EMAIL": "Necessário validar o email",
-    "EMAIL_CODE_SEND": "Email enviado com sucesso"
+    "EMAIL_CODE_SEND": "Email enviado com sucesso, verifique sua caixa de spam"
 }
