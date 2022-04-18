@@ -1,6 +1,7 @@
 import { User } from 'src/modules/users/models/users.model';
 import { LinkInfos } from '../models/link-infos.model';
 import { Link } from '../models/link.model';
+import { QueryDto } from '../shared/dtos/query.dto';
 
 export interface ILinkRepository {
   create(data: Link): Promise<Link>;
@@ -8,7 +9,7 @@ export interface ILinkRepository {
   findById(id: string): Promise<Link | undefined>;
   setClickLink(id: string): Promise<void>;
   setNameSurname(id: string, data): Promise<void>;
-  findAllByUser(user: User, limit: number, page: number): Promise<any>;
+  findAllByUser(user: User, query: QueryDto): Promise<any>;
   findAllByUserDownload(user: User): Promise<any>;
   setStatusLink(id: string, status: boolean): Promise<void>;
   removeLinkById(id: string): Promise<void>;

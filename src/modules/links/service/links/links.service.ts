@@ -16,6 +16,7 @@ import { PaginationParamsDto } from '../../dtos/pagination-params.dto';
 import { UpdateLinkDto } from '../../dtos/update-link.dto';
 import { LinkRepository } from '../../repositories/implementations/link.repository';
 import { ILinkRepository } from '../../repositories/link-repository.interface';
+import { QueryDto } from '../../shared/dtos/query.dto';
 
 @Injectable()
 export class LinksService {
@@ -95,16 +96,12 @@ export class LinksService {
     }
   }
 
-  public async listLinksUser(user: IUserTokenDto, params: PaginationParamsDto) {
+  public async listLinksUser(user: IUserTokenDto, query: QueryDto) {
     const userModel = await this.usersRepository.findById(user.id);
     if (!userModel) {
       throw new ForbiddenException('');
     }
-    const links = await this.linksRepository.findAllByUser(
-      userModel,
-      params.limit,
-      params.page,
-    );
+    const links = await this.linksRepository.findAllByUser(userModel, query);
     return new Result('', true, links, null);
   }
 
@@ -246,17 +243,9 @@ export class LinksService {
     }
   }
 
-  public async listAllLinksApiToken(
-    apiToken: string,
-    lang,
-    params: PaginationParamsDto,
-  ) {
+  public async listAllLinksApiToken(apiToken: string, lang, query: QueryDto) {
     const user = await this.usersRepository.findByApiTokenPanel(apiToken);
-    const links = await this.linksRepository.findAllByUser(
-      user,
-      params.limit,
-      params.page,
-    );
+    const links = await this.linksRepository.findAllByUser(user, query);
     return links;
   }
 
