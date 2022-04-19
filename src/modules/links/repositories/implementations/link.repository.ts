@@ -100,10 +100,8 @@ export class LinkRepository {
 
   public async findAllByUser(user: User): Promise<any> {
     const links = await this.linkModel.find({ user }).sort({ _id: 'asc' });
-    const data = {
-      data: links,
-    };
-    return data;
+
+    return links;
   }
 
   public async findAllByUserDownload(user: User): Promise<any> {

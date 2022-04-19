@@ -31,7 +31,7 @@ export class DashboardService {
       userModel,
     );
     const data = {
-      total_links: totalLinks.count,
+      total_links: totalLinks.length,
       total_days_clicks: infosDate.length,
       infosWeek,
       infosMonth,
