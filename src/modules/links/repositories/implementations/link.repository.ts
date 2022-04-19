@@ -98,15 +98,10 @@ export class LinkRepository {
     return data;
   }
 
-  public async findAllByUser(user: User, query: QueryDto): Promise<any> {
-    const count = (await this.linkModel.find({ user })).length;
-    // const div = count / limit;
-    const totalPages = Math.ceil(count / query.limit);
+  public async findAllByUser(user: User): Promise<any> {
     const links = await this.linkModel.find({ user }).sort({ _id: 'asc' });
     const data = {
       data: links,
-      total_pages: totalPages,
-      count,
     };
     return data;
   }
