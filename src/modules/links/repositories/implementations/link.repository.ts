@@ -41,7 +41,7 @@ export class LinkRepository {
   public async setClickLink(id: string): Promise<void> {
     await this.linkModel.findByIdAndUpdate(
       { _id: id },
-      { $inc: { numbers_clicks: 1 } },
+      { $inc: { numbers_clicks: 1 }, update_at: new Date() },
     );
   }
 

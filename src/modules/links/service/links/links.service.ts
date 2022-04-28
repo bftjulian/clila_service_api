@@ -75,7 +75,6 @@ export class LinksService {
     if (!userModel) {
       throw new ForbiddenException('');
     }
-    data.create_at = new Date(Date.now());
     data.user = userModel;
     try {
       const createLink = await this.linksRepository.create(data);
@@ -308,7 +307,6 @@ export class LinksService {
     if (!user) {
       throw new ForbiddenException('');
     }
-    data.create_at = new Date(Date.now());
     data.user = user;
     try {
       const createLink = await this.linksRepository.create(data);
