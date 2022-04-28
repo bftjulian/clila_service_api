@@ -7,6 +7,16 @@ export const LinkSchema = new mongoose.Schema(
       trim: true,
       default: null,
     },
+    group: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Group',
+      required: false,
+    },
+    group_ref: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
     surname: {
       type: String,
       trim: true,
