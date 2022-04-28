@@ -225,7 +225,7 @@ export class LinksService {
       data.short_link = 'https://cli.la/' + hash;
     }
 
-    data.create_at = new Date(Date.now());
+    // data.create_at = new Date(Date.now());
     try {
       const createLink = await this.linksRepository.create(data);
       return new Result(

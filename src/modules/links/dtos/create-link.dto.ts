@@ -34,4 +34,6 @@ export class CreateLinkDto {
 
   @ApiProperty()
   create_at: Date;
+
+  group_ref: boolean;
 }
