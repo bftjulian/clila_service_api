@@ -24,14 +24,10 @@ import { LinkInfosSchema } from './modules/links/schemas/link-infos.schema';
 import { MailModule } from './modules/mail/mail.module';
 import { RefreshTokenSchema } from './modules/users/schemas/refresh-tokens.schema';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
-<<<<<<< HEAD
 import { ScheduleModule } from '@nestjs/schedule';
 import { GroupModule } from './modules/group/group.module';
-=======
 import { SharedModule } from './shared/shared.module';
-import { ScheduleModule } from '@nestjs/schedule';
 import { EventEmitterModule } from '@nestjs/event-emitter';
->>>>>>> b69f80bc8d57f772ca45b4f8c350b1e6bb3cecaf
 
 @Module({
   imports: [
@@ -72,13 +68,10 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     AuthModule,
     MailModule,
     DashboardModule,
-<<<<<<< HEAD
     ScheduleModule.forRoot(),
     GroupModule,
-=======
     SharedModule,
     EventEmitterModule.forRoot(),
->>>>>>> b69f80bc8d57f772ca45b4f8c350b1e6bb3cecaf
   ],
   controllers: [AppController],
   providers: [

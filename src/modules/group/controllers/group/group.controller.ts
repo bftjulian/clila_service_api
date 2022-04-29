@@ -3,7 +3,6 @@ import { SkipThrottle } from '@nestjs/throttler';
 import { I18nLang } from 'nestjs-i18n';
 import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
 import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
-import { CreateGroupDto } from '../../dtos/create-group.dto';
 import { GroupService } from '../../services/group/group.service';
 
 @Controller('api/groups')
