@@ -8,7 +8,7 @@ export class FeedHashesTask {
   constructor(private readonly hashesRepository: HashRepository) {}
 
   private async generateHashesMissingSixDigits() {
-    console.log('Generating hashes missing six digits');
+    console.log('Generating six digits hashes missing on database');
 
     const insertRate = +process.env.HASH_INSERT_SIMULTANEOUS;
 
@@ -39,7 +39,7 @@ export class FeedHashesTask {
 
       try {
         await this.hashesRepository.createMany(hashes);
-        console.log('Hashes inserted');
+        console.log(`${hashCountGenerate} Hashes inserted on database`);
       } catch {}
 
       await new Promise((resolve) =>

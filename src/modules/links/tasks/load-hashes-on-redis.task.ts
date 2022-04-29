@@ -12,28 +12,35 @@ export class LoadHashesOnRedisTask {
   ) {}
 
   private async loadSixDigitsHashes() {
-    console.log('Loading six digits hashes');
+    console.log('Loading six digits hashes on redis');
     const freeHashesCount = await this.redisProvider.llen(
       FREE_SIX_DIGITS_HASHES_REDIS_KEY,
     );
-
-    console.log(freeHashesCount);
-    console.log(process.env.HASH_BASE_COUNT_ON_REDIS);
 
     if (freeHashesCount === +process.env.HASH_BASE_COUNT_ON_REDIS) return;
     const diff = +process.env.HASH_BASE_COUNT_ON_REDIS - freeHashesCount;
 
     const databaseHashes = await this.hashRepository.getFreeHashes(diff, 6);
 
-    console.log(databaseHashes);
-
     if (databaseHashes.length === 0) return;
 
     const hashes = databaseHashes.map((hash) => hash.hash);
+    const count = hashes.length;
 
-    await this.redisProvider.lpush(FREE_SIX_DIGITS_HASHES_REDIS_KEY, hashes);
+    const threePartIndex = Math.ceil(hashes.length / 3);
 
-    console.log('Hashes loaded');
+    const thirdPart = hashes.splice(-threePartIndex);
+    const secondPart = hashes.splice(-threePartIndex);
+    const firstPart = hashes;
+
+    await this.redisProvider.lpush(FREE_SIX_DIGITS_HASHES_REDIS_KEY, firstPart);
+    await this.redisProvider.lpush(
+      FREE_SIX_DIGITS_HASHES_REDIS_KEY,
+      secondPart,
+    );
+    await this.redisProvider.lpush(FREE_SIX_DIGITS_HASHES_REDIS_KEY, thirdPart);
+
+    console.log(`${count} Hashes loaded on redis`);
   }
 
   @Cron(CronExpression.EVERY_10_MINUTES)
