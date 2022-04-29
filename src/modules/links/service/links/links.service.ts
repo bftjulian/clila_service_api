@@ -27,7 +27,7 @@ import {
 import { HashRepository } from '../../repositories/implementations/hash.repository';
 import { LinkRepository } from '../../repositories/implementations/link.repository';
 import { ILinkRepository } from '../../repositories/link-repository.interface';
-import { QueryDto } from '../../shared/dtos/query.dto';
+import { QueryDto } from '../../../../shared/dtos/query.dto';
 
 @Injectable()
 export class LinksService {

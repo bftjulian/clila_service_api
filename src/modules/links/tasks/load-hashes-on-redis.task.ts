@@ -12,7 +12,6 @@ export class LoadHashesOnRedisTask {
   ) {}
 
   private async loadSixDigitsHashes() {
-    console.log('Loading six digits hashes on redis');
     const freeHashesCount = await this.redisProvider.llen(
       FREE_SIX_DIGITS_HASHES_REDIS_KEY,
     );
@@ -39,8 +38,6 @@ export class LoadHashesOnRedisTask {
       secondPart,
     );
     await this.redisProvider.lpush(FREE_SIX_DIGITS_HASHES_REDIS_KEY, thirdPart);
-
-    console.log(`${count} Hashes loaded on redis`);
   }
 
   @Cron(CronExpression.EVERY_10_MINUTES)
@@ -48,8 +45,14 @@ export class LoadHashesOnRedisTask {
     await this.loadSixDigitsHashes();
   }
 
-  @Timeout(15000)
+  @Timeout(1000)
   public async loadHashesOnStart() {
+    await this.redisProvider.delete(FREE_SIX_DIGITS_HASHES_REDIS_KEY);
+    await this.loadSixDigitsHashes();
+  }
+
+  @Timeout(15000)
+  public async loadHashesOnStartDelay() {
     await this.loadSixDigitsHashes();
   }
 }

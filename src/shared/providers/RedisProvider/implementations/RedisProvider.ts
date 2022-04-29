@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import Redis, { Redis as RedisClient } from 'ioredis';
 import IRedisProvider from '../models/IRedisProvider';
 
@@ -6,8 +7,15 @@ import IRedisProvider from '../models/IRedisProvider';
 export default class RedisProvider implements IRedisProvider {
   private client: RedisClient;
 
-  constructor() {
-    this.client = new Redis();
+  constructor(private readonly configService: ConfigService) {
+    const host = this.configService.get<string>('REDIS_HOST');
+    const port = this.configService.get<number>('REDIS_PORT');
+    const password = this.configService.get<string>('REDIS_PASSWORD');
+    this.client = new Redis({
+      host,
+      port,
+      password: password && password.length > 0 ? password : undefined,
+    });
   }
 
   public async delete(key: string): Promise<void> {

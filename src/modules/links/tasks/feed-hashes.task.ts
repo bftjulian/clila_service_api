@@ -39,8 +39,6 @@ export class FeedHashesTask {
 
     countToInsert = countToInsert - jobsOnQueue.waiting;
 
-    console.log('Generating six digits hashes missing on database');
-
     const jobs = Array.from(Array(countToInsert).keys()).map(
       () =>
         ({

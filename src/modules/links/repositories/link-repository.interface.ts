@@ -1,7 +1,7 @@
 import { User } from 'src/modules/users/models/users.model';
 import { LinkInfos } from '../models/link-infos.model';
 import { Link } from '../models/link.model';
-import { QueryDto } from '../shared/dtos/query.dto';
+import { QueryDto } from '../../../shared/dtos/query.dto';
 
 export interface ILinkRepository {
   findAll(): Promise<Link[] | undefined>;

@@ -29,7 +29,6 @@ export class FeedHashesDatabase {
 
     try {
       await this.hashRepository.createMany(hashes);
-      console.log(`${simultaneous} Hashes inserted on database`);
     } catch {}
 
     hashes = undefined;

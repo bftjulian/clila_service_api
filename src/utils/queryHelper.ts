@@ -1,4 +1,4 @@
-import { QueryDto } from 'src/modules/links/shared/dtos/query.dto';
+import { QueryDto } from 'src/shared/dtos/query.dto';
 import { IOrderBy, orderByHelper } from './orderByHelper';
 import { searchHelper } from './searchHelper';
 
