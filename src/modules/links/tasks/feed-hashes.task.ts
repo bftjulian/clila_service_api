@@ -21,8 +21,6 @@ export class FeedHashesTask {
   ) {}
 
   private async generateHashesMissingSixDigits() {
-    console.log('Generating six digits hashes missing on database');
-
     const jobsOnQueue = await this.hashesQueue.getJobCounts();
 
     const insertSimultaneous = +process.env.HASH_INSERT_SIMULTANEOUS;
@@ -35,10 +33,15 @@ export class FeedHashesTask {
     if (percentage > +process.env.HASHES_MIN_FREE_PERCENTAGE) return;
 
     const countToTotal = +process.env.HASH_BASE_COUNT - freeHashesCount;
+    let countToInsert = Math.ceil(countToTotal / insertSimultaneous);
 
-    const jobs = Array.from(
-      Array(Math.ceil(countToTotal / insertSimultaneous)).keys(),
-    ).map(
+    if (countToInsert < jobsOnQueue.waiting) return;
+
+    countToInsert = countToInsert - jobsOnQueue.waiting;
+
+    console.log('Generating six digits hashes missing on database');
+
+    const jobs = Array.from(Array(countToInsert).keys()).map(
       () =>
         ({
           name: FEED_DATABASE_HASHES_COLLECTION,
