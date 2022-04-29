@@ -34,8 +34,6 @@ export class LinkCreatedListener {
       USED_HASHES_TO_UPDATE_REDIS_KEY,
     );
 
-    console.log(usedHashes);
-
     if (usedHashes.length === 0) return;
 
     try {

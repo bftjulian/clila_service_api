@@ -12,13 +12,7 @@ export class InactiveLinkExpiredTask {
     try {
       const today = new Date();
       const priorDate = new Date(new Date().setDate(today.getDate() - 30));
-      const links = await this.linksRepository.findAllByAfterMonth(
-        priorDate,
-        true,
-      );
-      for (let i = 0; i < links.length; i++) {
-        await this.linksRepository.setStatusLink(links[i]._id, false);
-      }
+      await this.linksRepository.inactiveAllBeforeDate(priorDate);
       this.logger.debug('Inactivate links expireds');
     } catch (error) {
       this.logger.error(error.message);

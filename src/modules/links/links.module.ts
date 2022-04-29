@@ -1,3 +1,4 @@
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SharedModule } from 'src/shared/shared.module';
@@ -7,6 +8,8 @@ import { UserSchema } from '../users/schemas/user.schema';
 import { GroupController } from './controllers/group/group.controller';
 import { LinksController } from './controllers/links/links.controller';
 import { linksEventListeners } from './events/listeners';
+import { HASHES_PROCESSOR } from './links.constants';
+import { linksProcessors } from './processors';
 import { GroupRepository } from './repositories/implementations/group.repository';
 import { HashRepository } from './repositories/implementations/hash.repository';
 import { LinkRepository } from './repositories/implementations/link.repository';
@@ -20,6 +23,9 @@ import { linksTasks } from './tasks';
 
 @Module({
   imports: [
+    BullModule.registerQueue({
+      name: HASHES_PROCESSOR,
+    }),
     MongooseModule.forFeature([
       { name: 'Link', schema: LinkSchema },
       { name: 'LinkInfos', schema: LinkInfosSchema },
@@ -40,6 +46,7 @@ import { linksTasks } from './tasks';
     HashRepository,
     ...linksTasks,
     ...linksEventListeners,
+    ...linksProcessors,
   ],
 })
 export class LinksModule {}

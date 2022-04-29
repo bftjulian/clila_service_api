@@ -1,18 +1,33 @@
+import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression, Timeout } from '@nestjs/schedule';
-import { generateHash } from 'src/utils/generate-hash';
+import { JobOptions, Queue } from 'bull';
+import {
+  FEED_DATABASE_HASHES_COLLECTION,
+  HASHES_PROCESSOR,
+} from '../links.constants';
 import { HashRepository } from '../repositories/implementations/hash.repository';
 
+type JobConf = {
+  name?: string | undefined;
+  data: any;
+  opts?: Omit<JobOptions, 'repeat'> | undefined;
+};
 @Injectable()
 export class FeedHashesTask {
-  constructor(private readonly hashesRepository: HashRepository) {}
+  constructor(
+    private readonly hashRepository: HashRepository,
+    @InjectQueue(HASHES_PROCESSOR) private readonly hashesQueue: Queue,
+  ) {}
 
   private async generateHashesMissingSixDigits() {
     console.log('Generating six digits hashes missing on database');
 
-    const insertRate = +process.env.HASH_INSERT_SIMULTANEOUS;
+    const jobsOnQueue = await this.hashesQueue.getJobCounts();
 
-    const freeHashesCount = await this.hashesRepository.getFreeHashesCount();
+    const insertSimultaneous = +process.env.HASH_INSERT_SIMULTANEOUS;
+
+    const freeHashesCount = await this.hashRepository.getFreeHashesCount();
     const percentage = Math.round(
       (freeHashesCount / +process.env.HASH_BASE_COUNT) * 100,
     );
@@ -20,33 +35,18 @@ export class FeedHashesTask {
     if (percentage > +process.env.HASHES_MIN_FREE_PERCENTAGE) return;
 
     const countToTotal = +process.env.HASH_BASE_COUNT - freeHashesCount;
-    const date = new Date();
-    let missingToInsert = countToTotal;
 
-    for (let i = 0; i < Math.ceil(countToTotal / insertRate); i++) {
-      const hashCountGenerate = Math.min(insertRate, missingToInsert);
+    const jobs = Array.from(
+      Array(Math.ceil(countToTotal / insertSimultaneous)).keys(),
+    ).map(
+      () =>
+        ({
+          name: FEED_DATABASE_HASHES_COLLECTION,
+          data: {},
+        } as JobConf),
+    );
 
-      let hashes = Array.from(Array(hashCountGenerate).keys()).map(() => ({
-        hash: generateHash(6),
-        hash_length: 6,
-        in_use: false,
-        permanent: false,
-        created_at: date,
-        updated_at: date,
-      }));
-
-      missingToInsert -= insertRate;
-
-      try {
-        await this.hashesRepository.createMany(hashes);
-        console.log(`${hashCountGenerate} Hashes inserted on database`);
-      } catch {}
-
-      await new Promise((resolve) =>
-        setTimeout(resolve, +process.env.HASH_INSERT_EVERY_SECONDS * 1000),
-      );
-      hashes = undefined;
-    }
+    await this.hashesQueue.addBulk(jobs);
   }
 
   @Cron(CronExpression.EVERY_6_HOURS)
@@ -54,7 +54,7 @@ export class FeedHashesTask {
     await this.generateHashesMissingSixDigits();
   }
 
-  @Timeout(5000)
+  @Timeout(500)
   public async generateHashesOnStart() {
     await this.generateHashesMissingSixDigits();
   }

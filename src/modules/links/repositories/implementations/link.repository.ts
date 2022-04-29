@@ -197,4 +197,13 @@ export class LinkRepository {
       active: status,
     });
   }
+
+  public async inactiveAllBeforeDate(date: Date): Promise<void> {
+    await this.linkModel.updateMany(
+      {
+        update_at: { $lte: date },
+      },
+      { active: false },
+    );
+  }
 }

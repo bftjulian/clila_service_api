@@ -28,6 +28,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { SharedModule } from './shared/shared.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { FeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/feed-user-data-api-token.middleware';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -63,6 +64,12 @@ import { FeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/feed-
       { name: 'LinkInfos', schema: LinkInfosSchema },
       { name: 'RefreshToken', schema: RefreshTokenSchema },
     ]),
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
     UsersModule,
     LinksModule,
     AuthModule,
