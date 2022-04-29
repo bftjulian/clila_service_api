@@ -7,6 +7,11 @@ const GroupSchema = new mongoose.Schema(
       trim: true,
       required: true,
     },
+    original_link: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     links: [
       {
         type: mongoose.Schema.Types.ObjectId,
