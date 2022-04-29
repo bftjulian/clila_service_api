@@ -5,8 +5,9 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+// import { Cron, CronExpression } from '@nestjs/schedule';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+// import { InjectModel } from '@nestjs/mongoose';
 import { I18nService } from 'nestjs-i18n';
 import { IUserTokenDto } from '../../../auth/dtos/user-token.dto';
 import { UserRepository } from '../../../users/repositories/implementation/user.repository';
@@ -15,6 +16,7 @@ import { Result } from 'src/shared/models/result';
 import RedisProvider from '../../../../shared/providers/RedisProvider/implementations/RedisProvider';
 import { generateHash } from 'src/utils/generate-hash';
 import { CreateLinkDto } from '../../dtos/create-link.dto';
+// import { PaginationParamsDto } from '../../dtos/pagination-params.dto';
 import { UpdateLinkDto } from '../../dtos/update-link.dto';
 import { LinkCreatedEvent } from '../../events/link-created.event';
 import {
@@ -39,7 +41,6 @@ export class LinksService {
     private readonly hashRepository: HashRepository,
     private eventEmitter: EventEmitter2,
   ) {}
-  private readonly logger = new Logger(LinksService.name);
 
   public async create(data: CreateLinkDto, user: IUserTokenDto, lang: string) {
     data.original_link = await this.formatLink(data.original_link);
@@ -459,20 +460,5 @@ export class LinksService {
       }
     }
     return link;
-  }
-
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
-  async removeLinkExpired() {
-    const today = new Date();
-    const priorDate = new Date(new Date().setDate(today.getDate() - 30));
-    const links = await this.linksRepository.findAllByAfterMonth(
-      priorDate,
-      true,
-    );
-    for (let i = 0; i < links.length; i++) {
-      await this.linksRepository.setStatusLink(links[i]._id, false);
-      console.log(links[i]._id);
-    }
-    this.logger.debug('Inactivate links expireds');
   }
 }
