@@ -15,6 +15,10 @@ export interface ILinkRepository {
   removeLinkById(id: string): Promise<void>;
   createLinkInfo(linkInfoData: LinkInfos): Promise<LinkInfos>;
   findAllByUserWithQuery(user: User, query: QueryDto): Promise<any>;
+  createBatchLinks(
+    linkData: Omit<Link, 'hash_link' | 'short_link'>,
+    count: number,
+  ): Promise<Pick<Link, '_id' | 'short_link'>[]>;
   findAllLinkInfosByLink(link: Link): Promise<any>;
   findAllLinkInfosByDate(date: Date, user: User): Promise<any>;
   findAllLinkInfosByMonth(date: Date, user: User): Promise<any>;

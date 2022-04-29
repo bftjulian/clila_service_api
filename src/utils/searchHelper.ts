@@ -26,6 +26,7 @@ interface ISearch {
   search: string;
   allowedSearch: string[];
   defaultSearch: object;
+  defaultSearchOrExpressions?: object[];
   filterParams?: {
     params: IFilterParams[];
     allowedColumns: string[];
@@ -88,25 +89,42 @@ export function searchHelper({
   search,
   allowedSearch,
   defaultSearch,
+  defaultSearchOrExpressions,
   filterParams,
 }: ISearch) {
-  let findArray = [defaultSearch];
+  let findArray = [];
 
   const searchParams = {
     ...defaultSearch,
     ...filterQueryParser(filterParams.params, filterParams.allowedColumns),
   };
 
-  console.log(searchParams);
+  if (defaultSearchOrExpressions) {
+    defaultSearchOrExpressions.forEach((expression) => {
+      findArray.push({ ...searchParams, ...expression });
+    });
+  } else {
+    findArray.push(searchParams);
+  }
 
-  if (!search) return searchParams;
+  if (!search) return { $or: findArray };
 
   findArray = [];
   allowedSearch.forEach((field) => {
-    findArray.push({
-      ...searchParams,
-      ...getSearchData(search, field),
-    });
+    if (defaultSearchOrExpressions) {
+      defaultSearchOrExpressions.forEach((expression) => {
+        findArray.push({
+          ...searchParams,
+          ...getSearchData(search, field),
+          ...expression,
+        });
+      });
+    } else {
+      findArray.push({
+        ...searchParams,
+        ...getSearchData(search, field),
+      });
+    }
   });
 
   const findObject = {

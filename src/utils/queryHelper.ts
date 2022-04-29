@@ -6,6 +6,7 @@ interface IOptions {
   allowedSearch: string[];
   allowedFilter: string[];
   defaultSearch: object;
+  defaultSearchOrExpressions?: object[];
   defaultOrderBy: IOrderBy;
 }
 
@@ -20,6 +21,7 @@ export function queryHelper(
     allowedSearch = [],
     defaultSearch = {},
     defaultOrderBy = {},
+    defaultSearchOrExpressions,
     allowedFilter = [],
   }: IOptions,
 ): IQueryParsed {
@@ -29,6 +31,7 @@ export function queryHelper(
       search: query.search,
       allowedSearch,
       defaultSearch,
+      defaultSearchOrExpressions,
       filterParams: {
         allowedColumns: allowedFilter,
         params: query.filter,

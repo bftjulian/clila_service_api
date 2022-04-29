@@ -5,15 +5,25 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { InjectModel } from '@nestjs/mongoose';
 import { I18nService } from 'nestjs-i18n';
 import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
 import { UserRepository } from 'src/modules/users/repositories/implementation/user.repository';
 import { IUserRepository } from 'src/modules/users/repositories/user-repository.interface';
 import { Result } from 'src/shared/models/result';
+import RedisProvider from 'src/shared/providers/RedisProvider/implementations/RedisProvider';
 import { generateHash } from 'src/utils/generate-hash';
 import { CreateLinkDto } from '../../dtos/create-link.dto';
 import { PaginationParamsDto } from '../../dtos/pagination-params.dto';
 import { UpdateLinkDto } from '../../dtos/update-link.dto';
+import { LinkCreatedEvent } from '../../events/link-created.event';
+import {
+  FREE_SIX_DIGITS_HASHES_REDIS_KEY,
+  LINK_CREATED_EVENT_NAME,
+  USED_HASHES_TO_UPDATE_REDIS_KEY,
+} from '../../links.constants';
+import { HashRepository } from '../../repositories/implementations/hash.repository';
 import { LinkRepository } from '../../repositories/implementations/link.repository';
 import { ILinkRepository } from '../../repositories/link-repository.interface';
 import { QueryDto } from '../../shared/dtos/query.dto';
@@ -26,10 +36,14 @@ export class LinksService {
     @Inject(UserRepository)
     private readonly usersRepository: IUserRepository,
     private readonly i18n: I18nService,
+    private readonly redisProvider: RedisProvider,
+    private readonly hashRepository: HashRepository,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   public async create(data: CreateLinkDto, user: IUserTokenDto, lang: string) {
     data.original_link = await this.formatLink(data.original_link);
+
     if (data.surname) {
       await this.formatSurname(data.surname, 6, lang);
       data.hash_link = data.surname;
@@ -54,15 +68,15 @@ export class LinksService {
         data.short_link = 'https://cli.la/' + data.surname;
       }
     } else {
-      let hash = '';
-      while (true) {
-        hash = generateHash(6).toString();
-        data.hash_link = hash;
-        const hash_link = await this.linksRepository.findByHash(data.hash_link);
-        if (!hash_link) {
-          break;
-        }
+      let hash = await this.redisProvider.lpop(
+        FREE_SIX_DIGITS_HASHES_REDIS_KEY,
+      );
+      if (!hash) {
+        const dbHash = await this.hashRepository.getOneFreeHash(6);
+        hash = dbHash.hash;
       }
+
+      data.hash_link = hash;
       if (process.env.NODE_ENV === 'DEV') {
         data.short_link = 'http://localhost:3000/' + hash;
       } else {
@@ -78,6 +92,18 @@ export class LinksService {
     data.user = userModel;
     try {
       const createLink = await this.linksRepository.create(data);
+
+      if (!data.surname) {
+        await this.redisProvider.lpush(
+          USED_HASHES_TO_UPDATE_REDIS_KEY,
+          createLink.hash_link,
+        );
+      }
+
+      const event = new LinkCreatedEvent();
+      event.surname = data.surname;
+
+      this.eventEmitter.emit(LINK_CREATED_EVENT_NAME, event);
       return new Result(
         '',
         true,
@@ -89,6 +115,7 @@ export class LinksService {
         null,
       );
     } catch (error) {
+      console.log(error);
       throw new BadRequestException(
         new Result('Error in transaction', false, {}, null),
       );

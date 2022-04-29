@@ -24,9 +24,13 @@ import { LinkInfosSchema } from './modules/links/schemas/link-infos.schema';
 import { MailModule } from './modules/mail/mail.module';
 import { RefreshTokenSchema } from './modules/users/schemas/refresh-tokens.schema';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { SharedModule } from './shared/shared.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -63,6 +67,8 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     AuthModule,
     MailModule,
     DashboardModule,
+    SharedModule,
+    EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [

@@ -31,9 +31,4 @@ export class CreateLinkDto {
   @IsNotEmpty()
   @IsString()
   original_link: string;
-
-  @ApiProperty()
-  create_at: Date;
-
-  group_ref: boolean;
 }

@@ -13,7 +13,7 @@ export class Link {
   group?: Group;
 
   @ApiProperty()
-  group_ref: boolean;
+  group_ref?: boolean;
 
   @ApiProperty()
   surname?: string;
@@ -34,7 +34,7 @@ export class Link {
   user: User;
 
   @ApiProperty()
-  create_at: Date;
+  create_at?: Date;
 
   @ApiProperty()
   active?: boolean;

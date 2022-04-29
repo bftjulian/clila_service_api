@@ -78,8 +78,13 @@ export class LinkRepository {
       allowedSearch: ['name', 'surname'],
       defaultSearch: { user },
       defaultOrderBy: { create_at: 'desc' },
+      defaultSearchOrExpressions: [
+        { group: { $eq: null } },
+        { group_ref: true },
+      ],
       allowedFilter: ['name', 'surname', 'create_at'],
     });
+
     const count = (await this.linkModel.find(queryParsed.find)).length;
     // const div = count / limit;
     const totalPages = Math.ceil(count / query.limit);
