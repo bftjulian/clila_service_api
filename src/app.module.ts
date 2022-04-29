@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
@@ -25,9 +25,9 @@ import { MailModule } from './modules/mail/mail.module';
 import { RefreshTokenSchema } from './modules/users/schemas/refresh-tokens.schema';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { GroupModule } from './modules/group/group.module';
 import { SharedModule } from './shared/shared.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { FeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/feed-user-data-api-token.middleware';
 
 @Module({
   imports: [
@@ -69,7 +69,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     MailModule,
     DashboardModule,
     ScheduleModule.forRoot(),
-    GroupModule,
     SharedModule,
     EventEmitterModule.forRoot(),
   ],
@@ -83,4 +82,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(FeedUserDataApiTokenMiddleware).forRoutes('*');
+  }
+}

@@ -23,5 +23,6 @@ import { RefreshTokenSchema } from './schemas/refresh-tokens.schema';
   ],
   providers: [UsersService, UserRepository],
   controllers: [UsersController],
+  exports: [UserRepository],
 })
 export class UsersModule {}
