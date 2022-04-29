@@ -24,6 +24,8 @@ import { LinkInfosSchema } from './modules/links/schemas/link-infos.schema';
 import { MailModule } from './modules/mail/mail.module';
 import { RefreshTokenSchema } from './modules/users/schemas/refresh-tokens.schema';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { GroupModule } from './modules/group/group.module';
 
 @Module({
   imports: [
@@ -63,6 +65,8 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     AuthModule,
     MailModule,
     DashboardModule,
+    ScheduleModule.forRoot(),
+    GroupModule,
   ],
   controllers: [AppController],
   providers: [
