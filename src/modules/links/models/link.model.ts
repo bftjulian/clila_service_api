@@ -37,5 +37,8 @@ export class Link {
   create_at?: Date;
 
   @ApiProperty()
+  update_at?: Date;
+
+  @ApiProperty()
   active?: boolean;
 }

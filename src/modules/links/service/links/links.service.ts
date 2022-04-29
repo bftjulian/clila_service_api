@@ -3,8 +3,10 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectModel } from '@nestjs/mongoose';
 import { I18nService } from 'nestjs-i18n';
@@ -40,6 +42,7 @@ export class LinksService {
     private readonly hashRepository: HashRepository,
     private eventEmitter: EventEmitter2,
   ) {}
+  private readonly logger = new Logger(LinksService.name);
 
   public async create(data: CreateLinkDto, user: IUserTokenDto, lang: string) {
     data.original_link = await this.formatLink(data.original_link);
@@ -251,8 +254,6 @@ export class LinksService {
     } else {
       data.short_link = 'https://cli.la/' + hash;
     }
-
-    // data.create_at = new Date(Date.now());
     try {
       const createLink = await this.linksRepository.create(data);
       return new Result(
@@ -461,5 +462,20 @@ export class LinksService {
       }
     }
     return link;
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  async removeLinkExpired() {
+    const today = new Date();
+    const priorDate = new Date(new Date().setDate(today.getDate() - 30));
+    const links = await this.linksRepository.findAllByAfterMonth(
+      priorDate,
+      true,
+    );
+    for (let i = 0; i < links.length; i++) {
+      await this.linksRepository.setStatusLink(links[i]._id, false);
+      console.log(links[i]._id);
+    }
+    this.logger.debug('Inactivate links expireds');
   }
 }

@@ -24,8 +24,8 @@ import { LinkInfosSchema } from './modules/links/schemas/link-infos.schema';
 import { MailModule } from './modules/mail/mail.module';
 import { RefreshTokenSchema } from './modules/users/schemas/refresh-tokens.schema';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
-import { SharedModule } from './shared/shared.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { SharedModule } from './shared/shared.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { FeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/feed-user-data-api-token.middleware';
 
@@ -68,6 +68,7 @@ import { FeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/feed-
     AuthModule,
     MailModule,
     DashboardModule,
+    ScheduleModule.forRoot(),
     SharedModule,
     EventEmitterModule.forRoot(),
   ],
