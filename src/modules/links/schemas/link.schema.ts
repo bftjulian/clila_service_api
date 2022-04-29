@@ -56,6 +56,12 @@ const LinkSchema = new mongoose.Schema({
     trim: true,
     default: false,
   },
+  expired_at: {
+    type: Date,
+    trim: true,
+    default: null,
+    required: false,
+  },
   create_at: {
     type: Date,
     trim: true,

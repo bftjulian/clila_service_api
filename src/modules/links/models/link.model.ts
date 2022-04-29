@@ -34,6 +34,9 @@ export class Link {
   user: User;
 
   @ApiProperty()
+  expired_at?: Date | null;
+
+  @ApiProperty()
   create_at?: Date;
 
   @ApiProperty()

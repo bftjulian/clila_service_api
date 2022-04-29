@@ -48,7 +48,7 @@ export class LinksService {
     if (data.surname) {
       await this.formatSurname(data.surname, 6, lang);
       data.hash_link = data.surname;
-      const surname_link = await this.linksRepository.findByHash(
+      const surname_link = await this.linksRepository.findActiveByHash(
         data.hash_link,
       );
       if (surname_link) {
@@ -143,7 +143,7 @@ export class LinksService {
   public async updateLink(id: string, data: UpdateLinkDto, lang: string) {
     if (data.surname) {
       data.hash_link = data.surname;
-      const surname_link = await this.linksRepository.findByHash(
+      const surname_link = await this.linksRepository.findActiveByHash(
         data.hash_link,
       );
       if (surname_link) {
@@ -188,7 +188,7 @@ export class LinksService {
   ) {
     if (data.surname) {
       data.hash_link = data.surname;
-      const surname_link = await this.linksRepository.findByHash(
+      const surname_link = await this.linksRepository.findActiveByHash(
         data.hash_link,
       );
       if (surname_link) {
@@ -242,7 +242,9 @@ export class LinksService {
     while (true) {
       hash = generateHash(6).toString();
       data.hash_link = hash;
-      const hash_link = await this.linksRepository.findByHash(data.hash_link);
+      const hash_link = await this.linksRepository.findActiveByHash(
+        data.hash_link,
+      );
       if (!hash_link) {
         break;
       }
@@ -291,7 +293,7 @@ export class LinksService {
       await this.formatSurname(data.surname, 6, lang);
 
       data.hash_link = data.surname;
-      const surname_link = await this.linksRepository.findByHash(
+      const surname_link = await this.linksRepository.findActiveByHash(
         data.hash_link,
       );
       if (surname_link) {
@@ -316,7 +318,9 @@ export class LinksService {
       while (true) {
         hash = generateHash(6).toString();
         data.hash_link = hash;
-        const hash_link = await this.linksRepository.findByHash(data.hash_link);
+        const hash_link = await this.linksRepository.findActiveByHash(
+          data.hash_link,
+        );
         if (!hash_link) {
           break;
         }
@@ -355,8 +359,10 @@ export class LinksService {
 
   public async inactivateLink(id: string, lang: string) {
     try {
-      const status = false;
-      await this.linksRepository.setStatusLink(id, status);
+      const link = await this.linksRepository.findById(id);
+
+      await this.linksRepository.setStatusLink(id, false);
+      if (link) await this.hashRepository.setUnused(link.hash_link);
       return new Result(
         await this.i18n.translate('links.LINK_INACTIVATED', {
           lang,
@@ -374,8 +380,44 @@ export class LinksService {
 
   public async activateLink(id: string, lang: string) {
     try {
-      const status = true;
-      await this.linksRepository.setStatusLink(id, status);
+      const link = await this.linksRepository.findById(id);
+
+      if (!link) {
+        throw new BadRequestException(
+          new Result(
+            await this.i18n.translate('LINK_NOT_FOUND', { lang }),
+            false,
+            {},
+            null,
+          ),
+        );
+      }
+
+      const hashUsed = await this.hashRepository.isUsed(link.hash_link);
+
+      if (hashUsed) {
+        throw new BadRequestException(
+          new Result(
+            await this.i18n.translate('LINK_HAS_BEEN_EXPIRED', { lang }),
+            false,
+            {},
+            null,
+          ),
+        );
+      }
+
+      if (!!link.expired_at) {
+        throw new BadRequestException(
+          new Result(
+            await this.i18n.translate('LINK_HAS_BEEN_EXPIRED', { lang }),
+            false,
+            {},
+            null,
+          ),
+        );
+      }
+
+      await this.linksRepository.setStatusLink(id, true);
       return new Result(
         await this.i18n.translate('links.LINK_ACTIVATED', {
           lang,
@@ -393,7 +435,12 @@ export class LinksService {
 
   public async removeLink(id: string, lang: string) {
     try {
+      const link = await this.linksRepository.findById(id);
+
       await this.linksRepository.removeLinkById(id);
+
+      if (link) await this.hashRepository.setUnused(link.hash_link);
+
       return new Result(
         await this.i18n.translate('links.LINK_REMOVED', {
           lang,

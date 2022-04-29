@@ -31,7 +31,15 @@ export class LinkRepository {
   }
 
   public async findByHash(hash_link: string): Promise<Link | undefined> {
-    return await this.linkModel.findOne({ hash_link, active: true });
+    return await this.linkModel.findOne({ hash_link });
+  }
+
+  public async findActiveByHash(hash_link: string): Promise<Link | undefined> {
+    return await this.linkModel.findOne({
+      hash_link,
+      active: true,
+      expired_at: null,
+    });
   }
 
   public async findById(id: string): Promise<Link | undefined> {
@@ -203,7 +211,7 @@ export class LinkRepository {
       {
         update_at: { $lte: date },
       },
-      { active: false },
+      { active: false, expired_at: new Date() },
     );
   }
 }
