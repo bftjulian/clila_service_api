@@ -24,6 +24,7 @@ export class InactiveLinkExpiredTask {
       this.logger.error(error.message);
     }
   }
+
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
   public async expiredLink() {
     await this.removeLinkExpired();
