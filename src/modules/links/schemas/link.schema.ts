@@ -30,17 +30,11 @@ const LinkSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    index: {
-      unique: true,
-    },
   },
   hash_link: {
     type: String,
     required: true,
     trim: true,
-    index: {
-      unique: true,
-    },
   },
   numbers_clicks: {
     type: Number,
