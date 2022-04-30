@@ -29,6 +29,7 @@ import { SharedModule } from './shared/shared.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { FeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/feed-user-data-api-token.middleware';
 import { BullModule } from '@nestjs/bull';
+import { appEventListeners } from './events/listeners';
 
 @Module({
   imports: [
@@ -91,6 +92,7 @@ import { BullModule } from '@nestjs/bull';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    ...appEventListeners,
   ],
 })
 export class AppModule implements NestModule {

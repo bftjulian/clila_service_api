@@ -211,12 +211,19 @@ export class LinkRepository {
     });
   }
 
-  public async inactiveAllBeforeDate(date: Date): Promise<void> {
+  public async inactiveAllBeforeDate(date: Date): Promise<string[]> {
+    const links = await this.linkModel
+      .find({
+        update_at: { $lte: date },
+      })
+      .select('hash_link');
     await this.linkModel.updateMany(
       {
         update_at: { $lte: date },
       },
       { active: false, expired_at: new Date(), status: 'INACTIVE' },
     );
+
+    return links.map((link) => link.hash_link);
   }
 }

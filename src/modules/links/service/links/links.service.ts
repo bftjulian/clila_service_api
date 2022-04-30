@@ -93,6 +93,10 @@ export class LinksService {
     data.user = userModel;
     try {
       const createLink = await this.linksRepository.create(data);
+      await this.redisProvider.save(
+        `links:${createLink.hash_link}`,
+        createLink,
+      );
 
       if (!data.surname) {
         await this.redisProvider.lpush(
@@ -141,12 +145,30 @@ export class LinksService {
   }
 
   public async updateLink(id: string, data: UpdateLinkDto, lang: string) {
+    const link = await this.linksRepository.findById(id);
+
+    if (!link) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('links.ERROR_LINK_NOT_FOUND', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+
+    await this.redisProvider.delete(`links:${link.hash_link}`);
+
     if (data.surname) {
       data.hash_link = data.surname;
+      const isUsed = await this.hashRepository.isUsed(data.hash_link);
       const surname_link = await this.linksRepository.findActiveByHash(
         data.hash_link,
       );
-      if (surname_link) {
+      if (surname_link || isUsed) {
         throw new BadRequestException(
           new Result(
             await this.i18n.translate('links.ERROR_SURNAME', {
@@ -166,6 +188,7 @@ export class LinksService {
     }
     try {
       await this.linksRepository.setNameSurname(id, data);
+      await this.hashRepository.setUsed(data.hash_link);
       return new Result(
         await this.i18n.translate('links.LINK_UPDATED_SUCCESS', {
           lang,
@@ -359,7 +382,12 @@ export class LinksService {
 
   public async inactivateLink(id: string, lang: string) {
     try {
+      const link = await this.linksRepository.findById(id);
+
+      if (link) await this.redisProvider.delete(`links:${link.hash_link}`);
+
       await this.linksRepository.setStatusLink(id, false);
+
       return new Result(
         await this.i18n.translate('links.LINK_INACTIVATED', {
           lang,
@@ -402,6 +430,7 @@ export class LinksService {
       }
 
       await this.linksRepository.setStatusLink(id, true);
+      await this.redisProvider.save(`links:${link.hash_link}`, link);
       return new Result(
         await this.i18n.translate('links.LINK_ACTIVATED', {
           lang,
@@ -423,7 +452,10 @@ export class LinksService {
 
       await this.linksRepository.removeLinkById(id);
 
-      if (link) await this.hashRepository.setUnused(link.hash_link);
+      if (link) {
+        await this.hashRepository.setUnused(link.hash_link);
+        await this.redisProvider.delete(`links:${link.hash_link}`);
+      }
 
       return new Result(
         await this.i18n.translate('links.LINK_REMOVED', {
