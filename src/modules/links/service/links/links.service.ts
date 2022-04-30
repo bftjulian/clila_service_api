@@ -261,24 +261,35 @@ export class LinksService {
   public async createShortLandpage(data: CreateLinkDto) {
     data.original_link = await this.formatLink(data.original_link);
 
-    let hash = '';
-    while (true) {
-      hash = generateHash(6).toString();
-      data.hash_link = hash;
-      const hash_link = await this.linksRepository.findActiveByHash(
-        data.hash_link,
-      );
-      if (!hash_link) {
-        break;
-      }
+    let hash = await this.redisProvider.lpop(FREE_SIX_DIGITS_HASHES_REDIS_KEY);
+    if (!hash) {
+      const dbHash = await this.hashRepository.getOneFreeHash(6);
+      hash = dbHash.hash;
     }
+
+    data.hash_link = hash;
     if (process.env.NODE_ENV === 'DEV') {
       data.short_link = 'http://localhost:3000/' + hash;
     } else {
       data.short_link = 'https://cli.la/' + hash;
     }
+
     try {
       const createLink = await this.linksRepository.create(data);
+      await this.redisProvider.save(
+        `links:${createLink.hash_link}`,
+        createLink,
+      );
+
+      await this.redisProvider.lpush(
+        USED_HASHES_TO_UPDATE_REDIS_KEY,
+        createLink.hash_link,
+      );
+
+      const event = new LinkCreatedEvent();
+      event.surname = data.surname;
+
+      this.eventEmitter.emit(LINK_CREATED_EVENT_NAME, event);
       return new Result(
         '',
         true,
@@ -290,6 +301,7 @@ export class LinksService {
         null,
       );
     } catch (error) {
+      console.log(error);
       throw new BadRequestException(
         new Result('Error in transaction', false, {}, null),
       );
