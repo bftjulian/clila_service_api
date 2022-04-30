@@ -20,7 +20,8 @@ export interface ILinkRepository {
   findAllLinkInfosByDate(date: Date, user: User): Promise<any>;
   findAllLinkInfosByMonth(date: Date, user: User): Promise<any>;
   findAllLinkInfosByWeek(date: Date, user: User): Promise<any>;
-  create(data: Link): Promise<Link>;
+  findAllNotExpired(): Promise<Link[]>;
+  create(data: Omit<Link, 'status'>): Promise<Link>;
   setClickLink(id: string): Promise<void>;
   setNameSurname(id: string, data): Promise<void>;
   setStatusLink(id: string, status: boolean): Promise<void>;

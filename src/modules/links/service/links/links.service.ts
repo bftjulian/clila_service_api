@@ -359,10 +359,7 @@ export class LinksService {
 
   public async inactivateLink(id: string, lang: string) {
     try {
-      const link = await this.linksRepository.findById(id);
-
       await this.linksRepository.setStatusLink(id, false);
-      if (link) await this.hashRepository.setUnused(link.hash_link);
       return new Result(
         await this.i18n.translate('links.LINK_INACTIVATED', {
           lang,

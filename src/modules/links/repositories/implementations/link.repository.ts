@@ -70,8 +70,13 @@ export class LinkRepository {
       { _id: id },
       {
         active: status,
+        status: status ? 'ACTIVE' : 'INACTIVE',
       },
     );
+  }
+
+  public async findAllNotExpired(): Promise<Link[]> {
+    return this.linkModel.find({ expired_at: null });
   }
 
   public async removeLinkById(id: string): Promise<void> {
@@ -211,7 +216,7 @@ export class LinkRepository {
       {
         update_at: { $lte: date },
       },
-      { active: false, expired_at: new Date() },
+      { active: false, expired_at: new Date(), status: 'INACTIVE' },
     );
   }
 }

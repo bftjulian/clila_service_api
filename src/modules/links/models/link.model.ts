@@ -43,5 +43,8 @@ export class Link {
   update_at?: Date;
 
   @ApiProperty()
+  status: 'ACTIVE' | 'INACTIVE' | 'EXPIRED';
+
+  @ApiProperty()
   active?: boolean;
 }

@@ -8,6 +8,7 @@ export interface IHashRepository {
   setManyUsed(hashes: string[]): Promise<void>;
   getOneFreeHash(hash_length: number): Promise<Hash>;
   getFreeHashesCount(): Promise<number>;
+  setUsedOrCreateUsed(hash: string): Promise<void>;
   setUsed(hash: string): Promise<void>;
   setUnused(hash: string): Promise<void>;
   isUsed(hash: string): Promise<boolean>;
