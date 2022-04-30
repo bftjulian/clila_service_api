@@ -11,6 +11,7 @@ export default class RedisProvider implements IRedisProvider {
     const host = this.configService.get<string>('REDIS_HOST');
     const port = this.configService.get<number>('REDIS_PORT');
     const password = this.configService.get<string>('REDIS_PASSWORD');
+
     this.client = new Redis({
       host,
       port,
