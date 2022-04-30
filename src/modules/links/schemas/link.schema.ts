@@ -57,7 +57,7 @@ const LinkSchema = new mongoose.Schema({
     default: false,
   },
   status: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.String,
     enum: ['ACTIVE', 'INACTIVE', 'EXPIRED'],
     default: 'ACTIVE',
   },
