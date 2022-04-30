@@ -390,19 +390,6 @@ export class LinksService {
         );
       }
 
-      const hashUsed = await this.hashRepository.isUsed(link.hash_link);
-
-      if (hashUsed) {
-        throw new BadRequestException(
-          new Result(
-            await this.i18n.translate('LINK_HAS_BEEN_EXPIRED', { lang }),
-            false,
-            {},
-            null,
-          ),
-        );
-      }
-
       if (!!link.expired_at) {
         throw new BadRequestException(
           new Result(
