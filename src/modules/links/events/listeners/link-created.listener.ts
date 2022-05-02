@@ -17,7 +17,7 @@ export class LinkCreatedListener {
 
   @OnEvent(LINK_CREATED_EVENT_NAME, { async: true })
   public async handleLinkCreatedEvent(event: LinkCreatedEvent): Promise<void> {
-    if (event.surname) {
+    if (event?.surname) {
       try {
         await this.hashRepository.create({
           hash: event.surname,

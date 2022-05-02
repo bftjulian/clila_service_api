@@ -5,11 +5,16 @@ import { Result } from 'src/shared/models/result';
 import RedisProvider from 'src/shared/providers/RedisProvider/implementations/RedisProvider';
 import { CreateBatchLinksDto } from '../../dtos/create-batch-links-group.dto';
 import { CreateGroupDto } from '../../dtos/create-group.dto';
-import { FREE_SIX_DIGITS_HASHES_REDIS_KEY } from '../../links.constants';
+import {
+  FREE_SIX_DIGITS_HASHES_REDIS_KEY,
+  LINK_CREATED_EVENT_NAME,
+  USED_HASHES_TO_UPDATE_REDIS_KEY,
+} from '../../links.constants';
 import { IGroupRepository } from '../../repositories/group-repository.interface';
 import { GroupRepository } from '../../repositories/implementations/group.repository';
 import { LinkRepository } from '../../repositories/implementations/link.repository';
 import crypto from 'crypto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class GroupService {
@@ -19,6 +24,7 @@ export class GroupService {
     private readonly linksRepository: LinkRepository,
     private readonly redisProvider: RedisProvider,
     private readonly i18n: I18nService,
+    private readonly eventEmiter: EventEmitter2,
   ) {}
   public async createGroup(
     user: IUserTokenDto,
@@ -59,6 +65,10 @@ export class GroupService {
       data.count,
     );
 
+    await this.redisProvider.lpush(USED_HASHES_TO_UPDATE_REDIS_KEY, hashes);
+
+    this.eventEmiter.emit(LINK_CREATED_EVENT_NAME);
+
     let link: string;
 
     if (process.env.NODE_ENV === 'DEV') {
@@ -66,11 +76,6 @@ export class GroupService {
     } else {
       link = 'https://cli.la/';
     }
-
-    const hashIndexKey = crypto
-      .createHash('md5')
-      .update(`${id}${Date.now()}${group.original_link}`)
-      .digest('hex');
 
     const factory = (hash: string) => {
       return {
@@ -81,16 +86,11 @@ export class GroupService {
       };
     };
 
-    // const rate = Math.ceil(data.count / 10);
-
-    // for await (let i of Array.from(Array(rate).keys())) {
-    const hashesDb = await this.redisProvider.popMany(
-      FREE_SIX_DIGITS_HASHES_REDIS_KEY,
-      data.count,
-    );
     const links = hashes.map(factory);
-    await this.linksRepository.createMany(links);
-    return hashesDb;
+
+    const createdLinks = await this.linksRepository.createMany(links);
+    return createdLinks.map((item) => item.short_link);
+
     // }
   }
 }

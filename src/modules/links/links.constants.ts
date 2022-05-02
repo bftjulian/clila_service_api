@@ -4,6 +4,11 @@ export const USED_HASHES_TO_UPDATE_REDIS_KEY = 'USED_HASHES_TO_UPDATE_KEY';
 
 export const HASHES_PROCESSOR = 'hashes-processor';
 
+export const IMPORT_HASHES_FROM_LINKS_PROCESSOR =
+  'import-hashes-from-links-processor';
+
+export const IMPORT_LINKS_PROCESS = 'import-links-process';
+
 export const FEED_DATABASE_HASHES_COLLECTION = 'feed-hashes-process';
 
 export const LINK_CREATED_EVENT_NAME = 'link.created';

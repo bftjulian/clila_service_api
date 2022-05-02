@@ -35,7 +35,11 @@ export class LinkRepository {
   }
 
   public async createMany(links: Partial<Link>[]): Promise<Link[]> {
-    return await this.linkModel.insertMany(links, { ordered: false });
+    const data = await this.linkModel.insertMany(links, {
+      ordered: false,
+    });
+
+    return data;
   }
 
   public async findAllByGroup(
@@ -85,8 +89,15 @@ export class LinkRepository {
     );
   }
 
-  public async findAllNotExpired(): Promise<Link[]> {
-    return this.linkModel.find({ expired_at: null });
+  public async findAllNotExpired(page: number, limit: number): Promise<Link[]> {
+    return this.linkModel
+      .find({ expired_at: null })
+      .skip((page - 1) * limit)
+      .limit(limit);
+  }
+
+  public async countAllNotExpired(): Promise<number> {
+    return await this.linkModel.countDocuments({ expired_at: null });
   }
 
   public async removeLinkById(id: string): Promise<void> {

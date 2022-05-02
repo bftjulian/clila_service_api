@@ -24,7 +24,6 @@ export class LoadHashesOnRedisTask {
     if (databaseHashes.length === 0) return;
 
     const hashes = databaseHashes.map((hash) => hash.hash);
-    const count = hashes.length;
 
     const threePartIndex = Math.ceil(hashes.length / 3);
 
@@ -38,6 +37,7 @@ export class LoadHashesOnRedisTask {
       secondPart,
     );
     await this.redisProvider.lpush(FREE_SIX_DIGITS_HASHES_REDIS_KEY, thirdPart);
+    await this.hashRepository.setManyUsed(hashes);
   }
 
   @Cron(CronExpression.EVERY_10_MINUTES)
@@ -47,7 +47,6 @@ export class LoadHashesOnRedisTask {
 
   @Timeout(1000)
   public async loadHashesOnStart() {
-    await this.redisProvider.delete(FREE_SIX_DIGITS_HASHES_REDIS_KEY);
     await this.loadSixDigitsHashes();
   }
 
