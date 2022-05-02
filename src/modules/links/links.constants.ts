@@ -16,3 +16,5 @@ export const IMPORT_LINKS_PROCESS = 'import-links-process';
 export const FEED_DATABASE_HASHES_COLLECTION = 'feed-hashes-process';
 
 export const LINK_CREATED_EVENT_NAME = 'link.created';
+
+export const RELOAD_LINKS_ON_REDIS_EVENT = 'reload.links.on.redis';

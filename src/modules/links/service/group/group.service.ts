@@ -10,6 +10,7 @@ import {
   FREE_SIX_DIGITS_HASHES_REDIS_KEY,
   LINKS_BATCH_PROCESSOR,
   LINK_CREATED_EVENT_NAME,
+  RELOAD_LINKS_ON_REDIS_EVENT,
   USED_HASHES_TO_UPDATE_REDIS_KEY,
 } from '../../links.constants';
 import { IGroupRepository } from '../../repositories/group-repository.interface';
@@ -30,7 +31,6 @@ export class GroupService {
   constructor(
     @Inject(GroupRepository)
     private readonly groupsRepository: IGroupRepository,
-    private readonly linksRepository: LinkRepository,
     private readonly redisProvider: RedisProvider,
     private readonly i18n: I18nService,
     private readonly eventEmiter: EventEmitter2,
@@ -73,7 +73,7 @@ export class GroupService {
 
     const hashes = await this.redisProvider.popMany(
       FREE_SIX_DIGITS_HASHES_REDIS_KEY,
-      data.count - 1,
+      data.count,
     );
 
     await this.redisProvider.lpush(USED_HASHES_TO_UPDATE_REDIS_KEY, hashes);
@@ -97,10 +97,6 @@ export class GroupService {
       };
     };
 
-    const queueInfo = await this.linksBatchQueue.getJobCounts();
-
-    console.log(queueInfo);
-
     const batchLinkInsertRate = +process.env.BATCH_LINKS_RATE;
 
     const linksToInsertDatabase = hashes.map(factory);
@@ -117,7 +113,7 @@ export class GroupService {
             0,
             batchLinkInsertRate <= linksToInsertDatabase.length
               ? batchLinkInsertRate
-              : linksToInsertDatabase.length,
+              : linksToInsertDatabase.length - 1,
           ),
         },
         opts: {
@@ -128,13 +124,8 @@ export class GroupService {
 
     await this.linksBatchQueue.addBulk(linksToQueue);
 
-    const links = hashes.map((hash) => link + hash);
-    return links;
-    // const links = hashes.map(factory);
+    this.eventEmiter.emit(RELOAD_LINKS_ON_REDIS_EVENT);
 
-    // const createdLinks = await this.linksRepository.createMany(links);
-    // return createdLinks.map((item) => item.short_link);
-
-    // }
+    return hashes.map((hash) => link + hash);
   }
 }

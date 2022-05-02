@@ -24,6 +24,7 @@ import { LinkSchema } from './schemas/link.schema';
 import { GroupService } from './service/group/group.service';
 import { LinksService } from './service/links/links.service';
 import { linksTasks } from './tasks';
+import { LoadHashesOnRedisService } from './service/load-hashes-on-redis/load-hashes-on-redis.service';
 
 @Module({
   imports: [
@@ -47,12 +48,14 @@ import { linksTasks } from './tasks';
     GroupService,
     LinksService,
     GroupRepository,
+    LoadHashesOnRedisService,
     LinkRepository,
     UserRepository,
     HashRepository,
     ...linksTasks,
     ...linksEventListeners,
     ...linksProcessors,
+    LoadHashesOnRedisService,
   ],
 })
 export class LinksModule {}
