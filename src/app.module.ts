@@ -29,10 +29,14 @@ import { SharedModule } from './shared/shared.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { FeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/feed-user-data-api-token.middleware';
 import { BullModule } from '@nestjs/bull';
-import { appEventListeners } from './events/listeners';
+import { appsProcessors } from './proccessors';
+import { LINK_CLICKED_PROCCESSOR_NAME } from './app.constants';
 
 @Module({
   imports: [
+    BullModule.registerQueue({
+      name: LINK_CLICKED_PROCCESSOR_NAME,
+    }),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -92,7 +96,7 @@ import { appEventListeners } from './events/listeners';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
-    ...appEventListeners,
+    ...appsProcessors,
   ],
 })
 export class AppModule implements NestModule {

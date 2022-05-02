@@ -1,11 +1,15 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bull';
+import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { LINK_CLICKED_EVENT_NAME } from './app.constants';
-import { LinkClickedEvent } from './events/link-clicked.event';
+import { Queue } from 'bull';
+import {
+  FEED_DATABASE_LINK_COLLECTION,
+  LINK_CLICKED_PROCCESSOR_NAME,
+} from './app.constants';
 import { Link } from './modules/links/models/link.model';
 import { LinkRepository } from './modules/links/repositories/implementations/link.repository';
 import { ILinkRepository } from './modules/links/repositories/link-repository.interface';
-import { Result } from './shared/models/result';
+import { ILinkClicks } from './proccessors/jobs/i-link-clicks.job';
 import RedisProvider from './shared/providers/RedisProvider/implementations/RedisProvider';
 
 @Injectable()
@@ -15,15 +19,16 @@ export class AppService {
     private readonly linksRepository: ILinkRepository,
     private readonly redisProvider: RedisProvider,
     private readonly eventEmitter: EventEmitter2,
+    @InjectQueue(LINK_CLICKED_PROCCESSOR_NAME)
+    private readonly linksQueue: Queue,
   ) {}
   public async redirectOriginalLink(hash: string, res, ip: string) {
     const cachedLink = await this.redisProvider.recover<Link>(`links:${hash}`);
-
     if (!!cachedLink) {
-      const event = new LinkClickedEvent();
+      const event = new ILinkClicks();
       event.ip = ip;
       event.link = cachedLink;
-      this.eventEmitter.emit(LINK_CLICKED_EVENT_NAME, event);
+      await this.linksQueue.add(FEED_DATABASE_LINK_COLLECTION, event);
       return res.redirect(`${cachedLink.original_link}`);
     }
 
@@ -39,11 +44,11 @@ export class AppService {
 
     await this.redisProvider.save(`links:${hash}`, link);
 
-    const event = new LinkClickedEvent();
+    const event = new ILinkClicks();
     event.ip = ip;
     event.link = link;
 
-    this.eventEmitter.emit(LINK_CLICKED_EVENT_NAME, event);
+    await this.linksQueue.add(FEED_DATABASE_LINK_COLLECTION, event);
 
     return res.redirect(`${link.original_link}`);
   }
