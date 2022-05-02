@@ -42,4 +42,55 @@ export class GroupService {
       );
     }
   }
+
+  public async batchLinksCreate(
+    user: IUserTokenDto,
+    id: string,
+    data: CreateBatchLinksDto,
+    lang: string,
+  ) {
+    const group = await this.groupsRepository.findById(id);
+    if (!group) {
+      throw new BadRequestException();
+    }
+
+    const hashes = await this.redisProvider.popMany(
+      FREE_SIX_DIGITS_HASHES_REDIS_KEY,
+      data.count,
+    );
+
+    let link: string;
+
+    if (process.env.NODE_ENV === 'DEV') {
+      link = 'http://localhost:3000/';
+    } else {
+      link = 'https://cli.la/';
+    }
+
+    const hashIndexKey = crypto
+      .createHash('md5')
+      .update(`${id}${Date.now()}${group.original_link}`)
+      .digest('hex');
+
+    const factory = (hash: string) => {
+      return {
+        hash_link: hash,
+        original_link: group.original_link,
+        short_link: link + hash,
+        group: group,
+      };
+    };
+
+    // const rate = Math.ceil(data.count / 10);
+
+    // for await (let i of Array.from(Array(rate).keys())) {
+    const hashesDb = await this.redisProvider.popMany(
+      FREE_SIX_DIGITS_HASHES_REDIS_KEY,
+      data.count,
+    );
+    const links = hashes.map(factory);
+    await this.linksRepository.createMany(links);
+    return hashesDb;
+    // }
+  }
 }
