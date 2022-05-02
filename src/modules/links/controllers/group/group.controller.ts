@@ -1,14 +1,8 @@
-import { Body, Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { SkipThrottle } from '@nestjs/throttler';
 import { I18nLang } from 'nestjs-i18n';
 import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
 import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
-<<<<<<< HEAD
-// import { CreateGroupDto } from '../../dtos/create-group.dto';
-=======
-import { CreateBatchLinksDto } from '../../dtos/create-batch-links-group.dto';
-import { CreateGroupDto } from '../../dtos/create-group.dto';
->>>>>>> 61e16c72c51f38cb3eb6598e6bb80fbf85472157
 import { GroupService } from '../../service/group/group.service';
 
 @Controller('api/groups')
