@@ -22,4 +22,17 @@ export class GroupController {
     const user: IUserTokenDto = request.user;
     return await this.groupService.createGroup(user, data, lang);
   }
+
+  @SkipThrottle()
+  @UseGuards(JwtAuthGuard)
+  @Post('/:id/links/batch')
+  public async batchLinksCreate(
+    @Param('id') id: string,
+    @Body() data: CreateBatchLinksDto,
+    @Req() request,
+    @I18nLang() lang: string,
+  ) {
+    const user: IUserTokenDto = request.user;
+    return await this.groupService.batchLinksCreate(user, id, data, lang);
+  }
 }
