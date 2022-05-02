@@ -2,11 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { LINK_CLICKED_EVENT_NAME } from 'src/app.constants';
 import { LinkRepository } from 'src/modules/links/repositories/implementations/link.repository';
-import RedisProvider from 'src/shared/providers/RedisProvider/implementations/RedisProvider';
 import { LinkClickedEvent } from '../link-clicked.event';
 
 @Injectable()
-export class LinkCreatedListener {
+export class LinkClickedListener {
   constructor(private readonly linksRepository: LinkRepository) {}
 
   @OnEvent(LINK_CLICKED_EVENT_NAME, { async: true })

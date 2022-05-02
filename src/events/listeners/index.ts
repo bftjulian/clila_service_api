@@ -1,3 +1,3 @@
-import { LinkClickedEvent } from '../link-clicked.event';
+import { LinkClickedListener } from './link-clicked.listener';
 
-export const appEventListeners = [LinkClickedEvent];
+export const appEventListeners = [LinkClickedListener];
