@@ -88,7 +88,9 @@ export class GroupService {
 
     const links = hashes.map(factory);
 
-    return this.linksRepository.createMany(links);
+    const createdLinks = await this.linksRepository.createMany(links);
+    return createdLinks.map((item) => item.short_link);
+
     // }
   }
 }
