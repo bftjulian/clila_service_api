@@ -10,7 +10,6 @@ import {
   Query,
   Req,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
@@ -18,13 +17,10 @@ import { I18nLang } from 'nestjs-i18n';
 import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
 import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
 import { CreateLinkDto } from '../../dtos/create-link.dto';
-import { PaginationParamsDto } from '../../dtos/pagination-params.dto';
 import { UpdateLinkDto } from '../../dtos/update-link.dto';
 import { Link } from '../../models/link.model';
 import { LinksService } from '../../service/links/links.service';
 import { QueryDto } from '../../shared/dtos/query.dto';
-import { LinksInterceptor } from '../../shared/interceptors/links.interceptor';
-
 @ApiTags('Links')
 @Controller('api/links')
 export class LinksController {
@@ -34,68 +30,68 @@ export class LinksController {
    * Required api token from authorization obtained from panel
    * Route used only in the panel service
    */
-  @SkipThrottle()
-  @UseInterceptors(LinksInterceptor)
-  @Get('token-api/list')
-  @ApiResponse({
-    description: 'List all panel links',
-    type: Link,
-    status: HttpStatus.OK,
-  })
-  public async listAllLinksApiToken(
-    @Req() request,
-    @I18nLang() lang: string,
-    @Query() query: QueryDto,
-  ) {
-    const {
-      headers: { authorization },
-    } = request;
-    const apiToken = authorization.split(' ')[1];
-    return await this.linksService.listAllLinksApiToken(apiToken, lang, query);
-  }
+  // @SkipThrottle()
+  // @UseInterceptors(LinksInterceptor)
+  // @Get('token-api/list')
+  // @ApiResponse({
+  //   description: 'List all panel links',
+  //   type: Link,
+  //   status: HttpStatus.OK,
+  // })
+  // public async listAllLinksApiToken(
+  //   @Req() request,
+  //   @I18nLang() lang: string,
+  //   @Query() query: QueryDto,
+  // ) {
+  //   const {
+  //     headers: { authorization },
+  //   } = request;
+  //   const apiToken = authorization.split(' ')[1];
+  //   return await this.linksService.listAllLinksApiToken(apiToken, lang, query);
+  // }
 
   /**
    * Required api token from authorization obtained from panel
    * Route used only in the panel service
    */
-  @SkipThrottle()
-  @UseInterceptors(LinksInterceptor)
-  @Post('token-api/shorten')
-  @ApiResponse({
-    description: 'Create a link in the panel',
-    type: Link,
-    status: HttpStatus.OK,
-  })
-  public async createShortLinkApiToken(
-    @Req() request,
-    @I18nLang() lang: string,
-    @Body() data: CreateLinkDto,
-  ) {
-    const {
-      headers: { authorization },
-    } = request;
-    const apiToken = authorization.split(' ')[1];
-    return await this.linksService.createShortLinkApiToken(
-      data,
-      apiToken,
-      lang,
-    );
-  }
-  @SkipThrottle()
-  @UseInterceptors(LinksInterceptor)
-  @Patch('token-api/:id/update-link')
-  @ApiResponse({
-    description: 'Update a link in the panel',
-    type: Link,
-    status: HttpStatus.OK,
-  })
-  public async updateLinkApiToken(
-    @I18nLang() lang: string,
-    @Body() data: UpdateLinkDto,
-    @Param('id') id: string,
-  ) {
-    return await this.linksService.updateLinkApiToken(data, lang, id);
-  }
+  // @SkipThrottle()
+  // @UseInterceptors(LinksInterceptor)
+  // @Post('token-api/shorten')
+  // @ApiResponse({
+  //   description: 'Create a link in the panel',
+  //   type: Link,
+  //   status: HttpStatus.OK,
+  // })
+  // public async createShortLinkApiToken(
+  //   @Req() request,
+  //   @I18nLang() lang: string,
+  //   @Body() data: CreateLinkDto,
+  // ) {
+  //   const {
+  //     headers: { authorization },
+  //   } = request;
+  //   const apiToken = authorization.split(' ')[1];
+  //   return await this.linksService.createShortLinkApiToken(
+  //     data,
+  //     apiToken,
+  //     lang,
+  //   );
+  // }
+  // @SkipThrottle()
+  // @UseInterceptors(LinksInterceptor)
+  // @Patch('token-api/:id/update-link')
+  // @ApiResponse({
+  //   description: 'Update a link in the panel',
+  //   type: Link,
+  //   status: HttpStatus.OK,
+  // })
+  // public async updateLinkApiToken(
+  //   @I18nLang() lang: string,
+  //   @Body() data: UpdateLinkDto,
+  //   @Param('id') id: string,
+  // ) {
+  //   return await this.linksService.updateLinkApiToken(data, lang, id);
+  // }
 
   @SkipThrottle()
   @UseGuards(JwtAuthGuard)
