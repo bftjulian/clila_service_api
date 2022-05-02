@@ -6,7 +6,9 @@ import RedisProvider from 'src/shared/providers/RedisProvider/implementations/Re
 import { CreateBatchLinksDto } from '../../dtos/create-batch-links-group.dto';
 import { CreateGroupDto } from '../../dtos/create-group.dto';
 import {
+  CREATE_LINKS_BATCH,
   FREE_SIX_DIGITS_HASHES_REDIS_KEY,
+  LINKS_BATCH_PROCESSOR,
   LINK_CREATED_EVENT_NAME,
   USED_HASHES_TO_UPDATE_REDIS_KEY,
 } from '../../links.constants';
@@ -15,7 +17,14 @@ import { GroupRepository } from '../../repositories/implementations/group.reposi
 import { LinkRepository } from '../../repositories/implementations/link.repository';
 import crypto from 'crypto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { InjectQueue } from '@nestjs/bull';
+import { JobOptions, Queue } from 'bull';
 
+type JobConf = {
+  name?: string | undefined;
+  data: any;
+  opts?: Omit<JobOptions, 'repeat'> | undefined;
+};
 @Injectable()
 export class GroupService {
   constructor(
@@ -25,6 +34,8 @@ export class GroupService {
     private readonly redisProvider: RedisProvider,
     private readonly i18n: I18nService,
     private readonly eventEmiter: EventEmitter2,
+    @InjectQueue(LINKS_BATCH_PROCESSOR)
+    private readonly linksBatchQueue: Queue,
   ) {}
   public async createGroup(
     user: IUserTokenDto,
@@ -62,7 +73,7 @@ export class GroupService {
 
     const hashes = await this.redisProvider.popMany(
       FREE_SIX_DIGITS_HASHES_REDIS_KEY,
-      data.count,
+      data.count - 1,
     );
 
     await this.redisProvider.lpush(USED_HASHES_TO_UPDATE_REDIS_KEY, hashes);
@@ -86,10 +97,43 @@ export class GroupService {
       };
     };
 
-    const links = hashes.map(factory);
+    const queueInfo = await this.linksBatchQueue.getJobCounts();
 
-    const createdLinks = await this.linksRepository.createMany(links);
-    return createdLinks.map((item) => item.short_link);
+    console.log(queueInfo);
+
+    const batchLinkInsertRate = +process.env.BATCH_LINKS_RATE;
+
+    const linksToInsertDatabase = hashes.map(factory);
+
+    const insertRate = Math.ceil(
+      linksToInsertDatabase.length / batchLinkInsertRate,
+    );
+
+    const linksToQueue = Array.from(Array(insertRate).keys()).map(() => {
+      return {
+        name: CREATE_LINKS_BATCH,
+        data: {
+          links: linksToInsertDatabase.splice(
+            0,
+            batchLinkInsertRate <= linksToInsertDatabase.length
+              ? batchLinkInsertRate
+              : linksToInsertDatabase.length,
+          ),
+        },
+        opts: {
+          delay: 10 * 1000,
+        },
+      } as JobConf;
+    });
+
+    await this.linksBatchQueue.addBulk(linksToQueue);
+
+    const links = hashes.map((hash) => link + hash);
+    return links;
+    // const links = hashes.map(factory);
+
+    // const createdLinks = await this.linksRepository.createMany(links);
+    // return createdLinks.map((item) => item.short_link);
 
     // }
   }

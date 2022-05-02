@@ -11,6 +11,7 @@ import { linksEventListeners } from './events/listeners';
 import {
   HASHES_PROCESSOR,
   IMPORT_HASHES_FROM_LINKS_PROCESSOR,
+  LINKS_BATCH_PROCESSOR,
 } from './links.constants';
 import { linksProcessors } from './processors';
 import { GroupRepository } from './repositories/implementations/group.repository';
@@ -29,6 +30,7 @@ import { linksTasks } from './tasks';
     BullModule.registerQueue(
       { name: HASHES_PROCESSOR },
       { name: IMPORT_HASHES_FROM_LINKS_PROCESSOR },
+      { name: LINKS_BATCH_PROCESSOR },
     ),
     MongooseModule.forFeature([
       { name: 'Link', schema: LinkSchema },
