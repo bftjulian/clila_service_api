@@ -34,6 +34,16 @@ export class LinkRepository {
     return await this.linkModel.findOne({ hash_link });
   }
 
+  public async createMany(links: Partial<Link>[]): Promise<Link[]> {
+    return await this.linkModel.insertMany(links, { ordered: false });
+  }
+
+  public async findAllByGroup(
+    groupId: string,
+  ): Promise<Pick<Link, '_id' | 'short_link'>[]> {
+    return this.linkModel.find({ group: groupId }).select('_id short_link');
+  }
+
   public async findActiveByHash(hash_link: string): Promise<Link | undefined> {
     return await this.linkModel.findOne({
       hash_link,

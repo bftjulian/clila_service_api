@@ -11,6 +11,8 @@ export interface ILinkRepository {
   findById(id: string): Promise<Link | undefined>;
   findAllByUser(user: User): Promise<any>;
   findAllByUserDownload(user: User): Promise<any>;
+  findAllByGroup(groupId: string): Promise<Pick<Link, '_id' | 'short_link'>[]>;
+  createMany(links: Partial<Link>[]): Promise<Link[]>;
   findAllByUserWithQuery(user: User, query: QueryDto): Promise<any>;
   createBatchLinks(
     linkData: Omit<Link, 'hash_link' | 'short_link'>,

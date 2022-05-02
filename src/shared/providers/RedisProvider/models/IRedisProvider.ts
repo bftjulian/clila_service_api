@@ -7,6 +7,7 @@ export default interface IRedisProvider {
   lpop(key: string): Promise<string | null>;
   delete(key: string): Promise<void>;
   popAll(key: string): Promise<string[]>;
+  popMany(key: string, count: number): Promise<string[]>;
   invalidate(key: string): Promise<void>;
   invalidatePrefix(prefix: string): Promise<void>;
 }

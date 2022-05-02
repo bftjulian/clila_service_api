@@ -29,6 +29,12 @@ export default class RedisProvider implements IRedisProvider {
     return data;
   }
 
+  public async popMany(key: string, count: number): Promise<string[]> {
+    const data = await this.client.lrange(key, 0, count);
+    await this.client.ltrim(key, count, -1);
+    return data;
+  }
+
   public async lrange(
     key: string,
     start: number,

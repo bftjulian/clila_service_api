@@ -9,5 +9,8 @@ export class CreateGroupDto {
   links?: Link[];
 
   @ApiProperty()
+  original_link: string;
+
+  @ApiProperty()
   tags: string[];
 }

@@ -12,6 +12,9 @@ export class Group {
   tags: string[];
 
   @ApiProperty()
+  original_link: string;
+
+  @ApiProperty()
   created_at: Date;
 
   @ApiProperty()
