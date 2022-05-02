@@ -24,7 +24,6 @@ export class LoadHashesOnRedisTask {
     if (databaseHashes.length === 0) return;
 
     const hashes = databaseHashes.map((hash) => hash.hash);
-    const count = hashes.length;
 
     const threePartIndex = Math.ceil(hashes.length / 3);
 

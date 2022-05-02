@@ -17,7 +17,7 @@ export class LinkCreatedListener {
 
   @OnEvent(LINK_CREATED_EVENT_NAME, { async: true })
   public async handleLinkCreatedEvent(event: LinkCreatedEvent): Promise<void> {
-    if (event.surname) {
+    if (event?.surname) {
       try {
         await this.hashRepository.create({
           hash: event.surname,
@@ -33,6 +33,8 @@ export class LinkCreatedListener {
     const usedHashes = await this.redisProvider.popAll(
       USED_HASHES_TO_UPDATE_REDIS_KEY,
     );
+
+    console.log(usedHashes);
 
     if (usedHashes.length === 0) return;
 
