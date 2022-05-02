@@ -8,7 +8,10 @@ import { UserSchema } from '../users/schemas/user.schema';
 import { GroupController } from './controllers/group/group.controller';
 import { LinksController } from './controllers/links/links.controller';
 import { linksEventListeners } from './events/listeners';
-import { HASHES_PROCESSOR } from './links.constants';
+import {
+  HASHES_PROCESSOR,
+  IMPORT_HASHES_FROM_LINKS_PROCESSOR,
+} from './links.constants';
 import { linksProcessors } from './processors';
 import { GroupRepository } from './repositories/implementations/group.repository';
 import { HashRepository } from './repositories/implementations/hash.repository';
@@ -23,9 +26,10 @@ import { linksTasks } from './tasks';
 
 @Module({
   imports: [
-    BullModule.registerQueue({
-      name: HASHES_PROCESSOR,
-    }),
+    BullModule.registerQueue(
+      { name: HASHES_PROCESSOR },
+      { name: IMPORT_HASHES_FROM_LINKS_PROCESSOR },
+    ),
     MongooseModule.forFeature([
       { name: 'Link', schema: LinkSchema },
       { name: 'LinkInfos', schema: LinkInfosSchema },

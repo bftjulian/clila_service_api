@@ -1,7 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression, Timeout } from '@nestjs/schedule';
-import RedisProvider from 'src/shared/providers/RedisProvider/implementations/RedisProvider';
-import { Link } from '../models/link.model';
+import { InjectQueue } from '@nestjs/bull';
+import { Injectable } from '@nestjs/common';
+import { Timeout } from '@nestjs/schedule';
+import { Queue } from 'bull';
+import {
+  IMPORT_HASHES_FROM_LINKS_PROCESSOR,
+  IMPORT_LINKS_PROCESS,
+} from '../links.constants';
 import { HashRepository } from '../repositories/implementations/hash.repository';
 import { LinkRepository } from '../repositories/implementations/link.repository';
 
@@ -10,27 +14,40 @@ export class ImportHashFromLinksTask {
   constructor(
     private readonly linksRepository: LinkRepository,
     private readonly hashRepository: HashRepository,
-    private readonly redisProvider: RedisProvider,
+    @InjectQueue(IMPORT_HASHES_FROM_LINKS_PROCESSOR)
+    private readonly importHashesQueue: Queue,
   ) {}
 
   private async importHashesFromLinks() {
     try {
-      const links = await this.linksRepository.findAllNotExpired();
+      // await this.importHashesQueue.clean(10000, 'completed');
 
-      const hashes = links.map((link) => link.hash_link);
+      const limit = +process.env.IMPORT_HASH_RATE;
+      const linksCount = await this.linksRepository.countAllNotExpired();
+      let pages = Math.ceil(linksCount / limit);
+      const queueInfo = await this.importHashesQueue.getJobCounts();
+      const inQueue =
+        queueInfo.completed + queueInfo.active + queueInfo.waiting;
 
-      const setUsedFactory = (hash: string) =>
-        this.hashRepository.setUsedOrCreateUsed(hash);
+      if (pages <= inQueue) return;
 
-      const loadLinksOnRedis = (link: Link) =>
-        this.redisProvider.save(`links:${link.hash_link}`, link);
+      pages = pages - inQueue;
 
-      const promises = [
-        ...hashes.map(setUsedFactory),
-        ...links.map(loadLinksOnRedis),
-      ];
+      let initialPage = inQueue + 1;
 
-      await Promise.allSettled(promises);
+      const jobs = Array.from(Array(pages)).map(() => {
+        const atualPage = initialPage;
+        initialPage++;
+        return {
+          name: IMPORT_LINKS_PROCESS,
+          data: {
+            page: atualPage,
+            limit,
+          },
+        };
+      });
+
+      await this.importHashesQueue.addBulk(jobs);
     } catch {}
   }
 

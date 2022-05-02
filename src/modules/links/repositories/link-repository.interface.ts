@@ -18,6 +18,8 @@ export interface ILinkRepository {
     linkData: Omit<Link, 'hash_link' | 'short_link'>,
     count: number,
   ): Promise<Pick<Link, '_id' | 'short_link'>[]>;
+  findAllNotExpired(page: number, limit: number): Promise<Link[]>;
+  countAllNotExpired(): Promise<number>;
   findAllLinkInfosByLink(link: Link): Promise<any>;
   findAllLinkInfosByDate(date: Date, user: User): Promise<any>;
   findAllLinkInfosByMonth(date: Date, user: User): Promise<any>;
