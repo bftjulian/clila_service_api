@@ -23,6 +23,7 @@ export class AppService {
       const event = new LinkClickedEvent();
       event.ip = ip;
       event.link = cachedLink;
+      this.eventEmitter.emit(LINK_CLICKED_EVENT_NAME, event);
       return res.redirect(`${cachedLink.original_link}`);
     }
 
