@@ -13,7 +13,6 @@ import { LinkRepository } from '../repositories/implementations/link.repository'
 export class ImportHashFromLinksTask {
   constructor(
     private readonly linksRepository: LinkRepository,
-    private readonly hashRepository: HashRepository,
     @InjectQueue(IMPORT_HASHES_FROM_LINKS_PROCESSOR)
     private readonly importHashesQueue: Queue,
   ) {}
