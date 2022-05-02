@@ -20,7 +20,9 @@ import { CreateLinkDto } from '../../dtos/create-link.dto';
 import { UpdateLinkDto } from '../../dtos/update-link.dto';
 import { Link } from '../../models/link.model';
 import { LinksService } from '../../service/links/links.service';
-import { QueryDto } from '../../shared/dtos/query.dto';
+import { QueryDto } from '../../../../shared/dtos/query.dto';
+// import { LinksInterceptor } from '../../../../shared/interceptors/links.interceptor';
+
 @ApiTags('Links')
 @Controller('api/links')
 export class LinksController {

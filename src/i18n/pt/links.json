@@ -1,9 +1,10 @@
 {
-    "ERROR_SURNAME": "Link já existe tente outro",
-    "LINK_UPDATED_SUCCESS": "Link atualizado com sucesso",
-    "LINK_NOT_FOUND": "Link não encontrado",
-    "LINK_INACTIVATED": "Link inativado com sucesso",
-    "LINK_ACTIVATED": "Link ativado com sucesso",
-    "LINK_REMOVED": "Link removido com sucesso",
-    "CHARACTERES_INVALID": "Caracteres permitidos '-,_,a-z,A-Z,0-9'"
+  "ERROR_SURNAME": "Link já existe tente outro",
+  "LINK_UPDATED_SUCCESS": "Link atualizado com sucesso",
+  "LINK_NOT_FOUND": "Link não encontrado",
+  "LINK_INACTIVATED": "Link inativado com sucesso",
+  "LINK_ACTIVATED": "Link ativado com sucesso",
+  "LINK_REMOVED": "Link removido com sucesso",
+  "CHARACTERES_INVALID": "Caracteres permitidos '-,_,a-z,A-Z,0-9'",
+  "LINK_HAS_BEEN_EXPIRED": "O Link está expirado, por favor gere um novo"
 }

@@ -13,4 +13,8 @@ export class GroupRepository {
     const group = new this.groupModel(groupData);
     return await group.save();
   }
+
+  public async findById(id: string): Promise<Group | undefined> {
+    return await this.groupModel.findById(id);
+  }
 }

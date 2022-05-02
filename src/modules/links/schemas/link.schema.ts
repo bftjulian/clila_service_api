@@ -56,6 +56,17 @@ const LinkSchema = new mongoose.Schema({
     trim: true,
     default: false,
   },
+  status: {
+    type: mongoose.Schema.Types.String,
+    enum: ['ACTIVE', 'INACTIVE', 'EXPIRED'],
+    default: 'ACTIVE',
+  },
+  expired_at: {
+    type: Date,
+    trim: true,
+    default: null,
+    required: false,
+  },
   create_at: {
     type: Date,
     trim: true,

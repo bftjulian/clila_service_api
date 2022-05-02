@@ -7,6 +7,10 @@ interface ICacheData {
 export default class FakeRedisProvider implements IRedisProvider {
   private cache: ICacheData = {};
 
+  public async popMany(key: string, count: number): Promise<string[]> {
+    return this.cache[key]?.splice(0, count);
+  }
+
   public async lrange(
     key: string,
     start: number,

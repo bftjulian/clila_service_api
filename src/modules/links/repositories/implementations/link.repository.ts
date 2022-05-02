@@ -4,7 +4,7 @@ import { Model, Schema } from 'mongoose';
 import { User } from 'src/modules/users/models/users.model';
 import { Link } from '../../models/link.model';
 import { LinkInfos } from '../../models/link-infos.model';
-import { QueryDto } from '../../shared/dtos/query.dto';
+import { QueryDto } from '../../../../shared/dtos/query.dto';
 import { queryHelper } from 'src/utils/queryHelper';
 import {
   addDays,
@@ -31,7 +31,25 @@ export class LinkRepository {
   }
 
   public async findByHash(hash_link: string): Promise<Link | undefined> {
-    return await this.linkModel.findOne({ hash_link, active: true });
+    return await this.linkModel.findOne({ hash_link });
+  }
+
+  public async createMany(links: Partial<Link>[]): Promise<Link[]> {
+    return await this.linkModel.insertMany(links, { ordered: false });
+  }
+
+  public async findAllByGroup(
+    groupId: string,
+  ): Promise<Pick<Link, '_id' | 'short_link'>[]> {
+    return this.linkModel.find({ group: groupId }).select('_id short_link');
+  }
+
+  public async findActiveByHash(hash_link: string): Promise<Link | undefined> {
+    return await this.linkModel.findOne({
+      hash_link,
+      active: true,
+      expired_at: null,
+    });
   }
 
   public async findById(id: string): Promise<Link | undefined> {
@@ -62,8 +80,13 @@ export class LinkRepository {
       { _id: id },
       {
         active: status,
+        status: status ? 'ACTIVE' : 'INACTIVE',
       },
     );
+  }
+
+  public async findAllNotExpired(): Promise<Link[]> {
+    return this.linkModel.find({ expired_at: null });
   }
 
   public async removeLinkById(id: string): Promise<void> {
@@ -196,5 +219,21 @@ export class LinkRepository {
       update_at: { $lte: date },
       active: status,
     });
+  }
+
+  public async inactiveAllBeforeDate(date: Date): Promise<string[]> {
+    const links = await this.linkModel
+      .find({
+        update_at: { $lte: date },
+      })
+      .select('hash_link');
+    await this.linkModel.updateMany(
+      {
+        update_at: { $lte: date },
+      },
+      { active: false, expired_at: new Date(), status: 'INACTIVE' },
+    );
+
+    return links.map((link) => link.hash_link);
   }
 }

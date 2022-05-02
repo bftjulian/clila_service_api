@@ -9,6 +9,36 @@ import { ObjectId } from 'mongodb';
 export class HashRepository implements IHashRepository {
   constructor(@InjectModel('Hash') private readonly hashModel: Model<Hash>) {}
 
+  public async setUsedOrCreateUsed(hash: string): Promise<void> {
+    await this.hashModel.updateOne(
+      { hash },
+      { in_use: true, hash_length: hash.length },
+      { upsert: true },
+    );
+  }
+
+  public async setUsed(hash: string): Promise<void> {
+    await this.hashModel.updateOne(
+      { hash },
+      { in_use: true, hash_length: hash.length },
+      { upsert: true },
+    );
+  }
+
+  public async setUnused(hash: string): Promise<void> {
+    await this.hashModel.updateOne(
+      { hash },
+      { in_use: false, hash_length: hash.length },
+      { upsert: true },
+    );
+  }
+
+  public async isUsed(hash: string): Promise<boolean> {
+    const usedHash = await this.hashModel.findOne({ hash, in_use: true });
+
+    return !!usedHash;
+  }
+
   public async getFreeHashesCount(): Promise<number> {
     return this.hashModel.countDocuments({ in_use: false });
   }

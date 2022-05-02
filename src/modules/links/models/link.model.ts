@@ -34,10 +34,16 @@ export class Link {
   user: User;
 
   @ApiProperty()
+  expired_at?: Date | null;
+
+  @ApiProperty()
   create_at?: Date;
 
   @ApiProperty()
   update_at?: Date;
+
+  @ApiProperty()
+  status: 'ACTIVE' | 'INACTIVE' | 'EXPIRED';
 
   @ApiProperty()
   active?: boolean;

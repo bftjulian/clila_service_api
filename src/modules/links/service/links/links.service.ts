@@ -27,7 +27,7 @@ import {
 import { HashRepository } from '../../repositories/implementations/hash.repository';
 import { LinkRepository } from '../../repositories/implementations/link.repository';
 import { ILinkRepository } from '../../repositories/link-repository.interface';
-import { QueryDto } from '../../shared/dtos/query.dto';
+import { QueryDto } from '../../../../shared/dtos/query.dto';
 
 @Injectable()
 export class LinksService {
@@ -48,7 +48,7 @@ export class LinksService {
     if (data.surname) {
       await this.formatSurname(data.surname, 6, lang);
       data.hash_link = data.surname;
-      const surname_link = await this.linksRepository.findByHash(
+      const surname_link = await this.linksRepository.findActiveByHash(
         data.hash_link,
       );
       if (surname_link) {
@@ -93,6 +93,10 @@ export class LinksService {
     data.user = userModel;
     try {
       const createLink = await this.linksRepository.create(data);
+      await this.redisProvider.save(
+        `links:${createLink.hash_link}`,
+        createLink,
+      );
 
       if (!data.surname) {
         await this.redisProvider.lpush(
@@ -141,12 +145,30 @@ export class LinksService {
   }
 
   public async updateLink(id: string, data: UpdateLinkDto, lang: string) {
+    const link = await this.linksRepository.findById(id);
+
+    if (!link) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('links.ERROR_LINK_NOT_FOUND', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+
+    await this.redisProvider.delete(`links:${link.hash_link}`);
+
     if (data.surname) {
       data.hash_link = data.surname;
-      const surname_link = await this.linksRepository.findByHash(
+      const isUsed = await this.hashRepository.isUsed(data.hash_link);
+      const surname_link = await this.linksRepository.findActiveByHash(
         data.hash_link,
       );
-      if (surname_link) {
+      if (surname_link || isUsed) {
         throw new BadRequestException(
           new Result(
             await this.i18n.translate('links.ERROR_SURNAME', {
@@ -166,6 +188,7 @@ export class LinksService {
     }
     try {
       await this.linksRepository.setNameSurname(id, data);
+      await this.hashRepository.setUsed(data.hash_link);
       return new Result(
         await this.i18n.translate('links.LINK_UPDATED_SUCCESS', {
           lang,
@@ -225,7 +248,6 @@ export class LinksService {
   //     );
   //   }
   // }
-
   public async downloadLinks(user: IUserTokenDto) {
     const userModel = await this.usersRepository.findById(user.id);
     if (!userModel) {
@@ -238,22 +260,35 @@ export class LinksService {
   public async createShortLandpage(data: CreateLinkDto) {
     data.original_link = await this.formatLink(data.original_link);
 
-    let hash = '';
-    while (true) {
-      hash = generateHash(6).toString();
-      data.hash_link = hash;
-      const hash_link = await this.linksRepository.findByHash(data.hash_link);
-      if (!hash_link) {
-        break;
-      }
+    let hash = await this.redisProvider.lpop(FREE_SIX_DIGITS_HASHES_REDIS_KEY);
+    if (!hash) {
+      const dbHash = await this.hashRepository.getOneFreeHash(6);
+      hash = dbHash.hash;
     }
+
+    data.hash_link = hash;
     if (process.env.NODE_ENV === 'DEV') {
       data.short_link = 'http://localhost:3000/' + hash;
     } else {
       data.short_link = 'https://cli.la/' + hash;
     }
+
     try {
       const createLink = await this.linksRepository.create(data);
+      await this.redisProvider.save(
+        `links:${createLink.hash_link}`,
+        createLink,
+      );
+
+      await this.redisProvider.lpush(
+        USED_HASHES_TO_UPDATE_REDIS_KEY,
+        createLink.hash_link,
+      );
+
+      const event = new LinkCreatedEvent();
+      event.surname = data.surname;
+
+      this.eventEmitter.emit(LINK_CREATED_EVENT_NAME, event);
       return new Result(
         '',
         true,
@@ -265,6 +300,7 @@ export class LinksService {
         null,
       );
     } catch (error) {
+      console.log(error);
       throw new BadRequestException(
         new Result('Error in transaction', false, {}, null),
       );
@@ -355,8 +391,12 @@ export class LinksService {
 
   public async inactivateLink(id: string, lang: string) {
     try {
-      const status = false;
-      await this.linksRepository.setStatusLink(id, status);
+      const link = await this.linksRepository.findById(id);
+
+      if (link) await this.redisProvider.delete(`links:${link.hash_link}`);
+
+      await this.linksRepository.setStatusLink(id, false);
+
       return new Result(
         await this.i18n.translate('links.LINK_INACTIVATED', {
           lang,
@@ -374,8 +414,32 @@ export class LinksService {
 
   public async activateLink(id: string, lang: string) {
     try {
-      const status = true;
-      await this.linksRepository.setStatusLink(id, status);
+      const link = await this.linksRepository.findById(id);
+
+      if (!link) {
+        throw new BadRequestException(
+          new Result(
+            await this.i18n.translate('LINK_NOT_FOUND', { lang }),
+            false,
+            {},
+            null,
+          ),
+        );
+      }
+
+      if (!!link.expired_at) {
+        throw new BadRequestException(
+          new Result(
+            await this.i18n.translate('LINK_HAS_BEEN_EXPIRED', { lang }),
+            false,
+            {},
+            null,
+          ),
+        );
+      }
+
+      await this.linksRepository.setStatusLink(id, true);
+      await this.redisProvider.save(`links:${link.hash_link}`, link);
       return new Result(
         await this.i18n.translate('links.LINK_ACTIVATED', {
           lang,
@@ -393,7 +457,15 @@ export class LinksService {
 
   public async removeLink(id: string, lang: string) {
     try {
+      const link = await this.linksRepository.findById(id);
+
       await this.linksRepository.removeLinkById(id);
+
+      if (link) {
+        await this.hashRepository.setUnused(link.hash_link);
+        await this.redisProvider.delete(`links:${link.hash_link}`);
+      }
+
       return new Result(
         await this.i18n.translate('links.LINK_REMOVED', {
           lang,

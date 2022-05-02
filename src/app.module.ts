@@ -28,6 +28,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { SharedModule } from './shared/shared.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { FeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/feed-user-data-api-token.middleware';
+import { BullModule } from '@nestjs/bull';
+import { appEventListeners } from './events/listeners';
 
 @Module({
   imports: [
@@ -63,6 +65,16 @@ import { FeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/feed-
       { name: 'LinkInfos', schema: LinkInfosSchema },
       { name: 'RefreshToken', schema: RefreshTokenSchema },
     ]),
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST,
+        port: +process.env.REDIS_PORT,
+        password:
+          process.env.REDIS_PASSWORD && process.env.REDIS_PASSWORD.length > 0
+            ? process.env.REDIS_PASSWORD
+            : undefined,
+      },
+    }),
     UsersModule,
     LinksModule,
     AuthModule,
@@ -80,6 +92,7 @@ import { FeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/feed-
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    ...appEventListeners,
   ],
 })
 export class AppModule implements NestModule {

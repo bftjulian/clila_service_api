@@ -1,9 +1,10 @@
 {
-    "ERROR_SURNAME": "Link already exists try another",
-    "LINK_UPDATED_SUCCESS": "Link successfully updated",
-    "LINK_NOT_FOUND": "Link not found",
-    "LINK_INACTIVATED": "Link deactivated successfully",
-    "LINK_ACTIVATED": "Link activated successfully",
-    "LINK_REMOVED": "Link removed successfully",
-    "CHARACTERES_INVALID": "Allowed characters  '-,_,a-z,A-Z,0-9'"
+  "ERROR_SURNAME": "Link already exists try another",
+  "LINK_UPDATED_SUCCESS": "Link successfully updated",
+  "LINK_NOT_FOUND": "Link not found",
+  "LINK_INACTIVATED": "Link deactivated successfully",
+  "LINK_ACTIVATED": "Link activated successfully",
+  "LINK_REMOVED": "Link removed successfully",
+  "CHARACTERES_INVALID": "Allowed characters  '-,_,a-z,A-Z,0-9'",
+  "LINK_HAS_BEEN_EXPIRED": "The link has been expired, please create another"
 }
