@@ -36,6 +36,9 @@ import { LINK_CLICKED_PROCCESSOR_NAME } from './app.constants';
   imports: [
     BullModule.registerQueue({
       name: LINK_CLICKED_PROCCESSOR_NAME,
+      defaultJobOptions: {
+        removeOnComplete: true,
+      },
     }),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({

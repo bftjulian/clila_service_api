@@ -1,5 +1,5 @@
-import { InjectQueue, Process, Processor } from '@nestjs/bull';
-import { Job, Queue } from 'bull';
+import { Process, Processor } from '@nestjs/bull';
+import { Job } from 'bull';
 import {
   FEED_DATABASE_LINK_COLLECTION,
   LINK_CLICKED_PROCCESSOR_NAME,

@@ -30,8 +30,15 @@ import { LoadHashesOnRedisService } from './service/load-hashes-on-redis/load-ha
   imports: [
     BullModule.registerQueue(
       { name: HASHES_PROCESSOR },
-      { name: IMPORT_HASHES_FROM_LINKS_PROCESSOR },
-      { name: LINKS_BATCH_PROCESSOR },
+      {
+        name: IMPORT_HASHES_FROM_LINKS_PROCESSOR,
+      },
+      {
+        name: LINKS_BATCH_PROCESSOR,
+        defaultJobOptions: {
+          removeOnComplete: true,
+        },
+      },
     ),
     MongooseModule.forFeature([
       { name: 'Link', schema: LinkSchema },

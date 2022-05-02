@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression, Timeout } from '@nestjs/schedule';
-import RedisProvider from 'src/shared/providers/RedisProvider/implementations/RedisProvider';
-import { FREE_SIX_DIGITS_HASHES_REDIS_KEY } from '../links.constants';
-import { HashRepository } from '../repositories/implementations/hash.repository';
 import { LoadHashesOnRedisService } from '../service/load-hashes-on-redis/load-hashes-on-redis.service';
 
 @Injectable()
