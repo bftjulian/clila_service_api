@@ -120,7 +120,6 @@ export class LinksService {
         null,
       );
     } catch (error) {
-      console.log(error);
       throw new BadRequestException(
         new Result('Error in transaction', false, {}, null),
       );

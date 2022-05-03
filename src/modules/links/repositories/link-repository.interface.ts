@@ -2,6 +2,7 @@ import { User } from 'src/modules/users/models/users.model';
 import { LinkInfos } from '../models/link-infos.model';
 import { Link } from '../models/link.model';
 import { QueryDto } from '../../../shared/dtos/query.dto';
+import { Group } from '../models/groups.model';
 
 export interface ILinkRepository {
   findAll(): Promise<Link[] | undefined>;
@@ -11,7 +12,7 @@ export interface ILinkRepository {
   findById(id: string): Promise<Link | undefined>;
   findAllByUser(user: User): Promise<any>;
   findAllByUserDownload(user: User): Promise<any>;
-  findAllByGroup(groupId: string): Promise<Pick<Link, '_id' | 'short_link'>[]>;
+  findAllByGroup(group: Group, query: QueryDto): Promise<any>;
   createMany(links: Partial<Link>[]): Promise<Link[]>;
   findAllByUserWithQuery(user: User, query: QueryDto): Promise<any>;
   createBatchLinks(
@@ -24,7 +25,7 @@ export interface ILinkRepository {
   findAllLinkInfosByDate(date: Date, user: User): Promise<any>;
   findAllLinkInfosByMonth(date: Date, user: User): Promise<any>;
   findAllLinkInfosByWeek(date: Date, user: User): Promise<any>;
-  findAllNotExpired(): Promise<Link[]>;
+  // findAllNotExpired(): Promise<Link[]>;
   create(data: Omit<Link, 'status'>): Promise<Link>;
   setClickLink(id: string): Promise<void>;
   setNameSurname(id: string, data): Promise<void>;

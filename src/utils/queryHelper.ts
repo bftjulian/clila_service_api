@@ -25,7 +25,6 @@ export function queryHelper(
     allowedFilter = [],
   }: IOptions,
 ): IQueryParsed {
-  console.log(query);
   return {
     find: searchHelper({
       search: query.search,

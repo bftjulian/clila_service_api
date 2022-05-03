@@ -16,10 +16,11 @@ import {
 import { IGroupRepository } from '../../repositories/group-repository.interface';
 import { GroupRepository } from '../../repositories/implementations/group.repository';
 import { LinkRepository } from '../../repositories/implementations/link.repository';
-import crypto from 'crypto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectQueue } from '@nestjs/bull';
 import { JobOptions, Queue } from 'bull';
+import { ILinkRepository } from '../../repositories/link-repository.interface';
+import { QueryDto } from 'src/shared/dtos/query.dto';
 
 type JobConf = {
   name?: string | undefined;
@@ -31,6 +32,8 @@ export class GroupService {
   constructor(
     @Inject(GroupRepository)
     private readonly groupsRepository: IGroupRepository,
+    @Inject(LinkRepository)
+    private readonly linksRepository: ILinkRepository,
     private readonly redisProvider: RedisProvider,
     private readonly i18n: I18nService,
     private readonly eventEmiter: EventEmitter2,
@@ -67,6 +70,7 @@ export class GroupService {
     lang: string,
   ) {
     const group = await this.groupsRepository.findById(id);
+
     if (!group) {
       throw new BadRequestException();
     }
@@ -129,12 +133,19 @@ export class GroupService {
     return hashes.map((hash) => link + hash);
   }
 
-  public async listLinksGroups(user: IUserTokenDto, id: string, lang: string) {
-    const group = await this.groupsRepository.findById(id);
-    if (!group) {
-      throw new BadRequestException();
+  public async listLinksGroups(id: string, query: QueryDto) {
+    try {
+      const group = await this.groupsRepository.findById(id);
+      if (!group) {
+        throw new BadRequestException();
+      }
+      const links = await this.linksRepository.findAllByGroup(group, query);
+      return links;
+      return new Result('', true, { links, count: links.length }, null);
+    } catch (error) {
+      throw new BadRequestException(
+        new Result('Error in transaction', false, {}, null),
+      );
     }
-
-    console.log(group);
   }
 }
