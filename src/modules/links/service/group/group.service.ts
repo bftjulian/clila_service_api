@@ -140,8 +140,8 @@ export class GroupService {
         throw new BadRequestException();
       }
       const links = await this.linksRepository.findAllByGroup(group, query);
-      return links;
-      return new Result('', true, { links, count: links.length }, null);
+
+      return new Result('', true, links, null);
     } catch (error) {
       throw new BadRequestException(
         new Result('Error in transaction', false, {}, null),
