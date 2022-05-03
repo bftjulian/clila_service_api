@@ -96,7 +96,7 @@ export class GroupService {
 
     const hashes = await this.redisProvider.popMany(
       FREE_SIX_DIGITS_HASHES_REDIS_KEY,
-      data.count,
+      data.count - 1,
     );
 
     await this.redisProvider.lpush(USED_HASHES_TO_UPDATE_REDIS_KEY, hashes);
@@ -144,6 +144,10 @@ export class GroupService {
         },
       } as JobConf;
     });
+
+    console.log(linksToQueue.length);
+
+    return;
 
     await this.linksBatchQueue.addBulk(linksToQueue);
 
