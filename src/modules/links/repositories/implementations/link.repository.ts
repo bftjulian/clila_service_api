@@ -43,43 +43,29 @@ export class LinkRepository {
     return data;
   }
 
-  // public async findAllByGroup(
-  //   groupId: string,
-  // ): Promise<Pick<Link, '_id' | 'short_link'>[]> {
-  //   return this.linkModel.find({ group: groupId }).select('_id short_link');
-  // }
   public async findAllByGroup(group: Group, query: QueryDto): Promise<any> {
     const queryParsed = queryHelper(query, {
       allowedSearch: ['name', 'surname'],
       defaultSearch: { group },
       defaultOrderBy: { create_at: 'desc' },
-      // defaultSearchOrExpressions: [
-      //   { group: { $eq: null } },
-      //   { group_ref: true },
-      // ],
       allowedFilter: ['name', 'surname', 'create_at'],
     });
     const count = await this.linkModel.countDocuments(queryParsed.find);
-    console.log(count);
-    // // const div = count / limit;
-    // const totalPages = Math.ceil(count / query.limit);
-    // const currentPage = (Math.max(1, query.page) - 1) * query.limit;
-    // const links = await this.linkModel
-    //   .find(queryParsed.find)
-    //   .sort(queryParsed.sort)
-    //   .limit(query.limit)
-    //   .skip(currentPage)
-    //   .sort({ _id: 'asc' });
-    // const data = {
-    //   data: links,
-    //   total_pages: totalPages,
-    //   count,
-    // };
-    // return data;
-    // return this.linkModel
-    //   .find({ group })
-    //   .skip((page - 1) * limit)
-    //   .limit(limit);
+
+    const totalPages = Math.ceil(count / query.limit);
+    const currentPage = (Math.max(1, query.page) - 1) * query.limit;
+    const links = await this.linkModel
+      .find(queryParsed.find)
+      .sort(queryParsed.sort)
+      .limit(query.limit)
+      .skip(currentPage)
+      .sort({ _id: 'asc' });
+    const data = {
+      data: links,
+      total_pages: totalPages,
+      count,
+    };
+    return data;
   }
 
   public async findActiveByHash(hash_link: string): Promise<Link | undefined> {
