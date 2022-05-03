@@ -28,12 +28,12 @@ const LinkSchema = new mongoose.Schema({
   },
   short_link: {
     type: String,
-    required: true,
-    trim: true,
+    required: false,
+    trim: false,
   },
   hash_link: {
     type: String,
-    required: true,
+    required: false,
     trim: true,
   },
   numbers_clicks: {

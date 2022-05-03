@@ -33,6 +33,8 @@ export class FeedHashesDatabase {
 
     hashes = undefined;
 
+    job.progress(50);
+
     await new Promise((resolve) =>
       setTimeout(resolve, +process.env.HASH_INSERT_EVERY_SECONDS * 1000),
     );

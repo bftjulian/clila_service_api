@@ -27,6 +27,7 @@ export interface ILinkRepository {
   findAllLinkInfosByWeek(date: Date, user: User): Promise<any>;
   // findAllNotExpired(): Promise<Link[]>;
   create(data: Omit<Link, 'status'>): Promise<Link>;
+  createGroupRef(group: Group): Promise<Link>;
   setClickLink(id: string): Promise<void>;
   setNameSurname(id: string, data): Promise<void>;
   setStatusLink(id: string, status: boolean): Promise<void>;

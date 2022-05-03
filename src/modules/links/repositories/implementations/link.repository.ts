@@ -53,13 +53,13 @@ export class LinkRepository {
       allowedSearch: ['name', 'surname'],
       defaultSearch: { group },
       defaultOrderBy: { create_at: 'desc' },
-      defaultSearchOrExpressions: [
-        { group: { $eq: null } },
-        { group_ref: true },
-      ],
+      // defaultSearchOrExpressions: [
+      //   { group: { $eq: null } },
+      //   { group_ref: true },
+      // ],
       allowedFilter: ['name', 'surname', 'create_at'],
     });
-    const count = (await this.linkModel.find(queryParsed.find)).length;
+    const count = await this.linkModel.countDocuments(queryParsed.find);
     console.log(count);
     // // const div = count / limit;
     // const totalPages = Math.ceil(count / query.limit);
@@ -86,6 +86,7 @@ export class LinkRepository {
     return await this.linkModel.findOne({
       hash_link,
       active: true,
+      group_ref: false,
       expired_at: null,
     });
   }
@@ -125,7 +126,7 @@ export class LinkRepository {
 
   public async findAllNotExpired(page: number, limit: number): Promise<Link[]> {
     return this.linkModel
-      .find({ expired_at: null })
+      .find({ expired_at: null, group_ref: false })
       .skip((page - 1) * limit)
       .limit(limit);
   }
@@ -262,6 +263,7 @@ export class LinkRepository {
   ): Promise<Link[] | undefined> {
     return await this.linkModel.find({
       update_at: { $lte: date },
+      group_ref: false,
       active: status,
     });
   }
@@ -270,6 +272,7 @@ export class LinkRepository {
     const links = await this.linkModel
       .find({
         update_at: { $lte: date },
+        group_ref: false,
       })
       .select('hash_link');
     await this.linkModel.updateMany(
@@ -280,5 +283,18 @@ export class LinkRepository {
     );
 
     return links.map((link) => link.hash_link);
+  }
+
+  public async createGroupRef(group: Group): Promise<Link> {
+    const link = new this.linkModel({
+      name: group.name,
+      user: group.user,
+      active: true,
+      status: 'ACTIVE',
+      original_link: group.original_link,
+      group_ref: true,
+      group,
+    });
+    return await link.save();
   }
 }

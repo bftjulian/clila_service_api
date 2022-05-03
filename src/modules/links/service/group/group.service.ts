@@ -21,6 +21,8 @@ import { InjectQueue } from '@nestjs/bull';
 import { JobOptions, Queue } from 'bull';
 import { ILinkRepository } from '../../repositories/link-repository.interface';
 import { QueryDto } from 'src/shared/dtos/query.dto';
+import { IUserRepository } from 'src/modules/users/repositories/user-repository.interface';
+import { UserRepository } from 'src/modules/users/repositories/implementation/user.repository';
 
 type JobConf = {
   name?: string | undefined;
@@ -34,6 +36,8 @@ export class GroupService {
     private readonly groupsRepository: IGroupRepository,
     @Inject(LinkRepository)
     private readonly linksRepository: ILinkRepository,
+    @Inject(UserRepository)
+    private readonly userRepository: IUserRepository,
     private readonly redisProvider: RedisProvider,
     private readonly i18n: I18nService,
     private readonly eventEmiter: EventEmitter2,
@@ -45,8 +49,23 @@ export class GroupService {
     data: CreateGroupDto,
     lang: string,
   ) {
+    const userExist = await this.userRepository.findById(user.id);
+
+    if (!userExist) {
+      throw new BadRequestException(
+        new Result('User not found', false, {}, null),
+      );
+    }
     try {
-      const group = await this.groupsRepository.create(data);
+      const group = await this.groupsRepository.create({
+        ...data,
+        user: userExist,
+      });
+
+      await this.linksRepository.createGroupRef(group);
+
+      delete group.user;
+
       return new Result(
         await this.i18n.translate('groups.SUCCESS_CREATE', {
           lang,

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from 'src/modules/users/models/users.model';
 import { Link } from './link.model';
 
 export class Group {
@@ -7,6 +8,9 @@ export class Group {
 
   @ApiProperty()
   links: Link[];
+
+  @ApiProperty()
+  user?: User;
 
   @ApiProperty()
   tags: string[];
