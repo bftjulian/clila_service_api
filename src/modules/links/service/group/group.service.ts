@@ -156,12 +156,21 @@ export class GroupService {
     return hashes.map((hash) => link + hash);
   }
 
-  public async listLinksGroups(id: string, query: QueryDto) {
+  public async listLinksGroups(id: string, query: QueryDto, lang: string) {
+    const group = await this.groupsRepository.findById(id);
+    if (!group) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('groups.GROUP_NOT_FOUND', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
     try {
-      const group = await this.groupsRepository.findById(id);
-      if (!group) {
-        throw new BadRequestException();
-      }
       const links = await this.linksRepository.findAllByGroup(group, query);
 
       return new Result('', true, links, null);

@@ -1,3 +1,4 @@
 {
-    "SUCCESS_CREATE": "Create group successfully"
+    "SUCCESS_CREATE": "Create group successfully",
+    "GROUP_NOT_FOUND": "Grup not found"
 }
