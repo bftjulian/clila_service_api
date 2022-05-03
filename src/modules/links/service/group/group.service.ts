@@ -145,10 +145,6 @@ export class GroupService {
       } as JobConf;
     });
 
-    console.log(linksToQueue.length);
-
-    return;
-
     await this.linksBatchQueue.addBulk(linksToQueue);
 
     this.eventEmiter.emit(RELOAD_LINKS_ON_REDIS_EVENT);
