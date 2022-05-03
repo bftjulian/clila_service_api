@@ -6,8 +6,11 @@ import RedisProvider from 'src/shared/providers/RedisProvider/implementations/Re
 import { CreateBatchLinksDto } from '../../dtos/create-batch-links-group.dto';
 import { CreateGroupDto } from '../../dtos/create-group.dto';
 import {
+  CREATE_LINKS_BATCH,
   FREE_SIX_DIGITS_HASHES_REDIS_KEY,
+  LINKS_BATCH_PROCESSOR,
   LINK_CREATED_EVENT_NAME,
+  RELOAD_LINKS_ON_REDIS_EVENT,
   USED_HASHES_TO_UPDATE_REDIS_KEY,
 } from '../../links.constants';
 import { IGroupRepository } from '../../repositories/group-repository.interface';
@@ -15,16 +18,24 @@ import { GroupRepository } from '../../repositories/implementations/group.reposi
 import { LinkRepository } from '../../repositories/implementations/link.repository';
 import crypto from 'crypto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { InjectQueue } from '@nestjs/bull';
+import { JobOptions, Queue } from 'bull';
 
+type JobConf = {
+  name?: string | undefined;
+  data: any;
+  opts?: Omit<JobOptions, 'repeat'> | undefined;
+};
 @Injectable()
 export class GroupService {
   constructor(
     @Inject(GroupRepository)
     private readonly groupsRepository: IGroupRepository,
-    private readonly linksRepository: LinkRepository,
     private readonly redisProvider: RedisProvider,
     private readonly i18n: I18nService,
     private readonly eventEmiter: EventEmitter2,
+    @InjectQueue(LINKS_BATCH_PROCESSOR)
+    private readonly linksBatchQueue: Queue,
   ) {}
   public async createGroup(
     user: IUserTokenDto,
@@ -86,12 +97,36 @@ export class GroupService {
       };
     };
 
-    const links = hashes.map(factory);
+    const batchLinkInsertRate = +process.env.BATCH_LINKS_RATE;
 
-    const createdLinks = await this.linksRepository.createMany(links);
-    return createdLinks.map((item) => item.short_link);
+    const linksToInsertDatabase = hashes.map(factory);
 
-    // }
+    const insertRate = Math.ceil(
+      linksToInsertDatabase.length / batchLinkInsertRate,
+    );
+
+    const linksToQueue = Array.from(Array(insertRate).keys()).map(() => {
+      return {
+        name: CREATE_LINKS_BATCH,
+        data: {
+          links: linksToInsertDatabase.splice(
+            0,
+            batchLinkInsertRate <= linksToInsertDatabase.length
+              ? batchLinkInsertRate
+              : linksToInsertDatabase.length - 1,
+          ),
+        },
+        opts: {
+          delay: 10 * 1000,
+        },
+      } as JobConf;
+    });
+
+    await this.linksBatchQueue.addBulk(linksToQueue);
+
+    this.eventEmiter.emit(RELOAD_LINKS_ON_REDIS_EVENT);
+
+    return hashes.map((hash) => link + hash);
   }
 
   public async listLinksGroups(user: IUserTokenDto, id: string, lang: string) {

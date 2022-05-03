@@ -11,6 +11,7 @@ import { linksEventListeners } from './events/listeners';
 import {
   HASHES_PROCESSOR,
   IMPORT_HASHES_FROM_LINKS_PROCESSOR,
+  LINKS_BATCH_PROCESSOR,
 } from './links.constants';
 import { linksProcessors } from './processors';
 import { GroupRepository } from './repositories/implementations/group.repository';
@@ -23,12 +24,21 @@ import { LinkSchema } from './schemas/link.schema';
 import { GroupService } from './service/group/group.service';
 import { LinksService } from './service/links/links.service';
 import { linksTasks } from './tasks';
+import { LoadHashesOnRedisService } from './service/load-hashes-on-redis/load-hashes-on-redis.service';
 
 @Module({
   imports: [
     BullModule.registerQueue(
       { name: HASHES_PROCESSOR },
-      { name: IMPORT_HASHES_FROM_LINKS_PROCESSOR },
+      {
+        name: IMPORT_HASHES_FROM_LINKS_PROCESSOR,
+      },
+      {
+        name: LINKS_BATCH_PROCESSOR,
+        defaultJobOptions: {
+          removeOnComplete: true,
+        },
+      },
     ),
     MongooseModule.forFeature([
       { name: 'Link', schema: LinkSchema },
@@ -45,12 +55,14 @@ import { linksTasks } from './tasks';
     GroupService,
     LinksService,
     GroupRepository,
+    LoadHashesOnRedisService,
     LinkRepository,
     UserRepository,
     HashRepository,
     ...linksTasks,
     ...linksEventListeners,
     ...linksProcessors,
+    LoadHashesOnRedisService,
   ],
 })
 export class LinksModule {}
