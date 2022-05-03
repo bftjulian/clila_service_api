@@ -1,4 +1,12 @@
-import { Body, Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { SkipThrottle } from '@nestjs/throttler';
 import { I18nLang } from 'nestjs-i18n';
 import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
@@ -33,5 +41,17 @@ export class GroupController {
   ) {
     const user: IUserTokenDto = request.user;
     return await this.groupService.batchLinksCreate(user, id, data, lang);
+  }
+
+  @SkipThrottle()
+  @UseGuards(JwtAuthGuard)
+  @Get('/:id/links')
+  public async listLinksGroups(
+    @Param('id') id: string,
+    @Req() request,
+    @I18nLang() lang: string,
+  ) {
+    const user: IUserTokenDto = request.user;
+    return await this.groupService.listLinksGroups(user, id, lang);
   }
 }

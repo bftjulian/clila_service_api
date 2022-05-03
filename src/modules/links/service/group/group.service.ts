@@ -93,4 +93,13 @@ export class GroupService {
 
     // }
   }
+
+  public async listLinksGroups(user: IUserTokenDto, id: string, lang: string) {
+    const group = await this.groupsRepository.findById(id);
+    if (!group) {
+      throw new BadRequestException();
+    }
+
+    console.log(group);
+  }
 }
