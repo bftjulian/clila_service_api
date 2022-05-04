@@ -31,6 +31,7 @@ import { FeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/feed-
 import { BullModule } from '@nestjs/bull';
 import { appsProcessors } from './proccessors';
 import { LINK_CLICKED_PROCCESSOR_NAME } from './app.constants';
+import { GroupSchema } from './modules/links/schemas/groups.schema';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { LINK_CLICKED_PROCCESSOR_NAME } from './app.constants';
     MongooseModule.forFeature([
       { name: 'Link', schema: LinkSchema },
       { name: 'User', schema: UserSchema },
+      { name: 'Group', schema: GroupSchema },
       { name: 'LinkInfos', schema: LinkInfosSchema },
       { name: 'RefreshToken', schema: RefreshTokenSchema },
     ]),
@@ -95,6 +97,7 @@ import { LINK_CLICKED_PROCCESSOR_NAME } from './app.constants';
   providers: [
     AppService,
     LinkRepository,
+
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

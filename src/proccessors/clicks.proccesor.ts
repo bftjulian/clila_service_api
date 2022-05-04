@@ -13,7 +13,7 @@ export class FeedClicksInfosDatabase {
   constructor(
     private readonly linksRepository: LinkRepository,
     private readonly groupRepository: GroupRepository,
-    private readonly clicksInfoRepository: InfoClicksWebhookProvider,
+    private readonly webhookProvider: InfoClicksWebhookProvider,
   ) {}
 
   @Process({
@@ -22,15 +22,19 @@ export class FeedClicksInfosDatabase {
   })
   public async feedClicksInfosDatabase(job: Job) {
     try {
-      //send webhooks for disparopro, implementation
-      await this.clicksInfoRepository.create(job.data.link);
-
       await this.linksRepository.createLinkInfo({
         create_at: new Date(),
         ip: job.data.ip,
         link: job.data.link,
       });
-      await this.linksRepository.setClickLink(job.data.link._id);
+      const link = await this.linksRepository.setClickLink(job.data.link._id);
+
+      //send webhooks for disparopro, implementation
+      await this.webhookProvider.create(link);
+
+      console.log(job.data.link);
+
+      if (!job.data.link.group) return;
 
       // Increment click on group
       await this.groupRepository.incrementClick(job.data.link.group._id);
@@ -39,7 +43,7 @@ export class FeedClicksInfosDatabase {
       );
       await this.linksRepository.setClickLink(groupRef._id);
     } catch (error) {
-      console.error(error.message);
+      console.error(error);
     }
   }
 }

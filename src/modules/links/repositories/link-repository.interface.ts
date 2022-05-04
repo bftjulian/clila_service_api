@@ -15,6 +15,7 @@ export interface ILinkRepository {
   findAllByGroup(group: Group, query: QueryDto): Promise<any>;
   findAllGroupRefByUser(user: User, query?: QueryDto): Promise<Link[]>;
   findGroupRefByGroup(group: Group): Promise<Link | undefined>;
+  setClickLink(id: string): Promise<Link>;
   createMany(links: Partial<Link>[]): Promise<Link[]>;
   findAllByUserWithQuery(user: User, query: QueryDto): Promise<any>;
   createBatchLinks(
@@ -30,7 +31,7 @@ export interface ILinkRepository {
   // findAllNotExpired(): Promise<Link[]>;
   create(data: Omit<Link, 'status'>): Promise<Link>;
   createGroupRef(group: Group): Promise<Link>;
-  setClickLink(id: string): Promise<void>;
+  setClickLink(id: string): Promise<Link | undefined>;
   setNameSurname(id: string, data): Promise<void>;
   setStatusLink(id: string, status: boolean): Promise<void>;
   removeLinkById(id: string): Promise<void>;
