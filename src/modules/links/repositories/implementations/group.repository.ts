@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema } from 'mongoose';
 import { Group } from 'src/modules/links/models/groups.model';
+import { User } from 'src/modules/users/models/users.model';
+import { QueryDto } from 'src/shared/dtos/query.dto';
+import { queryHelper } from 'src/utils/queryHelper';
 import { CreateGroupDto } from '../../dtos/create-group.dto';
 @Injectable()
 export class GroupRepository {
@@ -16,5 +19,30 @@ export class GroupRepository {
 
   public async findById(id: string): Promise<Group | undefined> {
     return await this.groupModel.findById(id);
+  }
+
+  public async findAllByUser(user: User, query: QueryDto): Promise<any> {
+    const queryParsed = queryHelper(query, {
+      allowedSearch: ['name', 'original_link'],
+      defaultSearch: { user },
+      defaultOrderBy: { createAt: 'desc' },
+      allowedFilter: ['name', 'original_link', 'createAt'],
+    });
+    const count = await this.groupModel.countDocuments(queryParsed.find);
+
+    const totalPages = Math.ceil(count / query.limit);
+    const currentPage = (Math.max(1, query.page) - 1) * query.limit;
+    const links = await this.groupModel
+      .find(queryParsed.find)
+      .sort(queryParsed.sort)
+      .limit(query.limit)
+      .skip(currentPage)
+      .sort({ _id: 'asc' });
+    const data = {
+      data: links,
+      total_pages: totalPages,
+      count,
+    };
+    return data;
   }
 }
