@@ -19,6 +19,9 @@ export class Group {
   original_link: string;
 
   @ApiProperty()
+  total_clicks: number;
+
+  @ApiProperty()
   created_at: Date;
 
   @ApiProperty()

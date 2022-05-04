@@ -13,6 +13,8 @@ export interface ILinkRepository {
   findAllByUser(user: User): Promise<any>;
   findAllByUserDownload(user: User): Promise<any>;
   findAllByGroup(group: Group, query: QueryDto): Promise<any>;
+  findAllGroupRefByUser(user: User, query?: QueryDto): Promise<Link[]>;
+  findGroupRefByGroup(group: Group): Promise<Link | undefined>;
   createMany(links: Partial<Link>[]): Promise<Link[]>;
   findAllByUserWithQuery(user: User, query: QueryDto): Promise<any>;
   createBatchLinks(

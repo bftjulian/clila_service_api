@@ -64,7 +64,7 @@ export class GroupService {
 
       await this.linksRepository.createGroupRef(group);
 
-      delete group.user;
+      group.user = null;
 
       return new Result(
         await this.i18n.translate('groups.SUCCESS_CREATE', {
@@ -75,7 +75,6 @@ export class GroupService {
         null,
       );
     } catch (error) {
-      console.log(error);
       throw new BadRequestException(
         new Result('Error in transaction', false, {}, null),
       );

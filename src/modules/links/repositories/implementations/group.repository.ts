@@ -6,11 +6,19 @@ import { User } from 'src/modules/users/models/users.model';
 import { QueryDto } from 'src/shared/dtos/query.dto';
 import { queryHelper } from 'src/utils/queryHelper';
 import { CreateGroupDto } from '../../dtos/create-group.dto';
+import { IGroupRepository } from '../group-repository.interface';
 @Injectable()
 export class GroupRepository {
   constructor(
     @InjectModel('Group') private readonly groupModel: Model<Group>,
   ) {}
+
+  public async incrementClick(id: string): Promise<void> {
+    await this.groupModel.findByIdAndUpdate(
+      { _id: id },
+      { $inc: { total_clicks: 1 }, update_at: new Date() },
+    );
+  }
 
   public async create(groupData: CreateGroupDto): Promise<Group> {
     const group = new this.groupModel(groupData);
