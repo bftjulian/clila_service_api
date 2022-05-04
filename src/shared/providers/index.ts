@@ -1,4 +1,7 @@
-import InfoClicksWebhookProvider from './InfoClicksWebhookProvider/implementations/InfoClicksWebhookProvider';
+import { DisparoproInfoClicksWebhookProvider } from './InfoClicksWebhookProvider/implementations/disparopro-info-clicks-webhook.provider';
 import RedisProvider from './RedisProvider/implementations/RedisProvider';
 
-export const sharedProviders = [RedisProvider, InfoClicksWebhookProvider];
+export const sharedProviders = [
+  RedisProvider,
+  DisparoproInfoClicksWebhookProvider,
+];
