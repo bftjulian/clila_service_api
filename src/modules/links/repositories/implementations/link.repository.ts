@@ -271,6 +271,30 @@ export class LinkRepository {
     return links.map((link) => link.hash_link);
   }
 
+  public async findAllGroupRefByUser(
+    user: User,
+    query?: QueryDto,
+  ): Promise<Link[]> {
+    if (!query)
+      return await this.linkModel
+        .find({ user, group_ref: true })
+        .populate('group');
+
+    const queryParsed = queryHelper(query, {
+      allowedSearch: ['name', 'surname'],
+      defaultSearch: { user, group_ref: true },
+      defaultOrderBy: { create_at: 'desc' },
+      allowedFilter: ['name', 'surname', 'create_at'],
+    });
+
+    return await this.linkModel
+      .find(queryParsed.find)
+      .populate('group')
+      .sort(queryParsed.sort)
+      .limit(query.limit)
+      .skip(queryParsed.skip);
+  }
+
   public async createGroupRef(group: Group): Promise<Link> {
     const link = new this.linkModel({
       name: group.name,

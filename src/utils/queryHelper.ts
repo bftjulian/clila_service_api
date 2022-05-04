@@ -13,6 +13,7 @@ interface IOptions {
 interface IQueryParsed {
   find: object;
   sort: IOrderBy;
+  skip: number;
 }
 
 export function queryHelper(
@@ -40,5 +41,7 @@ export function queryHelper(
       !!query?.order && query.order.length > 0
         ? orderByHelper(query.order)
         : defaultOrderBy,
+
+    skip: (Math.max(1, query.page) - 1) * query.limit,
   };
 }
