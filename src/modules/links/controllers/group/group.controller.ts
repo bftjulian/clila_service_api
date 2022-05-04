@@ -66,7 +66,8 @@ export class GroupController {
   public async listLinksGroups(
     @Param('id') id: string,
     @Query() query: QueryDto,
+    @I18nLang() lang: string,
   ) {
-    return await this.groupService.listLinksGroups(id, query);
+    return await this.groupService.listLinksGroups(id, query, lang);
   }
 }
