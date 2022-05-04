@@ -29,6 +29,11 @@ const GroupSchema = new mongoose.Schema(
         trim: true,
       },
     ],
+    total_clicks: {
+      type: Number,
+      default: 0,
+      trim: true,
+    },
     created_at: {
       type: Date,
       trim: true,

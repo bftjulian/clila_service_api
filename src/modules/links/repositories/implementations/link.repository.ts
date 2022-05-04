@@ -88,6 +88,10 @@ export class LinkRepository {
     );
   }
 
+  public async findGroupRefByGroup(group: Group): Promise<Link | undefined> {
+    return await this.linkModel.findOne({ group_ref: true, group });
+  }
+
   public async setNameSurname(id: string, data): Promise<void> {
     await this.linkModel.findByIdAndUpdate(
       { _id: id },

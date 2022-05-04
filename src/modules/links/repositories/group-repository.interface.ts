@@ -5,4 +5,5 @@ export interface IGroupRepository {
   findAll(): Promise<Group[] | undefined>;
   findById(id: string): Promise<Group | undefined>;
   create(data: Partial<Group>): Promise<Group>;
+  incrementClick(id: string): Promise<void>;
 }
