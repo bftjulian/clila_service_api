@@ -175,4 +175,11 @@ export class GroupService {
       );
     }
   }
+
+  public async listGroups(query: QueryDto, lang: string, user_id) {
+    const user = await this.userRepository.findById(user_id);
+    const groups = await this.groupsRepository.findAllByUser(user, query);
+
+    return new Result('', true, groups, null);
+  }
 }

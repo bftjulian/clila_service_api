@@ -70,4 +70,21 @@ export class GroupController {
   ) {
     return await this.groupService.listLinksGroups(id, query, lang);
   }
+
+  @SkipThrottle()
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  @ApiResponse({
+    description: 'List all groups',
+    type: Group,
+    status: HttpStatus.OK,
+  })
+  public async listGroups(
+    @Req() request,
+    @Query() query: QueryDto,
+    @I18nLang() lang: string,
+  ) {
+    const user: IUserTokenDto = request.user;
+    return await this.groupService.listGroups(query, lang, user.id);
+  }
 }
