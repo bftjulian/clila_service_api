@@ -114,6 +114,19 @@ export class LinksController {
 
   @SkipThrottle()
   @UseGuards(JwtAuthGuard)
+  @Get('group-refs')
+  @ApiResponse({
+    description: 'List all authenticated user links group refs',
+    type: Link,
+    status: HttpStatus.OK,
+  })
+  public async listAllGroupRefs(@Query() query: QueryDto, @Req() request) {
+    const user: IUserTokenDto = request.user;
+    return await this.linksService.listGroupRefs(user, query);
+  }
+
+  @SkipThrottle()
+  @UseGuards(JwtAuthGuard)
   @Get()
   @ApiResponse({
     description: 'List all authenticated user links',

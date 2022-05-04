@@ -256,6 +256,19 @@ export class LinksService {
     return new Result('', true, links, null);
   }
 
+  public async listGroupRefs(user: IUserTokenDto, query: QueryDto) {
+    const userModel = await this.usersRepository.findById(user.id);
+    if (!userModel) {
+      throw new ForbiddenException('');
+    }
+
+    const refs = await this.linksRepository.findAllGroupRefByUser(
+      userModel,
+      query,
+    );
+    return new Result('', true, refs, null);
+  }
+
   public async createShortLandpage(data: CreateLinkDto) {
     data.original_link = await this.formatLink(data.original_link);
 
