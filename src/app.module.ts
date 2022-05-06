@@ -31,6 +31,8 @@ import { FeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/feed-
 import { BullModule } from '@nestjs/bull';
 import { appsProcessors } from './proccessors';
 import { LINK_CLICKED_PROCCESSOR_NAME } from './app.constants';
+import { GroupRepository } from './modules/links/repositories/implementations/group.repository';
+import { GroupSchema } from './modules/links/schemas/groups.schema';
 
 @Module({
   imports: [
@@ -71,6 +73,7 @@ import { LINK_CLICKED_PROCCESSOR_NAME } from './app.constants';
       { name: 'User', schema: UserSchema },
       { name: 'LinkInfos', schema: LinkInfosSchema },
       { name: 'RefreshToken', schema: RefreshTokenSchema },
+      { name: 'Group', schema: GroupSchema },
     ]),
     BullModule.forRoot({
       redis: {
@@ -95,6 +98,7 @@ import { LINK_CLICKED_PROCCESSOR_NAME } from './app.constants';
   providers: [
     AppService,
     LinkRepository,
+    GroupRepository,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

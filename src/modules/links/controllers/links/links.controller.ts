@@ -122,6 +122,7 @@ export class LinksController {
   })
   public async listAllGroupRefs(@Query() query: QueryDto, @Req() request) {
     const user: IUserTokenDto = request.user;
+
     return await this.linksService.listGroupRefs(user, query);
   }
 

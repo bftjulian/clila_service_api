@@ -37,7 +37,6 @@ export class GroupRepository {
       allowedFilter: ['name', 'original_link', 'createAt'],
     });
     const count = await this.groupModel.countDocuments(queryParsed.find);
-
     const totalPages = Math.ceil(count / query.limit);
     const currentPage = (Math.max(1, query.page) - 1) * query.limit;
     const links = await this.groupModel
@@ -46,6 +45,7 @@ export class GroupRepository {
       .limit(query.limit)
       .skip(currentPage)
       .sort({ _id: 'asc' });
+
     const data = {
       data: links,
       total_pages: totalPages,

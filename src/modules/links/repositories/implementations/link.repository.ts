@@ -278,7 +278,7 @@ export class LinkRepository {
   public async findAllGroupRefByUser(
     user: User,
     query?: QueryDto,
-  ): Promise<Link[]> {
+  ): Promise<any> {
     if (!query)
       return await this.linkModel
         .find({ user, group_ref: true })
@@ -291,12 +291,22 @@ export class LinkRepository {
       allowedFilter: ['name', 'surname', 'create_at'],
     });
 
-    return await this.linkModel
+    const count = (await this.linkModel.find(queryParsed.find)).length;
+    const totalPages = Math.ceil(count / query.limit);
+
+    const croupsRefs = await this.linkModel
       .find(queryParsed.find)
       .populate('group')
       .sort(queryParsed.sort)
       .limit(query.limit)
       .skip(queryParsed.skip);
+
+    const data = {
+      data: croupsRefs,
+      total_pages: totalPages,
+      count,
+    };
+    return data;
   }
 
   public async createGroupRef(group: Group): Promise<Link> {
