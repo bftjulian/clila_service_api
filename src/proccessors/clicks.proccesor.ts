@@ -6,14 +6,14 @@ import {
 } from 'src/app.constants';
 import { GroupRepository } from 'src/modules/links/repositories/implementations/group.repository';
 import { LinkRepository } from 'src/modules/links/repositories/implementations/link.repository';
-import InfoClicksWebhookProvider from 'src/shared/providers/InfoClicksWebhookProvider/implementations/InfoClicksWebhookProvider';
+import { DisparoproInfoClicksWebhookProvider } from 'src/shared/providers/InfoClicksWebhookProvider/implementations/disparopro-info-clicks-webhook.provider';
 
 @Processor(LINK_CLICKED_PROCCESSOR_NAME)
 export class FeedClicksInfosDatabase {
   constructor(
     private readonly linksRepository: LinkRepository,
     private readonly groupRepository: GroupRepository,
-    private readonly clicksInfoRepository: InfoClicksWebhookProvider,
+    private readonly webhookProvider: DisparoproInfoClicksWebhookProvider,
   ) {}
 
   @Process({
@@ -22,15 +22,17 @@ export class FeedClicksInfosDatabase {
   })
   public async feedClicksInfosDatabase(job: Job) {
     try {
-      //send webhooks for disparopro, implementation
-      await this.clicksInfoRepository.create(job.data.link);
-
       await this.linksRepository.createLinkInfo({
         create_at: new Date(),
         ip: job.data.ip,
         link: job.data.link,
       });
-      await this.linksRepository.setClickLink(job.data.link._id);
+      const link = await this.linksRepository.setClickLink(job.data.link._id);
+
+      if (!job.data.link.group) return;
+
+      //send webhooks for disparopro, implementation
+      await this.webhookProvider.sendClickInfo(link);
 
       // Increment click on group
       await this.groupRepository.incrementClick(job.data.link.group._id);
@@ -39,7 +41,7 @@ export class FeedClicksInfosDatabase {
       );
       await this.linksRepository.setClickLink(groupRef._id);
     } catch (error) {
-      console.error(error.message);
+      console.error(error);
     }
   }
 }

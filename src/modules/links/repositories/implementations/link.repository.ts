@@ -69,22 +69,25 @@ export class LinkRepository {
   }
 
   public async findActiveByHash(hash_link: string): Promise<Link | undefined> {
-    return await this.linkModel.findOne({
-      hash_link,
-      active: true,
-      group_ref: false,
-      expired_at: null,
-    });
+    return await this.linkModel
+      .findOne({
+        hash_link,
+        active: true,
+        group_ref: false,
+        expired_at: null,
+      })
+      .populate('group');
   }
 
   public async findById(id: string): Promise<Link | undefined> {
     return await this.linkModel.findOne({ _id: id });
   }
 
-  public async setClickLink(id: string): Promise<void> {
-    await this.linkModel.findByIdAndUpdate(
+  public async setClickLink(id: string): Promise<Link> {
+    return await this.linkModel.findByIdAndUpdate(
       { _id: id },
       { $inc: { numbers_clicks: 1 }, update_at: new Date() },
+      { returnDocument: 'after' },
     );
   }
 

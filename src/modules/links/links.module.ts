@@ -64,5 +64,6 @@ import { LoadHashesOnRedisService } from './service/load-hashes-on-redis/load-ha
     ...linksProcessors,
     LoadHashesOnRedisService,
   ],
+  exports: [GroupRepository],
 })
 export class LinksModule {}

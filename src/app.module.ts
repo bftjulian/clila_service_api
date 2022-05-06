@@ -71,6 +71,7 @@ import { GroupSchema } from './modules/links/schemas/groups.schema';
     MongooseModule.forFeature([
       { name: 'Link', schema: LinkSchema },
       { name: 'User', schema: UserSchema },
+      { name: 'Group', schema: GroupSchema },
       { name: 'LinkInfos', schema: LinkInfosSchema },
       { name: 'RefreshToken', schema: RefreshTokenSchema },
       { name: 'Group', schema: GroupSchema },
@@ -99,6 +100,7 @@ import { GroupSchema } from './modules/links/schemas/groups.schema';
     AppService,
     LinkRepository,
     GroupRepository,
+
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
