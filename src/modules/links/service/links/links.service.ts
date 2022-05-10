@@ -179,6 +179,8 @@ export class LinksService {
           ),
         );
       }
+      await this.hashRepository.setUsed(data.hash_link);
+
       if (process.env.NODE_ENV === 'DEV') {
         data.short_link = 'http://localhost:3000/' + data.surname;
       } else {
@@ -187,7 +189,6 @@ export class LinksService {
     }
     try {
       await this.linksRepository.setNameSurname(id, data);
-      await this.hashRepository.setUsed(data.hash_link);
       return new Result(
         await this.i18n.translate('links.LINK_UPDATED_SUCCESS', {
           lang,
