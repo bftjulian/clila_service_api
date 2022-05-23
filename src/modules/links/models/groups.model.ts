@@ -4,6 +4,9 @@ import { Link } from './link.model';
 
 export class Group {
   @ApiProperty()
+  _id: string;
+
+  @ApiProperty()
   name: string;
 
   @ApiProperty()

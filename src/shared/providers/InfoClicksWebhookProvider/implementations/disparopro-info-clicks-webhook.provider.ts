@@ -16,17 +16,22 @@ export class DisparoproInfoClicksWebhookProvider
   }
 
   public async sendClickInfo(link: Link): Promise<boolean> {
-    const { short_link, numbers_clicks } = link;
+    const {
+      short_link,
+      numbers_clicks,
+      group: { total_clicks, _id },
+    } = link;
 
     const data = {
       short_link,
       total_clicks: numbers_clicks,
+      group_total_clicks: total_clicks + 1,
+      group_id: _id.toString(),
     };
 
     try {
       await this.api.post('/clila-link', data);
     } catch (err) {
-      console.log(err);
       return false;
     }
 

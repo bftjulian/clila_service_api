@@ -84,11 +84,13 @@ export class LinkRepository {
   }
 
   public async setClickLink(id: string): Promise<Link> {
-    return await this.linkModel.findByIdAndUpdate(
-      { _id: id },
-      { $inc: { numbers_clicks: 1 }, update_at: new Date() },
-      { returnDocument: 'after' },
-    );
+    return await this.linkModel
+      .findByIdAndUpdate(
+        { _id: id },
+        { $inc: { numbers_clicks: 1 }, update_at: new Date() },
+        { returnDocument: 'after' },
+      )
+      .populate('group');
   }
 
   public async findGroupRefByGroup(group: Group): Promise<Link | undefined> {
