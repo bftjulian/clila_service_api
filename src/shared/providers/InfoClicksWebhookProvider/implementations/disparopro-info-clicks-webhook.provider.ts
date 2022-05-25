@@ -20,6 +20,7 @@ export class DisparoproInfoClicksWebhookProvider
       short_link,
       numbers_clicks,
       group: { total_clicks, _id },
+      create_at,
     } = link;
 
     const data = {
@@ -27,6 +28,14 @@ export class DisparoproInfoClicksWebhookProvider
       total_clicks: numbers_clicks,
       group_total_clicks: total_clicks + 1,
       group_id: _id.toString(),
+      create_at: `${create_at.getFullYear()}-${(create_at.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}-${create_at.getDate()}`,
+      date_create_formated: `${create_at.getFullYear()}_${(
+        create_at.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, '0')}_${create_at.getDate()}`,
     };
 
     try {

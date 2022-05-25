@@ -35,7 +35,11 @@ export class FeedClicksInfosDatabase {
       await this.webhookProvider.sendClickInfo(link);
 
       // Increment click on group
-      await this.groupRepository.incrementClick(job.data.link.group._id);
+      if (job.data.link.group._id !== undefined) {
+        await this.groupRepository.incrementClick(job.data.link.group._id);
+      } else {
+        await this.groupRepository.incrementClick(job.data.link.group);
+      }
       const groupRef = await this.linksRepository.findGroupRefByGroup(
         job.data.link.group,
       );

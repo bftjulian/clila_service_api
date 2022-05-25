@@ -32,7 +32,12 @@ export class LoadHashesOnRedisService {
     const secondPart = hashes.splice(-threePartIndex);
     const firstPart = hashes;
 
-    await this.redisProvider.lpush(FREE_SIX_DIGITS_HASHES_REDIS_KEY, firstPart);
+    if (firstPart.length > 0) {
+      await this.redisProvider.lpush(
+        FREE_SIX_DIGITS_HASHES_REDIS_KEY,
+        firstPart,
+      );
+    }
     await this.redisProvider.lpush(
       FREE_SIX_DIGITS_HASHES_REDIS_KEY,
       secondPart,
