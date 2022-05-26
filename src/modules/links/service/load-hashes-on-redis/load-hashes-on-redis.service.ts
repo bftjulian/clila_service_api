@@ -38,11 +38,18 @@ export class LoadHashesOnRedisService {
         firstPart,
       );
     }
-    await this.redisProvider.lpush(
-      FREE_SIX_DIGITS_HASHES_REDIS_KEY,
-      secondPart,
-    );
-    await this.redisProvider.lpush(FREE_SIX_DIGITS_HASHES_REDIS_KEY, thirdPart);
+    if (secondPart.length > 0) {
+      await this.redisProvider.lpush(
+        FREE_SIX_DIGITS_HASHES_REDIS_KEY,
+        secondPart,
+      );
+    }
+    if (thirdPart.length > 0) {
+      await this.redisProvider.lpush(
+        FREE_SIX_DIGITS_HASHES_REDIS_KEY,
+        thirdPart,
+      );
+    }
     await this.hashRepository.setManyUsed(originalHashes);
   }
 }
