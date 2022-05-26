@@ -1,6 +1,7 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Response } from 'express';
 import { Queue } from 'bull';
 import {
   FEED_DATABASE_LINK_COLLECTION,
@@ -11,6 +12,7 @@ import { LinkRepository } from './modules/links/repositories/implementations/lin
 import { ILinkRepository } from './modules/links/repositories/link-repository.interface';
 import { ILinkClicks } from './proccessors/jobs/i-link-clicks.job';
 import RedisProvider from './shared/providers/RedisProvider/implementations/RedisProvider';
+import { urlNormalize } from './utils/urlNormalize';
 
 @Injectable()
 export class AppService {
@@ -22,7 +24,7 @@ export class AppService {
     @InjectQueue(LINK_CLICKED_PROCCESSOR_NAME)
     private readonly linksQueue: Queue,
   ) {}
-  public async redirectOriginalLink(hash: string, res, ip: string) {
+  public async redirectOriginalLink(hash: string, res: Response, ip: string) {
     const cachedLink = await this.redisProvider.recover<Link>(`links:${hash}`);
     if (!!cachedLink) {
       const event = new ILinkClicks();
@@ -50,6 +52,6 @@ export class AppService {
 
     await this.linksQueue.add(FEED_DATABASE_LINK_COLLECTION, event);
 
-    return res.redirect(`${link.original_link}`);
+    return res.redirect(urlNormalize(link.original_link));
   }
 }

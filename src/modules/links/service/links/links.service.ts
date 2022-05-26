@@ -28,6 +28,7 @@ import { HashRepository } from '../../repositories/implementations/hash.reposito
 import { LinkRepository } from '../../repositories/implementations/link.repository';
 import { ILinkRepository } from '../../repositories/link-repository.interface';
 import { QueryDto } from '../../../../shared/dtos/query.dto';
+import { urlNormalize } from '../../../../utils/urlNormalize';
 
 @Injectable()
 export class LinksService {
@@ -44,7 +45,7 @@ export class LinksService {
 
   public async create(data: CreateLinkDto, user: IUserTokenDto, lang: string) {
     data.original_link = await this.formatLink(data.original_link);
-
+    data.original_link = urlNormalize(data.original_link);
     if (data.surname) {
       await this.formatSurname(data.surname, 6, lang);
       data.hash_link = data.surname;

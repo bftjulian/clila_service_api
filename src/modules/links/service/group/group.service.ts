@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { I18nService } from 'nestjs-i18n';
-import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
+import { IUserTokenDto } from '../../../auth/dtos/user-token.dto';
 import { Result } from 'src/shared/models/result';
 import RedisProvider from 'src/shared/providers/RedisProvider/implementations/RedisProvider';
 import { CreateBatchLinksDto } from '../../dtos/create-batch-links-group.dto';
@@ -20,9 +20,10 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectQueue } from '@nestjs/bull';
 import { JobOptions, Queue } from 'bull';
 import { ILinkRepository } from '../../repositories/link-repository.interface';
-import { QueryDto } from 'src/shared/dtos/query.dto';
-import { IUserRepository } from 'src/modules/users/repositories/user-repository.interface';
-import { UserRepository } from 'src/modules/users/repositories/implementation/user.repository';
+import { QueryDto } from '../../../../shared/dtos/query.dto';
+import { IUserRepository } from '../../../users/repositories/user-repository.interface';
+import { UserRepository } from '../../../users/repositories/implementation/user.repository';
+import { urlNormalize } from '../../../../utils/urlNormalize';
 
 type JobConf = {
   name?: string | undefined;
@@ -56,6 +57,8 @@ export class GroupService {
         new Result('User not found', false, {}, null),
       );
     }
+
+    data.original_link = urlNormalize(data.original_link);
     try {
       const group = await this.groupsRepository.create({
         ...data,
