@@ -31,7 +31,7 @@ export class AppService {
       event.ip = ip;
       event.link = cachedLink;
       await this.linksQueue.add(FEED_DATABASE_LINK_COLLECTION, event);
-      return res.redirect(`${cachedLink.original_link}`);
+      return res.redirect(urlNormalize(cachedLink.original_link));
     }
 
     const link = await this.linksRepository.findActiveByHash(hash);
