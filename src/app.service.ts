@@ -26,6 +26,7 @@ export class AppService {
   ) {}
   public async redirectOriginalLink(hash: string, ip: string) {
     const cachedLink = await this.redisProvider.recover<Link>(`links:${hash}`);
+    console.log('cache', cachedLink);
     if (!!cachedLink) {
       const event = new ILinkClicks();
       event.ip = ip;
@@ -35,6 +36,8 @@ export class AppService {
     }
 
     const link = await this.linksRepository.findActiveByHash(hash);
+
+    console.log('link', link);
 
     if (!link || link.active === false) {
       return 'https://site.cli.la';

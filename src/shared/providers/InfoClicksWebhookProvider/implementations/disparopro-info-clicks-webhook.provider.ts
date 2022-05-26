@@ -41,6 +41,7 @@ export class DisparoproInfoClicksWebhookProvider
     try {
       await this.api.post('/clila-link', data);
     } catch (err) {
+      console.log(err);
       return false;
     }
 
