@@ -52,6 +52,8 @@ export default class RedisProvider implements IRedisProvider {
   }
 
   public async lpush(key: string, value: string | string[]): Promise<void> {
+    console.log('lpush', key, value);
+    console.log('\n\n');
     if (typeof value === 'string') {
       await this.client.lpush(key, value);
       return;
