@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Res } from '@nestjs/common';
 import { AppService } from './app.service';
+import { Response } from 'express';
 import { RealIP } from 'nestjs-real-ip';
 import { ApiTags } from '@nestjs/swagger';
 @ApiTags('Redirect')
@@ -15,9 +16,11 @@ export class AppController {
   @Get(':hash')
   public async redirectOriginalLink(
     @Param('hash') hash: string,
-    @Res() res,
+    @Res() res: Response,
     @RealIP() ip: string,
   ) {
-    return await this.appService.redirectOriginalLink(hash, res, ip);
+    const domain = await this.appService.redirectOriginalLink(hash, ip);
+
+    return res.redirect(domain);
   }
 }

@@ -24,27 +24,21 @@ export class AppService {
     @InjectQueue(LINK_CLICKED_PROCCESSOR_NAME)
     private readonly linksQueue: Queue,
   ) {}
-  public async redirectOriginalLink(hash: string, res: Response, ip: string) {
+  public async redirectOriginalLink(hash: string, ip: string) {
     const cachedLink = await this.redisProvider.recover<Link>(`links:${hash}`);
     if (!!cachedLink) {
       const event = new ILinkClicks();
       event.ip = ip;
       event.link = cachedLink;
       await this.linksQueue.add(FEED_DATABASE_LINK_COLLECTION, event);
-      console.log(urlNormalize(cachedLink.original_link));
-      res.writeHead(301, { Location: urlNormalize(cachedLink.original_link) });
-      return res.end();
+      return urlNormalize(cachedLink.original_link);
     }
 
     const link = await this.linksRepository.findActiveByHash(hash);
 
     if (!link || link.active === false) {
-      res.writeHead(301, { Location: 'https://site.cli.la' });
-
-      return res.end();
+      return 'https://site.cli.la';
     }
-
-    console.log(urlNormalize(link.original_link));
 
     await this.redisProvider.save(`links:${hash}`, link);
 
@@ -54,7 +48,6 @@ export class AppService {
 
     await this.linksQueue.add(FEED_DATABASE_LINK_COLLECTION, event);
 
-    res.writeHead(301, { Location: urlNormalize(link.original_link) });
-    return res.end();
+    return urlNormalize(link.original_link);
   }
 }
