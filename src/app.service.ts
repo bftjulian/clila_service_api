@@ -31,6 +31,7 @@ export class AppService {
       event.ip = ip;
       event.link = cachedLink;
       await this.linksQueue.add(FEED_DATABASE_LINK_COLLECTION, event);
+      console.log(urlNormalize(cachedLink.original_link));
       return res.redirect(urlNormalize(cachedLink.original_link));
     }
 
@@ -43,6 +44,8 @@ export class AppService {
         return res.redirect('https://site.cli.la');
       }
     }
+
+    console.log(urlNormalize(link.original_link));
 
     await this.redisProvider.save(`links:${hash}`, link);
 
