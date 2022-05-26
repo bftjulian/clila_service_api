@@ -73,7 +73,7 @@ export class LinkRepository {
       .findOne({
         hash_link,
         active: true,
-        group_ref: false,
+        group_ref: { $in: [null, false] },
         expired_at: null,
       })
       .populate('group');
