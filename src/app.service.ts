@@ -32,17 +32,16 @@ export class AppService {
       event.link = cachedLink;
       await this.linksQueue.add(FEED_DATABASE_LINK_COLLECTION, event);
       console.log(urlNormalize(cachedLink.original_link));
-      return res.redirect(urlNormalize(cachedLink.original_link));
+      res.writeHead(301, { Location: urlNormalize(cachedLink.original_link) });
+      return res.end();
     }
 
     const link = await this.linksRepository.findActiveByHash(hash);
 
     if (!link || link.active === false) {
-      if (process.env.NODE_ENV === 'DEV') {
-        return res.redirect('https://site.cli.la');
-      } else {
-        return res.redirect('https://site.cli.la');
-      }
+      res.writeHead(301, { Location: 'https://site.cli.la' });
+
+      return res.end();
     }
 
     console.log(urlNormalize(link.original_link));
@@ -55,6 +54,7 @@ export class AppService {
 
     await this.linksQueue.add(FEED_DATABASE_LINK_COLLECTION, event);
 
-    return res.redirect(urlNormalize(link.original_link));
+    res.writeHead(301, { Location: urlNormalize(link.original_link) });
+    return res.end();
   }
 }
