@@ -9,10 +9,12 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
+  @SkipThrottle()
   public async redirectToSite(@Res() res) {
     return res.redirect('https://site.cli.la');
   }
 
+  @SkipThrottle()
   @Get(':hash')
   public async redirectOriginalLink(
     @Param('hash') hash: string,
