@@ -98,7 +98,7 @@ export class GroupService {
 
     const hashes = await this.redisProvider.popMany(
       FREE_SIX_DIGITS_HASHES_REDIS_KEY,
-      data.count - 1,
+      data.count,
     );
 
     await this.redisProvider.lpush(USED_HASHES_TO_UPDATE_REDIS_KEY, hashes);
