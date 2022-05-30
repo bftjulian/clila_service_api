@@ -38,9 +38,6 @@ import { GroupSchema } from './modules/links/schemas/groups.schema';
   imports: [
     BullModule.registerQueue({
       name: LINK_CLICKED_PROCCESSOR_NAME,
-      defaultJobOptions: {
-        removeOnComplete: true,
-      },
     }),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({

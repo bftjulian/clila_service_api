@@ -119,6 +119,7 @@ export class GroupService {
         original_link: group.original_link,
         short_link: link + hash,
         group: group,
+        create_at: new Date(),
       };
     };
 
