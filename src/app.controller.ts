@@ -3,6 +3,7 @@ import { AppService } from './app.service';
 import { Response } from 'express';
 import { RealIP } from 'nestjs-real-ip';
 import { ApiTags } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
 @ApiTags('Redirect')
 @Controller()
 export class AppController {

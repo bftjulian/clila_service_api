@@ -66,7 +66,7 @@ async function bootstrap() {
     '/bull-board',
     expressBasicAuth({
       users: {
-        user: 'password',
+        bulldash: 'egyR2RfSii0RGXt6',
       },
       challenge: true,
     }),
