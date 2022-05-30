@@ -35,9 +35,6 @@ import { LoadHashesOnRedisService } from './service/load-hashes-on-redis/load-ha
       },
       {
         name: LINKS_BATCH_PROCESSOR,
-        defaultJobOptions: {
-          removeOnComplete: true,
-        },
       },
     ),
     MongooseModule.forFeature([
