@@ -54,7 +54,6 @@ export class MaliciousUrlInterceptor implements NestInterceptor {
 
     let maliciousContentResult: ICheckResult;
     try {
-      throw '';
       maliciousContentResult = await this.maliciousContentCheck.check(
         parsedLink,
       );
