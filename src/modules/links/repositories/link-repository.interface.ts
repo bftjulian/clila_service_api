@@ -6,7 +6,10 @@ import { Group } from '../models/groups.model';
 
 export interface ILinkRepository {
   findAll(): Promise<Link[] | undefined>;
+  findAllNotMaliciousAndNotExpiredWithoutGroupLinks(): Promise<Link[]>;
+  findAllMaliciousAndNotExpired(): Promise<Link[]>;
   setManyMaliciousByOriginalLink(links: string[]): Promise<void>;
+  unsetManyMaliciousByOriginalLink(links: string[]): Promise<void>;
   findManyByOriginalLink(links: string[]): Promise<Link[]>;
   findAllByAfterMonth(date: Date, status: boolean): Promise<Link[] | undefined>;
   findByHash(hash_link: string): Promise<Link | undefined>;
@@ -31,7 +34,7 @@ export interface ILinkRepository {
   findAllLinkInfosByMonth(date: Date, user: User): Promise<any>;
   findAllLinkInfosByWeek(date: Date, user: User): Promise<any>;
   // findAllNotExpired(): Promise<Link[]>;
-  create(data: Omit<Link, 'status'>): Promise<Link>;
+  create(data: Omit<Link, 'status' | 'isMalicious'>): Promise<Link>;
   createGroupRef(group: Group): Promise<Link>;
   setNameSurname(id: string, data): Promise<void>;
   setStatusLink(id: string, status: boolean): Promise<void>;

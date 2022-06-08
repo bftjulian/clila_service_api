@@ -37,6 +37,9 @@ export class Link {
   expired_at?: Date | null;
 
   @ApiProperty()
+  isMalicious: boolean;
+
+  @ApiProperty()
   create_at?: Date;
 
   @ApiProperty()

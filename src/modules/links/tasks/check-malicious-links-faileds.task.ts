@@ -45,7 +45,7 @@ export class CheckMaliciousLinksFailedTask {
       );
 
       const promises = links.map(async (link) =>
-        this.redisProvider.delete(`links:${link.original_link}`),
+        this.redisProvider.delete(`links:${link.hash_link}`),
       );
 
       await Promise.allSettled(promises);

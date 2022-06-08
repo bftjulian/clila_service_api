@@ -38,6 +38,15 @@ export class LinkRepository {
     );
   }
 
+  public async unsetManyMaliciousByOriginalLink(
+    links: string[],
+  ): Promise<void> {
+    await this.linkModel.updateMany(
+      { original_link: { $in: links } },
+      { isMalicious: false },
+    );
+  }
+
   public async findByHash(hash_link: string): Promise<Link | undefined> {
     return await this.linkModel.findOne({ hash_link });
   }
@@ -136,6 +145,44 @@ export class LinkRepository {
       .find({ expired_at: null, group_ref: false })
       .skip((page - 1) * limit)
       .limit(limit);
+  }
+
+  public async findAllMaliciousAndNotExpired(): Promise<Link[]> {
+    return this.linkModel.find({
+      $or: [
+        {
+          expired_at: null,
+          isMalicious: true,
+          group_ref: false,
+          group: null,
+        },
+        {
+          expired_at: null,
+          isMalicious: true,
+          group_ref: true,
+        },
+      ],
+    });
+  }
+
+  public async findAllNotMaliciousAndNotExpiredWithoutGroupLinks(): Promise<
+    Link[]
+  > {
+    return this.linkModel.find({
+      $or: [
+        {
+          expired_at: null,
+          isMalicious: { $in: [null, false] },
+          group_ref: false,
+          group: null,
+        },
+        {
+          expired_at: null,
+          isMalicious: { $in: [null, false] },
+          group_ref: true,
+        },
+      ],
+    });
   }
 
   public async countAllNotExpired(): Promise<number> {

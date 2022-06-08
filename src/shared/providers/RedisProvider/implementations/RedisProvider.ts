@@ -36,6 +36,10 @@ export default class RedisProvider implements IRedisProvider {
     await this.client.zremrangebyscore(key, min, max);
   }
 
+  public async zrem(key: string, value: string): Promise<void> {
+    await this.client.zrem(key, value);
+  }
+
   public async zscan(key: string, pattern: string): Promise<string[]> {
     const data = await this.client.zscanStream(key, {
       match: pattern,

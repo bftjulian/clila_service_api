@@ -5,6 +5,9 @@ interface ICacheData {
 }
 
 export default class FakeRedisProvider implements IRedisProvider {
+  zrem(key: string, value: string): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
   ltrim(key: string, start: number, stop: number): Promise<void> {
     throw new Error('Method not implemented.');
   }

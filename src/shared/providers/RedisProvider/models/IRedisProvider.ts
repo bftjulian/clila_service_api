@@ -10,6 +10,7 @@ export default interface IRedisProvider {
   zremrangebyscore(key: string, min: number, max: number): Promise<void>;
   zscan(key: string, pattern?: string): Promise<string[]>;
   zhas(key: string, value: string): Promise<boolean>;
+  zrem(key: string, value: string): Promise<void>;
   delete(key: string): Promise<void>;
   popAll(key: string): Promise<string[]>;
   popMany(key: string, count: number): Promise<string[]>;
