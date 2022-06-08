@@ -99,6 +99,7 @@ export class LinksController {
 
   @SkipThrottle()
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(MaliciousUrlInterceptor)
   @Post('shorten')
   @ApiResponse({
     description: 'shorten a link',
