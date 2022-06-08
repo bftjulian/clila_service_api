@@ -13,7 +13,7 @@ export class CheckMaliciousLinksFailedTask {
     private readonly linksRepository: LinkRepository,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   public async checkMaliciousLinksFailed() {
     const urlsToCheck = await this.redisProvider.lrange(
       URLS_TO_CHECK_MALICIOUS_CONTENT,
