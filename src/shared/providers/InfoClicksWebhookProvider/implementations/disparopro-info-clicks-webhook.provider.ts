@@ -30,12 +30,12 @@ export class DisparoproInfoClicksWebhookProvider
       group_id: _id.toString(),
       create_at: `${create_at.getFullYear()}-${(create_at.getMonth() + 1)
         .toString()
-        .padStart(2, '0')}-${create_at.getDate()}`,
+        .padStart(2, '0')}-${create_at.getDate().toString().padStart(2, '0')}`,
       date_create_formated: `${create_at.getFullYear()}_${(
         create_at.getMonth() + 1
       )
         .toString()
-        .padStart(2, '0')}_${create_at.getDate()}`,
+        .padStart(2, '0')}_${create_at.getDate().toString().padStart(2, '0')}`,
     };
 
     try {
