@@ -22,6 +22,7 @@ import { LinkCreatedEvent } from '../../events/link-created.event';
 import {
   FREE_SIX_DIGITS_HASHES_REDIS_KEY,
   LINK_CREATED_EVENT_NAME,
+  MALICIOUS_URLS,
   USED_HASHES_TO_UPDATE_REDIS_KEY,
 } from '../../links.constants';
 import { HashRepository } from '../../repositories/implementations/hash.repository';
@@ -29,6 +30,8 @@ import { LinkRepository } from '../../repositories/implementations/link.reposito
 import { ILinkRepository } from '../../repositories/link-repository.interface';
 import { QueryDto } from '../../../../shared/dtos/query.dto';
 import { urlNormalize } from '../../../../utils/urlNormalize';
+import { MaliciousContentCheckProvider } from 'src/shared/providers/MaliciousContentCheckProvider/implementations/malicious-content-check.provider';
+import { ICheckResult } from 'src/shared/providers/MaliciousContentCheckProvider/models/check-result.interface';
 
 @Injectable()
 export class LinksService {

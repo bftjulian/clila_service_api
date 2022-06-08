@@ -16,6 +16,11 @@ const LinkSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  isMalicious: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
   group: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Group',

@@ -6,6 +6,8 @@ import { Group } from '../models/groups.model';
 
 export interface ILinkRepository {
   findAll(): Promise<Link[] | undefined>;
+  setManyMaliciousByOriginalLink(links: string[]): Promise<void>;
+  findManyByOriginalLink(links: string[]): Promise<Link[]>;
   findAllByAfterMonth(date: Date, status: boolean): Promise<Link[] | undefined>;
   findByHash(hash_link: string): Promise<Link | undefined>;
   findActiveByHash(hash_link: string): Promise<Link | undefined>;

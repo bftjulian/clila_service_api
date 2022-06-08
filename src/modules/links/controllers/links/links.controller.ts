@@ -10,6 +10,7 @@ import {
   Query,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
@@ -21,6 +22,7 @@ import { UpdateLinkDto } from '../../dtos/update-link.dto';
 import { Link } from '../../models/link.model';
 import { LinksService } from '../../service/links/links.service';
 import { QueryDto } from '../../../../shared/dtos/query.dto';
+import { MaliciousUrlInterceptor } from '../../interceptors/malicious-url.interceptor';
 // import { LinksInterceptor } from '../../../../shared/interceptors/links.interceptor';
 
 @ApiTags('Links')
@@ -180,6 +182,7 @@ export class LinksController {
     return await this.linksService.updateLink(id, data, lang);
   }
 
+  @UseInterceptors(MaliciousUrlInterceptor)
   @Post('shorten/landpage')
   @ApiResponse({
     description: 'Shorten a link through the website',

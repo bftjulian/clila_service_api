@@ -31,6 +31,13 @@ export class LinkRepository {
     return await link.save();
   }
 
+  public async setManyMaliciousByOriginalLink(links: string[]): Promise<void> {
+    await this.linkModel.updateMany(
+      { original_link: { $in: links } },
+      { isMalicious: true },
+    );
+  }
+
   public async findByHash(hash_link: string): Promise<Link | undefined> {
     return await this.linkModel.findOne({ hash_link });
   }
@@ -41,6 +48,10 @@ export class LinkRepository {
     });
 
     return data;
+  }
+
+  public async findManyByOriginalLink(links: string[]): Promise<Link[]> {
+    return await this.linkModel.find({ original_link: { $in: links } });
   }
 
   public async findAllByGroup(group: Group, query: QueryDto): Promise<any> {
@@ -74,6 +85,7 @@ export class LinkRepository {
         hash_link,
         active: true,
         group_ref: { $in: [null, false] },
+        isMalicious: { $in: [null, false] },
         expired_at: null,
       })
       .populate('group');
@@ -279,6 +291,8 @@ export class LinkRepository {
 
     return links.map((link) => link.hash_link);
   }
+
+  public;
 
   public async findAllGroupRefByUser(
     user: User,

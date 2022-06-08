@@ -18,3 +18,8 @@ export const FEED_DATABASE_HASHES_COLLECTION = 'feed-hashes-process';
 export const LINK_CREATED_EVENT_NAME = 'link.created';
 
 export const RELOAD_LINKS_ON_REDIS_EVENT = 'reload.links.on.redis';
+
+export const MALICIOUS_URLS = 'malicious.urls';
+
+export const URLS_TO_CHECK_MALICIOUS_CONTENT =
+  'urls.to.check.malicious.content';

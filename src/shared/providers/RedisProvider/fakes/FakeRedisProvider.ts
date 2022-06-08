@@ -5,6 +5,21 @@ interface ICacheData {
 }
 
 export default class FakeRedisProvider implements IRedisProvider {
+  ltrim(key: string, start: number, stop: number): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  zadd(key: string, score: number, value: string): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  zremrangebyscore(key: string, min: number, max: number): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  zscan(key: string, pattern?: string): Promise<string[]> {
+    throw new Error('Method not implemented.');
+  }
+  zhas(key: string, value: string): Promise<boolean> {
+    throw new Error('Method not implemented.');
+  }
   private cache: ICacheData = {};
 
   public async popMany(key: string, count: number): Promise<string[]> {
