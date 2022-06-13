@@ -1,4 +1,3 @@
-import { use } from 'passport';
 import { CreateTokenRecoverPasswordDto } from '../../dtos/create-token-recover-password.dto';
 import { RefreshToken } from '../../models/refresh-tokens';
 import { User } from '../../models/users.model';
