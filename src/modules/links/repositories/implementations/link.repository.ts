@@ -26,7 +26,9 @@ export class LinkRepository {
     @InjectModel('LinkInfos') private readonly linkInfosModel: Model<LinkInfos>,
   ) {}
 
-  public async create(linkData: Link): Promise<Link> {
+  public async create(
+    linkData: Omit<Link, 'status' | 'isMalicious'>,
+  ): Promise<Link> {
     const link = new this.linkModel(linkData);
     return await link.save();
   }
