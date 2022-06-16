@@ -28,7 +28,7 @@ export interface ILinkRepository {
   findAllLinkInfosByDate(date: Date, user: User): Promise<any>;
   findAllLinkInfosByMonth(date: Date, user: User): Promise<any>;
   findAllLinkInfosByWeek(date: Date, user: User): Promise<any>;
-  create(data: Omit<Link, 'status' | 'isMalicious'>): Promise<Link>;
+  create(data: Omit<Link, '_id' | 'status' | 'isMalicious'>): Promise<Link>;
   createGroupRef(group: Group): Promise<Link>;
   setNameSurname(id: string, data): Promise<void>;
   setStatusLink(id: string, status: boolean): Promise<void>;

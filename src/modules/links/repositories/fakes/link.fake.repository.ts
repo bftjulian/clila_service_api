@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/modules/users/models/users.model';
+import { User } from '../../../../modules/users/models/users.model';
 import { QueryDto } from 'src/shared/dtos/query.dto';
 import { Group } from '../../models/groups.model';
 import { Link } from '../../models/link.model';
@@ -19,14 +19,14 @@ export class FakeLinkRepository implements ILinkRepository {
   private linksInfo: ILinkInfos[] = [];
 
   public async create(
-    linkData: Omit<Link, 'status' | 'isMalicious'>,
+    linkData: Omit<Link, '_id' | 'status' | 'isMalicious'>,
   ): Promise<Link> {
     const link = {
-      _id: 'link_fake',
+      _id: 'id_link_fake',
       ...linkData,
       status: 'ACTIVE',
-      create_at: new Date(),
-      update_at: new Date(),
+      create_at: new Date('2022-06-14T17:57:19.534Z'),
+      update_at: new Date('2022-06-14T17:57:19.534Z'),
     } as Link;
     this.links.push(link);
     return link;

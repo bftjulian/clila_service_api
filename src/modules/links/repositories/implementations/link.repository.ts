@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Schema } from 'mongoose';
-import { User } from 'src/modules/users/models/users.model';
+import { Model } from 'mongoose';
+import { User } from '../../../../modules/users/models/users.model';
 import { Link } from '../../models/link.model';
 import { LinkInfos } from '../../models/link-infos.model';
 import { QueryDto } from '../../../../shared/dtos/query.dto';
-import { queryHelper } from 'src/utils/queryHelper';
+import { queryHelper } from '../../../../utils/queryHelper';
 import {
   addDays,
   endOfDay,

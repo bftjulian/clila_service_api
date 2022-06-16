@@ -12,9 +12,9 @@ import { I18nService } from 'nestjs-i18n';
 import { IUserTokenDto } from '../../../auth/dtos/user-token.dto';
 import { UserRepository } from '../../../users/repositories/implementation/user.repository';
 import { IUserRepository } from '../../../users/repositories/user-repository.interface';
-import { Result } from 'src/shared/models/result';
+import { Result } from '../../../../shared/models/result';
 import RedisProvider from '../../../../shared/providers/RedisProvider/implementations/RedisProvider';
-import { generateHash } from 'src/utils/generate-hash';
+// import { generateHash } from 'src/utils/generate-hash';
 import { CreateLinkDto } from '../../dtos/create-link.dto';
 // import { PaginationParamsDto } from '../../dtos/pagination-params.dto';
 import { UpdateLinkDto } from '../../dtos/update-link.dto';
@@ -30,8 +30,8 @@ import { LinkRepository } from '../../repositories/implementations/link.reposito
 import { ILinkRepository } from '../../repositories/link-repository.interface';
 import { QueryDto } from '../../../../shared/dtos/query.dto';
 import { urlNormalize } from '../../../../utils/urlNormalize';
-import { MaliciousContentCheckProvider } from 'src/shared/providers/MaliciousContentCheckProvider/implementations/malicious-content-check.provider';
-import { ICheckResult } from 'src/shared/providers/MaliciousContentCheckProvider/models/check-result.interface';
+// import { MaliciousContentCheckProvider } from 'src/shared/providers/MaliciousContentCheckProvider/implementations/malicious-content-check.provider';
+// import { ICheckResult } from 'src/shared/providers/MaliciousContentCheckProvider/models/check-result.interface';
 
 @Injectable()
 export class LinksService {
@@ -430,31 +430,30 @@ export class LinksService {
   }
 
   public async activateLink(id: string, lang: string) {
+    const link = await this.linksRepository.findById(id);
+
+    if (!link) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('links.LINK_NOT_FOUND', { lang }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
+
+    if (!!link.expired_at) {
+      throw new BadRequestException(
+        new Result(
+          await this.i18n.translate('links.LINK_HAS_BEEN_EXPIRED', { lang }),
+          false,
+          {},
+          null,
+        ),
+      );
+    }
     try {
-      const link = await this.linksRepository.findById(id);
-
-      if (!link) {
-        throw new BadRequestException(
-          new Result(
-            await this.i18n.translate('LINK_NOT_FOUND', { lang }),
-            false,
-            {},
-            null,
-          ),
-        );
-      }
-
-      if (!!link.expired_at) {
-        throw new BadRequestException(
-          new Result(
-            await this.i18n.translate('LINK_HAS_BEEN_EXPIRED', { lang }),
-            false,
-            {},
-            null,
-          ),
-        );
-      }
-
       await this.linksRepository.setStatusLink(id, true);
       await this.redisProvider.save(`links:${link.hash_link}`, link);
       return new Result(
@@ -492,6 +491,7 @@ export class LinksService {
         null,
       );
     } catch (error) {
+      console.error(error);
       throw new BadRequestException(
         new Result('Error in transaction', false, {}, null),
       );

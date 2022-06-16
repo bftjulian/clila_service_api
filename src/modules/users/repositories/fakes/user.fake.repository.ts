@@ -3,7 +3,7 @@ import { RefreshToken } from '../../models/refresh-tokens';
 import { User } from '../../models/users.model';
 import { IUserRepository } from '../user-repository.interface';
 
-export class FakeUser implements IUserRepository {
+export class FakeUserRepository implements IUserRepository {
   private users: User[] = [];
   private tokens: RefreshToken[] = [];
 

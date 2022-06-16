@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { I18nService } from 'nestjs-i18n';
-import { Result } from 'src/shared/models/result';
+import { Result } from '../../../../shared/models/result';
 import { CreateUserDto } from '../../dtos/create-users.dto';
 import { UserRepository } from '../../repositories/implementation/user.repository';
 import { IUserRepository } from '../../repositories/user-repository.interface';
@@ -9,9 +9,9 @@ import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from '../../dtos/login-users.dto';
 import { JwtService } from '@nestjs/jwt';
 import { CreateRefreshTokenDto } from '../../dtos/create-refresh-token.dto';
-import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
+import { IUserTokenDto } from '../../../../modules/auth/dtos/user-token.dto';
 import { Md5 } from 'ts-md5/dist/md5';
-import { MailService } from 'src/modules/mail/mail.service';
+import { MailService } from '../../../../modules/mail/mail.service';
 import { differenceInMonths } from 'date-fns';
 import { ResendEmailDto } from '../../dtos/resend-email.dto';
 
@@ -109,7 +109,6 @@ export class UsersService {
         ),
       );
     }
-
     const isMatchPassword = await bcrypt.compare(data.password, user.password);
     if (!isMatchPassword) {
       throw new BadRequestException(
@@ -179,6 +178,7 @@ export class UsersService {
         null,
       );
     } catch (error) {
+      console.log(error);
       throw new BadRequestException(
         new Result('Error in transaction', false, {}, null),
       );

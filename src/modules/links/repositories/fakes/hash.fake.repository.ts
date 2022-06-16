@@ -1,7 +1,7 @@
 import { Hash } from '../../models/hash.model';
 import { IHashRepository } from '../hash-repository.interface';
 
-export class FakeHash implements IHashRepository {
+export class FakeHashRepository implements IHashRepository {
   private hashes: Hash[] = [];
 
   public async setUsedOrCreateUsed(hash: string): Promise<void> {

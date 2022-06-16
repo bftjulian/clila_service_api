@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from 'src/modules/users/models/users.model';
+import { User } from '../../../modules/users/models/users.model';
 import { Link } from './link.model';
 
 export class Group {
