@@ -1,11 +1,11 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { I18nService } from 'nestjs-i18n';
-import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
-import { LinkRepository } from 'src/modules/links/repositories/implementations/link.repository';
-import { ILinkRepository } from 'src/modules/links/repositories/link-repository.interface';
-import { UserRepository } from 'src/modules/users/repositories/implementation/user.repository';
-import { IUserRepository } from 'src/modules/users/repositories/user-repository.interface';
-import { Result } from 'src/shared/models/result';
+import { IUserTokenDto } from '../../../../modules/auth/dtos/user-token.dto';
+import { LinkRepository } from '../../../../modules/links/repositories/implementations/link.repository';
+import { ILinkRepository } from '../../../../modules/links/repositories/link-repository.interface';
+import { UserRepository } from '../../../../modules/users/repositories/implementation/user.repository';
+import { IUserRepository } from '../../../../modules/users/repositories/user-repository.interface';
+import { Result } from '../../../../shared/models/result';
 
 @Injectable()
 export class DashboardService {
@@ -14,7 +14,6 @@ export class DashboardService {
     private readonly linksRepository: ILinkRepository,
     @Inject(UserRepository)
     private readonly usersRepository: IUserRepository,
-    private readonly i18n: I18nService,
   ) {}
   public async dashboard(user: IUserTokenDto) {
     try {

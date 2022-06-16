@@ -6,6 +6,7 @@ import { Link } from '../../models/link.model';
 import { LinkInfos } from '../../models/link-infos.model';
 import { ILinkRepository } from '../link-repository.interface';
 import { ObjectId } from 'mongodb';
+import { startOfDay } from 'date-fns';
 
 interface ILinkInfos {
   _id: string;
@@ -226,21 +227,33 @@ export class FakeLinkRepository implements ILinkRepository {
   }
 
   public async findAllLinkInfosByDate(date: Date, user: User): Promise<any> {
-    return this.linksInfo.filter((link) => link.create_at === date);
+    return this.linksInfo.filter(
+      (link) =>
+        startOfDay(link.create_at).toString() === startOfDay(date).toString(),
+    );
   }
   public async findAllLinkInfosByMonth(date: Date, user: User): Promise<any> {
-    return this.linksInfo.filter((link) => link.create_at === date);
+    return this.linksInfo.filter(
+      (link) =>
+        startOfDay(link.create_at).toString() === startOfDay(date).toString(),
+    );
   }
 
   public async findAllLinkInfosByWeek(date: Date, user: User): Promise<any> {
-    return this.linksInfo.filter((link) => link.create_at === date);
+    return this.linksInfo.filter(
+      (link) =>
+        startOfDay(link.create_at).toString() === startOfDay(date).toString(),
+    );
   }
 
   public async findAllByAfterMonth(
     date: Date,
     status: boolean,
   ): Promise<Link[] | undefined> {
-    return this.links.filter((link) => link.create_at === date);
+    return this.links.filter(
+      (link) =>
+        startOfDay(link.create_at).toString() === startOfDay(date).toString(),
+    );
   }
 
   public async inactiveAllBeforeDate(date: Date): Promise<string[]> {
