@@ -6,5 +6,6 @@
   "LINK_ACTIVATED": "Link activated successfully",
   "LINK_REMOVED": "Link removed successfully",
   "CHARACTERES_INVALID": "Allowed characters  '-,_,a-z,A-Z,0-9'",
-  "LINK_HAS_BEEN_EXPIRED": "The link has been expired, please create another"
+  "LINK_HAS_BEEN_EXPIRED": "The link has been expired, please create another",
+  "ERROR_URL_CLILA": "Shortening this url is not allowed"
 }

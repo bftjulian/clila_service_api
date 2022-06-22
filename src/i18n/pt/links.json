@@ -6,5 +6,6 @@
   "LINK_ACTIVATED": "Link ativado com sucesso",
   "LINK_REMOVED": "Link removido com sucesso",
   "CHARACTERES_INVALID": "Caracteres permitidos '-,_,a-z,A-Z,0-9'",
-  "LINK_HAS_BEEN_EXPIRED": "O Link está expirado, por favor gere um novo"
+  "LINK_HAS_BEEN_EXPIRED": "O Link está expirado, por favor gere um novo",
+  "ERROR_URL_CLILA": "Não é permitido encurtar esta url"
 }
