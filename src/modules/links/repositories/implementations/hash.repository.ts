@@ -33,6 +33,13 @@ export class HashRepository implements IHashRepository {
     );
   }
 
+  public async setAllUnusedByHash(hash: string[]): Promise<void> {
+    await this.hashModel.updateMany(
+      { hash },
+      { in_use: false, hash_length: hash.length },
+    );
+  }
+
   public async isUsed(hash: string): Promise<boolean> {
     const usedHash = await this.hashModel.findOne({ hash, in_use: true });
 

@@ -74,6 +74,6 @@ async function bootstrap() {
   );
 
   // app.setGlobalPrefix('api', { exclude: ['docs', '/:hash'] });
-  await app.listen(3001);
+  await app.listen(3000);
 }
 bootstrap();

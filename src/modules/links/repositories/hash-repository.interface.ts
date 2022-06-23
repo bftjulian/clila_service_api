@@ -12,4 +12,5 @@ export interface IHashRepository {
   setUsed(hash: string): Promise<void>;
   setUnused(hash: string): Promise<void>;
   isUsed(hash: string): Promise<boolean>;
+  setAllUnusedByHash(hash: string[]): Promise<void>;
 }

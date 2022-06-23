@@ -256,8 +256,12 @@ export class FakeLinkRepository implements ILinkRepository {
     );
   }
 
-  public async inactiveAllBeforeDate(date: Date): Promise<string[]> {
+  public async expireAllBeforeDate(date: Date): Promise<string[]> {
     return ['kk'];
+  }
+
+  public async expireAllByHash(hash: string[]): Promise<void> {
+    return;
   }
 
   public async findAllGroupRefByUser(

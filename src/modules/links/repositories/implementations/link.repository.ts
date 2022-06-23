@@ -324,24 +324,30 @@ export class LinkRepository {
     });
   }
 
-  public async inactiveAllBeforeDate(date: Date): Promise<string[]> {
+  public async expireAllBeforeDate(date: Date): Promise<string[]> {
     const links = await this.linkModel
       .find({
         update_at: { $lte: date },
         group_ref: false,
+        status: 'ACTIVE',
       })
       .select('hash_link');
     await this.linkModel.updateMany(
       {
         update_at: { $lte: date },
       },
-      { active: false, expired_at: new Date(), status: 'INACTIVE' },
+      { active: false, expired_at: new Date(), status: 'EXPIRED' },
     );
 
     return links.map((link) => link.hash_link);
   }
 
-  public;
+  public async expireAllByHash(hash: string[]): Promise<void> {
+    await this.linkModel.updateMany(
+      { hash_link: hash },
+      { active: false, expired_at: new Date(), status: 'EXPIRED' },
+    );
+  }
 
   public async findAllGroupRefByUser(
     user: User,

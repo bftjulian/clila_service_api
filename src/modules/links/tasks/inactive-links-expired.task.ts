@@ -1,12 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import RedisProvider from 'src/shared/providers/RedisProvider/implementations/RedisProvider';
+import { HashRepository } from '../repositories/implementations/hash.repository';
 import { LinkRepository } from '../repositories/implementations/link.repository';
 
 @Injectable()
 export class InactiveLinkExpiredTask {
   constructor(
     private readonly linksRepository: LinkRepository,
+    private readonly hashRepository: HashRepository,
     private readonly redisProvider: RedisProvider,
   ) {}
 
@@ -16,9 +18,9 @@ export class InactiveLinkExpiredTask {
     try {
       const today = new Date();
       const priorDate = new Date(new Date().setDate(today.getDate() - 30));
-      const hashes = await this.linksRepository.inactiveAllBeforeDate(
-        priorDate,
-      );
+      const hashes = await this.linksRepository.expireAllBeforeDate(priorDate);
+      await this.hashRepository.setAllUnusedByHash(hashes);
+
       const promises = hashes.map((hash) =>
         this.redisProvider.delete(`links:${hash}`),
       );

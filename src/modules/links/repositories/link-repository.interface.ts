@@ -34,5 +34,6 @@ export interface ILinkRepository {
   setStatusLink(id: string, status: boolean): Promise<void>;
   removeLinkById(id: string): Promise<void>;
   createLinkInfo(linkInfoData: LinkInfos): Promise<LinkInfos>;
-  inactiveAllBeforeDate(date: Date): Promise<string[]>;
+  expireAllBeforeDate(date: Date): Promise<string[]>;
+  expireAllByHash(hash: string[]): Promise<void>;
 }

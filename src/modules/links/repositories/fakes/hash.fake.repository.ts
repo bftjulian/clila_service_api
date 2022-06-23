@@ -22,6 +22,10 @@ export class FakeHashRepository implements IHashRepository {
     dataHash.hash_length = 6;
   }
 
+  public async setAllUnusedByHash(hash: string[]): Promise<void> {
+    return;
+  }
+
   public async isUsed(hash: string): Promise<boolean> {
     const findIndex = this.hashes.findIndex((h) => h.hash === hash);
     if (findIndex !== -1) {

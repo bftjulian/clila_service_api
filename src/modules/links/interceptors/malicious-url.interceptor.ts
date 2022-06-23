@@ -45,7 +45,7 @@ export class MaliciousUrlInterceptor implements NestInterceptor {
       MALICIOUS_URLS,
       parsedLink,
     );
-    console.log(maliciousOnCache);
+
     if (maliciousOnCache) {
       throw new BadRequestException(
         new Result('Malicious content detected', false, {}, null),
