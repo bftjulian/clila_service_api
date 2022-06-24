@@ -85,6 +85,7 @@ export class UserRepository implements IUserRepository {
       { _id: id },
       {
         code_validation_email: 'A',
+        date_validation_code_email: Date.now(),
       },
     );
   }

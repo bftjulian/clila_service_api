@@ -45,4 +45,22 @@ export const UserSchema = new mongoose.Schema({
     trim: true,
     default: null,
   },
+
+  created_at: {
+    type: Date,
+    trim: true,
+    default: Date.now(),
+  },
+
+  updated_at: {
+    type: Date,
+    trim: true,
+    default: null,
+  },
+
+  date_validation_code_email: {
+    type: Date,
+    trim: true,
+    default: null,
+  },
 });

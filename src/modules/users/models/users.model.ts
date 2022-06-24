@@ -30,4 +30,16 @@ export class User {
   @ApiProperty()
   @Exclude()
   code_validation_email?: string;
+
+  @ApiProperty()
+  @Exclude()
+  created_at?: Date;
+
+  @ApiProperty()
+  @Exclude()
+  updated_at?: Date;
+
+  @ApiProperty()
+  @Exclude()
+  date_validation_code_email?: Date;
 }
