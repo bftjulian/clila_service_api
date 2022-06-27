@@ -79,4 +79,8 @@ export class FakeHashRepository implements IHashRepository {
       (hash) => hash.in_use === false && hash.hash_length === hash_length,
     );
   }
+
+  public async getAllInUse(): Promise<Hash[]> {
+    return this.hashes.filter((hash) => hash.in_use === true);
+  }
 }

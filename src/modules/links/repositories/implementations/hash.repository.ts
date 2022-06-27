@@ -84,4 +84,8 @@ export class HashRepository implements IHashRepository {
       .findOne({ in_use: false, hash_length })
       .select('hash _id');
   }
+
+  public async getAllInUse(): Promise<Hash[]> {
+    return this.hashModel.find({ in_use: true });
+  }
 }

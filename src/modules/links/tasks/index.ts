@@ -5,6 +5,7 @@ import { FeedHashesTask } from './feed-hashes.task';
 import { ImportHashFromLinksTask } from './import-hash-from-links.task';
 import { InactiveLinkExpiredTask } from './inactive-links-expired.task';
 import { LoadHashesOnRedisTask } from './load-hashes-on-redis.task';
+import { ReleaseUnusedHashesTask } from './release-unused-hashes.task';
 import { SearchForMaliciousLinksOnDatabase } from './search-for-malicious-links-on-database.task';
 
 export const linksTasks = [
@@ -16,4 +17,5 @@ export const linksTasks = [
   CheckMaliciousLinksFailedTask,
   SearchForMaliciousLinksOnDatabase,
   CheckThatLinksAreNoLongerMalicious,
+  ReleaseUnusedHashesTask,
 ];
