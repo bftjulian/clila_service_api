@@ -11,7 +11,7 @@ export class ReleaseUnusedHashesTask {
   ) {}
   private readonly logger = new Logger(ReleaseUnusedHashesTask.name);
 
-  @Cron('0 0 1 */3 *')
+  @Cron('0 03 1 */3 *')
   public async releaseUnusedHashes() {
     const hashesInUsed = await this.hashRepository.getAllInUse();
     const verifyLinks = hashesInUsed.map(async (hash) => {
