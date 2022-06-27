@@ -25,5 +25,6 @@ export class ReleaseUnusedHashesTask {
       }
     });
     await Promise.allSettled(verifyLinks);
+    this.logger.debug('Release unused Hashes');
   }
 }
