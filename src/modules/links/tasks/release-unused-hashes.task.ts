@@ -16,11 +16,7 @@ export class ReleaseUnusedHashesTask {
     const hashesInUsed = await this.hashRepository.getAllInUse();
     const verifyLinks = hashesInUsed.map(async (hash) => {
       const link = await this.linksRepository.findByHash(hash.hash);
-      if (
-        !link ||
-        (!!link && link.active === false) ||
-        (!!link && link.status === 'INACTIVE')
-      ) {
+      if (!link || (!!link && link.active === false)) {
         await this.hashRepository.setUnused(hash.hash);
       }
     });
