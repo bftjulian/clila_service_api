@@ -1,8 +1,8 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { I18nService } from 'nestjs-i18n';
 import { IUserTokenDto } from '../../../auth/dtos/user-token.dto';
-import { Result } from 'src/shared/models/result';
-import RedisProvider from 'src/shared/providers/RedisProvider/implementations/RedisProvider';
+import { Result } from '../../../../shared/models/result';
+import RedisProvider from '../../../../shared/providers/RedisProvider/implementations/RedisProvider';
 import { CreateBatchLinksDto } from '../../dtos/create-batch-links-group.dto';
 import { CreateGroupDto } from '../../dtos/create-group.dto';
 import {
@@ -24,6 +24,7 @@ import { QueryDto } from '../../../../shared/dtos/query.dto';
 import { IUserRepository } from '../../../users/repositories/user-repository.interface';
 import { UserRepository } from '../../../users/repositories/implementation/user.repository';
 import { urlNormalize } from '../../../../utils/urlNormalize';
+import { ConfigService } from '@nestjs/config';
 
 type JobConf = {
   name?: string | undefined;
@@ -44,6 +45,7 @@ export class GroupService {
     private readonly eventEmiter: EventEmitter2,
     @InjectQueue(LINKS_BATCH_PROCESSOR)
     private readonly linksBatchQueue: Queue,
+    private readonly configService: ConfigService,
   ) {}
   public async createGroup(
     user: IUserTokenDto,
@@ -54,7 +56,14 @@ export class GroupService {
 
     if (!userExist) {
       throw new BadRequestException(
-        new Result('User not found', false, {}, null),
+        new Result(
+          await this.i18n.translate('users.NOT_FOUND_USER', {
+            lang,
+          }),
+          false,
+          {},
+          null,
+        ),
       );
     }
 
@@ -123,14 +132,13 @@ export class GroupService {
       };
     };
 
-    const batchLinkInsertRate = +process.env.BATCH_LINKS_RATE;
-
+    const batchLinkInsertRate =
+      this.configService.get<number>('BATCH_LINKS_RATE');
     const linksToInsertDatabase = hashes.map(factory);
 
     const insertRate = Math.ceil(
       linksToInsertDatabase.length / batchLinkInsertRate,
     );
-
     const linksToQueue = Array.from(Array(insertRate).keys()).map(() => {
       return {
         name: CREATE_LINKS_BATCH,

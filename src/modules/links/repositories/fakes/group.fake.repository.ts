@@ -4,7 +4,7 @@ import { CreateGroupDto } from '../../dtos/create-group.dto';
 import { Group } from '../../models/groups.model';
 import { IGroupRepository } from '../group-repository.interface';
 
-export class FakeGroup implements IGroupRepository {
+export class FakeGroupRepository implements IGroupRepository {
   private groups: Group[] = [];
 
   public async incrementClick(id: string): Promise<void> {
@@ -17,10 +17,9 @@ export class FakeGroup implements IGroupRepository {
     const dataGroup = {
       _id: 'group_fake',
       ...groupData,
-      user: {},
       total_clicks: 1,
-      created_at: new Date(),
-      updated_at: new Date(),
+      created_at: new Date('2022-06-28T13:23:09.491Z'),
+      updated_at: new Date('2022-06-28T13:23:09.491Z'),
     } as Group;
     this.groups.push(dataGroup);
     return dataGroup;

@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Schema } from 'mongoose';
-import { Group } from 'src/modules/links/models/groups.model';
-import { User } from 'src/modules/users/models/users.model';
-import { QueryDto } from 'src/shared/dtos/query.dto';
-import { queryHelper } from 'src/utils/queryHelper';
+import { Model } from 'mongoose';
+import { Group } from '../../../../modules/links/models/groups.model';
+import { User } from '../../../../modules/users/models/users.model';
+import { QueryDto } from '../../../../shared/dtos/query.dto';
+import { queryHelper } from '../../../../utils/queryHelper';
 import { CreateGroupDto } from '../../dtos/create-group.dto';
-import { IGroupRepository } from '../group-repository.interface';
 @Injectable()
 export class GroupRepository {
   constructor(
