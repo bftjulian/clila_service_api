@@ -25,6 +25,7 @@ import { IUserRepository } from '../../../users/repositories/user-repository.int
 import { UserRepository } from '../../../users/repositories/implementation/user.repository';
 import { urlNormalize } from '../../../../utils/urlNormalize';
 import { ConfigService } from '@nestjs/config';
+import { CreateShortLinkListsDto } from '../../dtos/create-short-links-lists.dto';
 
 type JobConf = {
   name?: string | undefined;
@@ -91,6 +92,35 @@ export class GroupService {
         new Result('Error in transaction', false, {}, null),
       );
     }
+  }
+
+  public async shortLinksLists(
+    user: IUserTokenDto,
+    data: CreateShortLinkListsDto,
+    lang,
+  ) {
+    let link = '';
+    if (process.env.NODE_ENV === 'DEV') {
+      link = 'http://localhost:3000/';
+    } else {
+      link = 'https://cli.la/';
+    }
+    const hashes = await this.redisProvider.popMany(
+      FREE_SIX_DIGITS_HASHES_REDIS_KEY,
+      data.links.length,
+    );
+    await this.redisProvider.lpush(USED_HASHES_TO_UPDATE_REDIS_KEY, hashes);
+
+    const links = [];
+    for (const index in hashes) {
+      links.push({
+        original_link: data.links[index],
+        short_link: link + hashes[index],
+      });
+    }
+    console.log(links);
+    this.eventEmiter.emit(LINK_CREATED_EVENT_NAME);
+    return true;
   }
 
   public async batchLinksCreate(
