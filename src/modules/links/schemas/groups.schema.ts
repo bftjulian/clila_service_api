@@ -9,8 +9,15 @@ const GroupSchema = new mongoose.Schema(
     },
     original_link: {
       type: String,
+      required: false,
+      trim: true,
+    },
+    type: {
+      type: String,
       required: true,
       trim: true,
+      default: 'ONE_ORIGINAL_LINK',
+      enum: ['ONE_ORIGINAL_LINK', 'MULTIPLE_ORIGINAL_LINKS'],
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,

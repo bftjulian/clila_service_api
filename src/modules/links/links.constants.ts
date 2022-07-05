@@ -8,6 +8,10 @@ export const LINKS_BATCH_PROCESSOR = 'links-batch-processor';
 
 export const CREATE_LINKS_BATCH = 'create-links-batch';
 
+export const LINKS_SHORT_MULTIPLE_PROCESSOR = 'links-short-multiple-processor';
+
+export const CREATE_SHORT_LINK_MULTIPLE = 'create-short-link-multiple';
+
 export const IMPORT_HASHES_FROM_LINKS_PROCESSOR =
   'import-hashes-from-links-processor';
 

@@ -14,7 +14,7 @@ export class CreateLinkBatch {
   })
   public async feedHashesDatabase(job: Job<ICreateBatchLinksJob>) {
     const { links } = job.data;
-
+    // console.log(links);
     await this.link.createMany(links);
 
     await new Promise((resolve) =>

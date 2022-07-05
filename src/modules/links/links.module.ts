@@ -12,6 +12,7 @@ import {
   HASHES_PROCESSOR,
   IMPORT_HASHES_FROM_LINKS_PROCESSOR,
   LINKS_BATCH_PROCESSOR,
+  LINKS_SHORT_MULTIPLE_PROCESSOR,
 } from './links.constants';
 import { linksProcessors } from './processors';
 import { GroupRepository } from './repositories/implementations/group.repository';
@@ -35,6 +36,9 @@ import { LoadHashesOnRedisService } from './service/load-hashes-on-redis/load-ha
       },
       {
         name: LINKS_BATCH_PROCESSOR,
+      },
+      {
+        name: LINKS_SHORT_MULTIPLE_PROCESSOR,
       },
     ),
     MongooseModule.forFeature([
