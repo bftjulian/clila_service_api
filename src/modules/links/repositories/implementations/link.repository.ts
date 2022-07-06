@@ -57,7 +57,6 @@ export class LinkRepository {
     const data = await this.linkModel.insertMany(links, {
       ordered: false,
     });
-    console.log(data);
     return data;
   }
 
