@@ -130,27 +130,45 @@ export class GroupService {
     );
     await this.redisProvider.lpush(USED_HASHES_TO_UPDATE_REDIS_KEY, hashes);
 
-    const links = [];
     const linksViews = [];
     for (const index in hashes) {
       linksViews.push({
         original_link: data.links[index],
         short_link: link + hashes[index],
+        hash: hashes[index],
       });
-      links.push({
+    }
+    const shortMultipleLinkInsertRate = this.configService.get<number>(
+      'SHORT_MULTIPLE_LINKS_RATE',
+    );
+
+    const factory = (hash) => {
+      return {
+        original_link: hash.original_link,
+        short_link: hash.short_link,
+        hash_link: hash.hash,
+        user: userExist,
+      };
+    };
+
+    const links = linksViews.map(factory);
+
+    const insertRate = Math.ceil(
+      linksViews.length / shortMultipleLinkInsertRate,
+    );
+    const linksToQueue = Array.from(Array(insertRate).keys()).map(() => {
+      return {
         name: CREATE_SHORT_LINK_MULTIPLE,
         data: {
-          original_link: data.links[index],
-          short_link: link + hashes[index],
-          hash_link: hashes[index],
-          user: userExist,
+          links,
         },
         opts: {
-          delay: 10 * 1000,
+          delay: 1 * 1000,
         },
-      } as JobConf);
-    }
-    await this.linksMultipleQueue.addBulk(links);
+      } as JobConf;
+    });
+
+    await this.linksMultipleQueue.addBulk(linksToQueue);
     this.eventEmiter.emit(LINK_CREATED_EVENT_NAME);
     return linksViews;
   }

@@ -1,4 +1,5 @@
 import { InjectQueue, OnQueueFailed, Process, Processor } from '@nestjs/bull';
+import { ConfigService } from '@nestjs/config';
 import { Job, JobOptions, Queue } from 'bull';
 import {
   CREATE_SHORT_LINK_MULTIPLE,
@@ -20,34 +21,38 @@ export class CreateShortLinkMultiple {
     private readonly linkRepository: LinkRepository,
     @InjectQueue(VERIFY_MALICIOUS_LINKS_PROCESSOR)
     private readonly verifyMaliciousLinksQueue: Queue,
+    private readonly configService: ConfigService,
   ) {}
 
   @Process({
     concurrency: 1,
     name: CREATE_SHORT_LINK_MULTIPLE,
   })
-  public async shortLinkMultiple(job: Job<ICreateShortLinksMultipleJob>) {
-    console.log(VERIFY_MALICIOUS_LINKS);
-    await this.linkRepository.createMany([job.data]);
+  public async shortLinkMultiple(job: Job) {
+    await this.linkRepository.createMany(job.data.links);
+    const links = job.data.links.map((link) => {
+      const l = { link: link.original_link };
+      return l;
+    });
 
-    await this.verifyMaliciousLinksQueue.addBulk([
-      {
+    const bulkSize = this.configService.get<number>(
+      'VERIFY_MALICIOUS_LINKS_RATE',
+    );
+
+    const insertRate = Math.ceil(links.length / bulkSize);
+
+    const listToQueue = Array.from(Array(insertRate).keys()).map(() => {
+      return {
         name: VERIFY_MALICIOUS_LINKS,
         data: {
-          links: [job.data.original_link],
+          links,
         },
         opts: {
-          delay: 10 * 1000,
+          delay: 1 * 1000,
         },
-      } as JobConf,
-    ]);
-
-    await new Promise((resolve) =>
-      setTimeout(
-        resolve,
-        +process.env.SHORT_MULTIPLE_LINKS_RATE_EVERY_SECONDS * 1000,
-      ),
-    );
+      } as JobConf;
+    });
+    await this.verifyMaliciousLinksQueue.addBulk(listToQueue);
   }
 
   @OnQueueFailed()

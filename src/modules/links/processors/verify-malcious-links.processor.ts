@@ -17,12 +17,6 @@ export class VerifyLinksMaliciousProcessor {
   public async verifyMaliciousLinks(job: Job<IVerifyMaliciousLinksJob>) {
     const { links } = job.data;
     console.log(links);
-    await new Promise((resolve) =>
-      setTimeout(
-        resolve,
-        +process.env.VERIFY_MALICIOUS_LINKS_RATE_EVERY_SECONDS * 1000,
-      ),
-    );
   }
 
   @OnQueueFailed()
