@@ -35,8 +35,7 @@ export class MaliciousUrlInterceptor implements NestInterceptor {
     } = request;
 
     if (!original_link) {
-      next.handle();
-      return;
+      return next.handle();
     }
 
     const parsedLink = formatLink(original_link);
