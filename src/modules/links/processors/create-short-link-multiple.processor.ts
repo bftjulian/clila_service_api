@@ -1,6 +1,7 @@
 import { InjectQueue, OnQueueFailed, Process, Processor } from '@nestjs/bull';
 import { ConfigService } from '@nestjs/config';
 import { Job, JobOptions, Queue } from 'bull';
+import RedisProvider from '../../../shared/providers/RedisProvider/implementations/RedisProvider';
 import {
   CREATE_SHORT_LINK_MULTIPLE,
   LINKS_SHORT_MULTIPLE_PROCESSOR,
@@ -22,6 +23,7 @@ export class CreateShortLinkMultiple {
     @InjectQueue(VERIFY_MALICIOUS_LINKS_PROCESSOR)
     private readonly verifyMaliciousLinksQueue: Queue,
     private readonly configService: ConfigService,
+    private readonly redisProvider: RedisProvider,
   ) {}
 
   @Process({
@@ -29,11 +31,19 @@ export class CreateShortLinkMultiple {
     name: CREATE_SHORT_LINK_MULTIPLE,
   })
   public async shortLinkMultiple(job: Job) {
-    await this.linkRepository.createMany(job.data.links);
+    const createLinks = await this.linkRepository.createMany(job.data.links);
     const links = job.data.links.map((link) => {
       const l = { link: link.original_link };
       return l;
     });
+    const cLinksPromises = createLinks.map(async (createLink) => {
+      await this.redisProvider.save(
+        `links:${createLink.hash_link}`,
+        createLink,
+      );
+    });
+
+    await Promise.allSettled(cLinksPromises);
 
     const bulkSize = this.configService.get<number>(
       'VERIFY_MALICIOUS_LINKS_RATE',
