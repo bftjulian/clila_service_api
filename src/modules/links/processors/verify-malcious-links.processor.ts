@@ -16,7 +16,7 @@ export class VerifyLinksMaliciousProcessor {
   })
   public async verifyMaliciousLinks(job: Job<IVerifyMaliciousLinksJob>) {
     const { links } = job.data;
-    console.log(links);
+    console.log(job.data);
   }
 
   @OnQueueFailed()
