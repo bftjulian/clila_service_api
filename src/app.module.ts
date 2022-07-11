@@ -33,6 +33,7 @@ import { appsProcessors } from './proccessors';
 import { LINK_CLICKED_PROCCESSOR_NAME } from './app.constants';
 import { GroupRepository } from './modules/links/repositories/implementations/group.repository';
 import { GroupSchema } from './modules/links/schemas/groups.schema';
+import { MetricsModule } from './modules/metrics/metrics.module';
 
 @Module({
   imports: [
@@ -91,6 +92,7 @@ import { GroupSchema } from './modules/links/schemas/groups.schema';
     ScheduleModule.forRoot(),
     SharedModule,
     EventEmitterModule.forRoot(),
+    MetricsModule,
   ],
   controllers: [AppController],
   providers: [
