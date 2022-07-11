@@ -11,8 +11,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { I18nLang } from 'nestjs-i18n';
-import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
-import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
+import { IUserTokenDto } from '../../../auth/dtos/user-token.dto';
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 import { CreateRefreshTokenDto } from '../../dtos/create-refresh-token.dto';
 import { CreateUserDto } from '../../dtos/create-users.dto';
 import { ValidateApiTokenDto } from '../../dtos/validate-api-token.dto';

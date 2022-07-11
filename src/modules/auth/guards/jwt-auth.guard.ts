@@ -2,7 +2,7 @@ import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { isJWT } from 'class-validator';
 import { Observable } from 'rxjs';
-import { UserRepository } from '../users/repositories/implementation/user.repository';
+import { UserRepository } from '../../users/repositories/implementation/user.repository';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -18,6 +18,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (!request.headers.authorization) return false;
 
     const token = request.headers.authorization.split(' ')[1];
+
     if (token && isJWT(token)) return super.canActivate(context);
 
     return this.usersRepository

@@ -15,8 +15,8 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { I18nLang } from 'nestjs-i18n';
-import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
-import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
+import { IUserTokenDto } from '../../../auth/dtos/user-token.dto';
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 import { CreateLinkDto } from '../../dtos/create-link.dto';
 import { UpdateLinkDto } from '../../dtos/update-link.dto';
 import { Link } from '../../models/link.model';

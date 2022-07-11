@@ -10,9 +10,9 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
-import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
+import { IUserTokenDto } from '../../auth/dtos/user-token.dto';
 import { DashboardService } from '../services/dashboard/dashboard.service';
+import { JwtAuthWebsocketGuard } from '../../auth/guards/jwt-auth-websocket.guard';
 
 @WebSocketGateway(3002, {
   cors: {
@@ -39,7 +39,7 @@ export class DashboardGateway
     console.log('handleDisconnect');
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthWebsocketGuard)
   @SubscribeMessage('get_all_data')
   public async dashboardChannel(@ConnectedSocket() socket: Socket) {
     const handshake = socket.handshake;

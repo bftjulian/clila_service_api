@@ -1,23 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { User } from '../../../../modules/users/models/users.model';
-import { Link } from '../../models/link.model';
-import { LinkInfos } from '../../models/link-infos.model';
-import { QueryDto } from '../../../../shared/dtos/query.dto';
-import { queryHelper } from '../../../../utils/queryHelper';
 import {
   addDays,
   endOfDay,
   endOfMonth,
-  isSameDay,
+  endOfWeek,
   getDaysInMonth,
+  isSameDay,
   startOfDay,
   startOfMonth,
   startOfWeek,
-  endOfWeek,
 } from 'date-fns';
+import { Model } from 'mongoose';
+import { User } from '../../../../modules/users/models/users.model';
+import { QueryDto } from '../../../../shared/dtos/query.dto';
+import { queryHelper } from '../../../../utils/queryHelper';
 import { Group } from '../../models/groups.model';
+import { LinkInfos } from '../../models/link-infos.model';
+import { Link } from '../../models/link.model';
 
 @Injectable()
 export class LinkRepository {
@@ -392,6 +392,6 @@ export class LinkRepository {
       group_ref: true,
       group,
     });
-    return await link.save();
+    return (await link.save()) as Link;
   }
 }

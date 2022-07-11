@@ -1,9 +1,9 @@
 import { I18nLang } from 'nestjs-i18n';
 import { ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
-import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
+import { Controller, UseGuards, Get, Req } from '@nestjs/common';
+import { IUserTokenDto } from '../../../auth/dtos/user-token.dto';
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 
 @ApiTags('Dashboard')

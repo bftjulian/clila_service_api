@@ -21,7 +21,7 @@ export class GroupRepository {
 
   public async create(groupData: CreateGroupDto): Promise<Group> {
     const group = new this.groupModel(groupData);
-    return await group.save();
+    return (await group.save()) as Group;
   }
 
   public async findById(id: string): Promise<Group | undefined> {
