@@ -7,8 +7,10 @@ import { CreateBatchLinksDto } from '../../dtos/create-batch-links-group.dto';
 import { CreateGroupDto } from '../../dtos/create-group.dto';
 import {
   CREATE_LINKS_BATCH,
+  CREATE_SHORT_LINK_MULTIPLE,
   FREE_SIX_DIGITS_HASHES_REDIS_KEY,
   LINKS_BATCH_PROCESSOR,
+  LINKS_SHORT_MULTIPLE_PROCESSOR,
   LINK_CREATED_EVENT_NAME,
   RELOAD_LINKS_ON_REDIS_EVENT,
   USED_HASHES_TO_UPDATE_REDIS_KEY,
@@ -25,6 +27,7 @@ import { IUserRepository } from '../../../users/repositories/user-repository.int
 import { UserRepository } from '../../../users/repositories/implementation/user.repository';
 import { urlNormalize } from '../../../../utils/urlNormalize';
 import { ConfigService } from '@nestjs/config';
+import { CreateShortLinkListsDto } from '../../dtos/create-short-links-lists.dto';
 
 type JobConf = {
   name?: string | undefined;
@@ -45,6 +48,8 @@ export class GroupService {
     private readonly eventEmiter: EventEmitter2,
     @InjectQueue(LINKS_BATCH_PROCESSOR)
     private readonly linksBatchQueue: Queue,
+    @InjectQueue(LINKS_SHORT_MULTIPLE_PROCESSOR)
+    private readonly linksMultipleQueue: Queue,
     private readonly configService: ConfigService,
   ) {}
   public async createGroup(
@@ -53,7 +58,6 @@ export class GroupService {
     lang: string,
   ) {
     const userExist = await this.userRepository.findById(user.id);
-
     if (!userExist) {
       throw new BadRequestException(
         new Result(
@@ -67,14 +71,18 @@ export class GroupService {
       );
     }
 
-    data.original_link = urlNormalize(data.original_link);
+    if (!!data.original_link) {
+      data.original_link = urlNormalize(data.original_link);
+    }
     try {
       const group = await this.groupsRepository.create({
         ...data,
         user: userExist,
       });
 
-      await this.linksRepository.createGroupRef(group);
+      if (!!data.original_link) {
+        await this.linksRepository.createGroupRef(group);
+      }
 
       group.user = null;
 
@@ -93,6 +101,78 @@ export class GroupService {
     }
   }
 
+  public async shortLinksMultiple(
+    user: IUserTokenDto,
+    data: CreateShortLinkListsDto,
+    lang: string,
+    id_group: string,
+  ) {
+    const userExist = await this.userRepository.findById(user.id);
+    const group = await this.groupsRepository.findById(id_group);
+
+    if (!group) {
+      throw new BadRequestException();
+    }
+
+    if (!!group.type && group.type !== 'MULTIPLE_ORIGINAL_LINKS') {
+      throw new BadRequestException();
+    }
+
+    let link = '';
+    if (process.env.NODE_ENV === 'DEV') {
+      link = 'http://localhost:3000/';
+    } else {
+      link = 'https://cli.la/';
+    }
+    const hashes = await this.redisProvider.popMany(
+      FREE_SIX_DIGITS_HASHES_REDIS_KEY,
+      data.links.length,
+    );
+    await this.redisProvider.lpush(USED_HASHES_TO_UPDATE_REDIS_KEY, hashes);
+
+    const linksViews = [];
+    for (const index in hashes) {
+      linksViews.push({
+        original_link: data.links[index],
+        short_link: link + hashes[index],
+        hash: hashes[index],
+      });
+    }
+    const shortMultipleLinkInsertRate = this.configService.get<number>(
+      'SHORT_MULTIPLE_LINKS_RATE',
+    );
+
+    const factory = (hash) => {
+      return {
+        original_link: hash.original_link,
+        short_link: hash.short_link,
+        hash_link: hash.hash,
+        user: userExist,
+      };
+    };
+
+    const links = linksViews.map(factory);
+
+    const insertRate = Math.ceil(
+      linksViews.length / shortMultipleLinkInsertRate,
+    );
+    const linksToQueue = Array.from(Array(insertRate).keys()).map(() => {
+      return {
+        name: CREATE_SHORT_LINK_MULTIPLE,
+        data: {
+          links,
+        },
+        opts: {
+          delay: 1 * 1000,
+        },
+      } as JobConf;
+    });
+
+    await this.linksMultipleQueue.addBulk(linksToQueue);
+    this.eventEmiter.emit(LINK_CREATED_EVENT_NAME);
+    return linksViews;
+  }
+
   public async batchLinksCreate(
     user: IUserTokenDto,
     id: string,
@@ -102,6 +182,10 @@ export class GroupService {
     const group = await this.groupsRepository.findById(id);
 
     if (!group) {
+      throw new BadRequestException();
+    }
+
+    if (!!group.type && group.type !== 'ONE_ORIGINAL_LINK') {
       throw new BadRequestException();
     }
 

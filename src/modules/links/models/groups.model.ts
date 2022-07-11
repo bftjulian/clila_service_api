@@ -19,7 +19,7 @@ export class Group {
   tags: string[];
 
   @ApiProperty()
-  original_link: string;
+  original_link?: string;
 
   @ApiProperty()
   total_clicks: number;
@@ -29,4 +29,7 @@ export class Group {
 
   @ApiProperty()
   updated_at: Date;
+
+  @ApiProperty()
+  type: 'ONE_ORIGINAL_LINK' | 'MULTIPLE_ORIGINAL_LINKS';
 }

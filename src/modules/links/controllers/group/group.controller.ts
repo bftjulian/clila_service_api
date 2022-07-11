@@ -17,6 +17,8 @@ import { IUserTokenDto } from 'src/modules/auth/dtos/user-token.dto';
 import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
 import { QueryDto } from 'src/shared/dtos/query.dto';
 import { CreateBatchLinksDto } from '../../dtos/create-batch-links-group.dto';
+import { CreateGroupDto } from '../../dtos/create-group.dto';
+import { CreateShortLinkListsDto } from '../../dtos/create-short-links-lists.dto';
 import { MaliciousUrlInterceptor } from '../../interceptors/malicious-url.interceptor';
 import { Group } from '../../models/groups.model';
 import { GroupService } from '../../service/group/group.service';
@@ -35,7 +37,11 @@ export class GroupController {
     type: Group,
     status: HttpStatus.CREATED,
   })
-  public async groups(@Body() data, @Req() request, @I18nLang() lang: string) {
+  public async groups(
+    @Body() data: CreateGroupDto,
+    @Req() request,
+    @I18nLang() lang: string,
+  ) {
     const user: IUserTokenDto = request.user;
     return await this.groupService.createGroup(user, data, lang);
   }
@@ -56,6 +62,29 @@ export class GroupController {
   ) {
     const user: IUserTokenDto = request.user;
     return await this.groupService.batchLinksCreate(user, id, data, lang);
+  }
+
+  @SkipThrottle()
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/links/multiple')
+  @ApiResponse({
+    description: 'Create links groups',
+    type: Group,
+    status: HttpStatus.CREATED,
+  })
+  public async shortLinksMultiple(
+    @Param() id_group,
+    @Body() data: CreateShortLinkListsDto,
+    @Req() request,
+    @I18nLang() lang: string,
+  ) {
+    const user: IUserTokenDto = request.user;
+    return await this.groupService.shortLinksMultiple(
+      user,
+      data,
+      lang,
+      id_group.id,
+    );
   }
 
   @SkipThrottle()
