@@ -22,24 +22,32 @@ export class CacheDataRepository implements ICacheDataRepository {
   public async create(id: string, data: object): Promise<any> {
     const parseData = JSON.stringify(data);
 
-    return await this.client.set(id, parseData);
+    return this.client.set(id, parseData);
   }
 
   public async read(id: any): Promise<any> {
     const rawData = await this.client.get(id);
 
-    return JSON.parse(rawData);
+    const parsedData = JSON.parse(rawData);
+
+    return { id, ...parsedData };
   }
 
   public async delete(id: any): Promise<any> {
     return await this.client.del(id);
   }
 
-  public async readMany(idPattern: string): Promise<any> {
+  public async readManyByPattern(idPattern: string): Promise<any> {
     const keys = await this.client.keys(idPattern);
 
     const values = keys.map((key) => this.read(key));
 
     return values;
+  }
+
+  public async readIds() {
+    const IDPATTERN = 'dashboard:*';
+
+    return this.client.keys(IDPATTERN);
   }
 }
