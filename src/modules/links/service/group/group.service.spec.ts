@@ -9,6 +9,7 @@ import RedisProvider from '../../../../shared/providers/RedisProvider/implementa
 import {
   FREE_SIX_DIGITS_HASHES_REDIS_KEY,
   LINKS_BATCH_PROCESSOR,
+  LINKS_SHORT_MULTIPLE_PROCESSOR,
 } from '../../links.constants';
 import { FakeGroupRepository } from '../../repositories/fakes/group.fake.repository';
 import { FakeLinkRepository } from '../../repositories/fakes/link.fake.repository';
@@ -27,8 +28,10 @@ import IRedisProvider from '../../../../shared/providers/RedisProvider/models/IR
 import { ConfigService } from '@nestjs/config';
 import { QueryDto } from 'src/shared/dtos/query.dto';
 import { ILinkRepository } from '../../repositories/link-repository.interface';
+import { CreateShortLinkListsDto } from '../../dtos/create-short-links-lists.dto';
 const config = {
   BATCH_LINKS_RATE: 10000,
+  SHORT_MULTIPLE_LINKS_RATE: 10000,
 };
 
 const configServiceMock = {
@@ -76,6 +79,10 @@ describe('GroupService', () => {
         },
         {
           provide: `BullQueue_${LINKS_BATCH_PROCESSOR}`,
+          useClass: FakeQueue,
+        },
+        {
+          provide: `BullQueue_${LINKS_SHORT_MULTIPLE_PROCESSOR}`,
           useClass: FakeQueue,
         },
         {
@@ -275,6 +282,7 @@ describe('GroupService', () => {
         original_link: 'string',
         tags: ['tag'],
         user: userModel,
+        type: 'ONE_ORIGINAL_LINK',
       } as CreateGroupDto;
       await groupRepository.create(dataGroup);
       const result = await service.listGroups(
@@ -293,6 +301,7 @@ describe('GroupService', () => {
                 links: [],
                 original_link: 'string',
                 tags: ['tag'],
+                type: 'ONE_ORIGINAL_LINK',
                 user: {
                   __v: 1,
                   _id: 'user_fake_id',
@@ -309,6 +318,84 @@ describe('GroupService', () => {
             count: 1,
           },
         }),
+      );
+    });
+  });
+
+  describe('TEST METHOD: shortLinksMultiple', () => {
+    it('should be an exception if there is no group', async () => {
+      const result = service.shortLinksMultiple(
+        {} as IUserTokenDto,
+        {} as CreateShortLinkListsDto,
+        'en',
+        'user_fake_id',
+      );
+      await expect(result).rejects.toBeInstanceOf(BadRequestException);
+    });
+
+    it('should be exception the group type is different from MULTIPLE_ORIGINAL_LINKS', async () => {
+      const dataUser = {
+        _id: 'user_fake_id',
+        email: 'foo@example.com',
+        password: 'passwordFake',
+        api_token: 'fake',
+        __v: 1,
+      } as User;
+      const userModel = await usersRepository.create(dataUser);
+
+      const dataGroup = {
+        name: 'string',
+        links: [],
+        original_link: 'string',
+        tags: ['tag'],
+        user: userModel,
+        type: 'ONE_ORIGINAL_LINK',
+      } as CreateGroupDto;
+      await groupRepository.create(dataGroup);
+
+      const result = service.shortLinksMultiple(
+        {} as IUserTokenDto,
+        {} as CreateShortLinkListsDto,
+        'en',
+        'group_fake',
+      );
+      await expect(result).rejects.toBeInstanceOf(BadRequestException);
+    });
+
+    it('should be successful if you shorten the links', async () => {
+      const dataUser = {
+        _id: 'user_fake_id',
+        email: 'foo@example.com',
+        password: 'passwordFake',
+        api_token: 'fake',
+        __v: 1,
+      } as User;
+      const userModel = await usersRepository.create(dataUser);
+
+      const dataGroup = {
+        name: 'string',
+        links: [],
+        original_link: 'string',
+        tags: ['tag'],
+        user: userModel,
+        type: 'MULTIPLE_ORIGINAL_LINKS',
+      } as CreateGroupDto;
+      await groupRepository.create(dataGroup);
+      await redisRepository.lpush(FREE_SIX_DIGITS_HASHES_REDIS_KEY, 'hashes');
+      const result = await service.shortLinksMultiple(
+        {} as IUserTokenDto,
+        { links: ['link.fake', 'link2.fake'] } as CreateShortLinkListsDto,
+        'en',
+        'group_fake',
+      );
+      expect(result).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            original_link: 'link.fake',
+            short_link: 'https://cli.la/hashes',
+            hash: 'hashes',
+          }),
+        ]),
       );
     });
   });
