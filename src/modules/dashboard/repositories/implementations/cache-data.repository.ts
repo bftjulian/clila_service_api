@@ -1,3 +1,5 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis, { Redis as RedisClient } from 'ioredis';
@@ -37,10 +39,10 @@ export class CacheDataRepository implements ICacheDataRepository {
     return await this.client.del(id);
   }
 
-  public async readManyByPattern(idPattern: string): Promise<any> {
+  public async readManyByPattern(idPattern: string) {
     const keys = await this.client.keys(idPattern);
 
-    const values = keys.map((key) => this.read(key));
+    const values = await Promise.all(keys.map((key) => this.read(key)));
 
     return values;
   }

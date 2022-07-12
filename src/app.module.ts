@@ -28,6 +28,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { SharedModule } from './shared/shared.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { FeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/feed-user-data-api-token.middleware';
+import { WebsocketFeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/websocket-feed-data-api-token.middleware';
 import { BullModule } from '@nestjs/bull';
 import { appsProcessors } from './proccessors';
 import { LINK_CLICKED_PROCCESSOR_NAME } from './app.constants';
@@ -110,5 +111,6 @@ import { MetricsModule } from './modules/metrics/metrics.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(FeedUserDataApiTokenMiddleware).forRoutes('*');
+    consumer.apply(WebsocketFeedUserDataApiTokenMiddleware).forRoutes('*');
   }
 }

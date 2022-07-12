@@ -27,10 +27,25 @@ export class DashboardService {
     private readonly cacheDataRepository: ICacheDataRepository,
   ) {}
 
+  public async handleDisconnect(user: IUserTokenDto) {
+    const userId = user.id;
+
+    const now = new Date();
+
+    const cacheId = `dashboard:user:${userId}:logout`;
+
+    const lastLogout = {
+      user: userId,
+      date: now.toISOString(),
+    };
+
+    await this.cacheDataRepository.create(cacheId, lastLogout);
+  }
+
   public async handleConnection(user: IUserTokenDto) {
     await this.loadAllDataToCache(user);
 
-    await this.readAllDataFromCache(user);
+    return this.readAllDataFromCache(user);
   }
 
   public async loadAllDataToCache(user: IUserTokenDto) {

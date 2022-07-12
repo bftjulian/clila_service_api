@@ -13,6 +13,15 @@ export class DashboardController {
 
   @SkipThrottle()
   @UseGuards(JwtAuthGuard)
+  @Get()
+  public async loadUserDataToCache(@Req() request) {
+    const user: IUserTokenDto = request.user;
+
+    await this.dashboardService.loadAllDataToCache(user);
+  }
+
+  @SkipThrottle()
+  @UseGuards(JwtAuthGuard)
   @Get('clicks')
   public async clicks(@Req() request) {
     const user: IUserTokenDto = request.user;

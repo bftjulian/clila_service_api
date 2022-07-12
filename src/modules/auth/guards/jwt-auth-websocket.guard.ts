@@ -10,18 +10,22 @@ export class JwtAuthWebsocketGuard extends AuthGuard('jwt') {
     super();
   }
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext) {
     const webSocketClient = context.switchToWs().getClient();
 
     const token = webSocketClient.handshake.headers.authorization.split(' ')[1];
 
-    if (token && isJWT(token)) return super.canActivate(context);
+    if (!token) return false;
 
-    return this.usersRepository
-      .findByApiToken(token)
-      .then((user) => !!user)
-      .catch(() => false);
+    const user = await this.usersRepository.findByApiToken(token);
+
+    if (!user) return false;
+
+    webSocketClient.handshake.auth.user = {
+      id: user._id,
+      email: user.email,
+    };
+
+    return true;
   }
 }

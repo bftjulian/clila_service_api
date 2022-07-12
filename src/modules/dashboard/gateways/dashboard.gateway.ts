@@ -13,8 +13,10 @@ import { UseGuards } from '@nestjs/common';
 import { IUserTokenDto } from '../../auth/dtos/user-token.dto';
 import { DashboardService } from '../services/dashboard/dashboard.service';
 import { JwtAuthWebsocketGuard } from '../../auth/guards/jwt-auth-websocket.guard';
+import { WebsocketFeedUserDataApiTokenMiddleware } from '../../auth/middlewares/websocket-feed-data-api-token.middleware';
 
 @WebSocketGateway(3002, {
+  middlewares: [WebsocketFeedUserDataApiTokenMiddleware],
   cors: {
     origin: '*',
   },
@@ -40,32 +42,21 @@ export class DashboardGateway
   }
 
   @UseGuards(JwtAuthWebsocketGuard)
-  @SubscribeMessage('get_all_data')
-  public async dashboardChannel(
-    @ConnectedSocket() socket: Socket,
-    @MessageBody() data: any,
-  ) {
-    const handshake = socket.handshake;
+  @SubscribeMessage('dashboard_all_data')
+  public async dashboardChannel(@ConnectedSocket() socket: Socket) {
+    const user: IUserTokenDto = socket.handshake.auth.user;
 
-    console.log('handshake', handshake);
+    const dashboardData = await this.dashboardService.handleConnection(user);
 
-    console.log('get_all_data', data);
-
-    // let user: IUserTokenDto;
-
-    // const dashboardData = await this.dashboardService.readAllDataFromCache(
-    //   user,
-    // );
-
-    // this.server.sockets.emit('dashboard_data', dashboardData);
+    return this.server.sockets.emit('dashboard_data', dashboardData);
   }
 
   @UseGuards(JwtAuthWebsocketGuard)
   @SubscribeMessage('get_data_in_periods')
   public async readAllDataFromCache(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() data,
+    @MessageBody() period: any,
   ) {
-    console.log(data);
+    console.log(period);
   }
 }
