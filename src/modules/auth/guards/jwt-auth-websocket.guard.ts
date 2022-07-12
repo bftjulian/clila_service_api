@@ -15,7 +15,7 @@ export class JwtAuthWebsocketGuard extends AuthGuard('jwt') {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const webSocketClient = context.switchToWs().getClient();
 
-    const token = webSocketClient.handshake.headers.authorization.split('')[1];
+    const token = webSocketClient.handshake.headers.authorization.split(' ')[1];
 
     if (token && isJWT(token)) return super.canActivate(context);
 

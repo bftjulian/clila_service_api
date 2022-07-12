@@ -41,10 +41,15 @@ export class DashboardGateway
 
   @UseGuards(JwtAuthWebsocketGuard)
   @SubscribeMessage('get_all_data')
-  public async dashboardChannel(@ConnectedSocket() socket: Socket) {
+  public async dashboardChannel(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ) {
     const handshake = socket.handshake;
 
     console.log('handshake', handshake);
+
+    console.log('get_all_data', data);
 
     // let user: IUserTokenDto;
 
@@ -55,6 +60,7 @@ export class DashboardGateway
     // this.server.sockets.emit('dashboard_data', dashboardData);
   }
 
+  @UseGuards(JwtAuthWebsocketGuard)
   @SubscribeMessage('get_data_in_periods')
   public async readAllDataFromCache(
     @ConnectedSocket() socket: Socket,
