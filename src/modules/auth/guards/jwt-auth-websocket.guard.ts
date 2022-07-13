@@ -6,9 +6,10 @@ import { UserRepository } from '../../users/repositories/implementation/user.rep
 import { verify } from 'jsonwebtoken';
 import { jwtConstants } from '../constants';
 import { IUserTokenDto } from '../dtos/user-token.dto';
+import { VerifyService } from '../../dashboard/services/verify/verify.service';
 @Injectable()
 export class JwtAuthWebsocketGuard extends AuthGuard('jwt') {
-  constructor(private readonly usersRepository: UserRepository) {
+  constructor(private readonly verifyService: VerifyService) {
     super();
   }
 
@@ -17,38 +18,43 @@ export class JwtAuthWebsocketGuard extends AuthGuard('jwt') {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const websocketClient = context.switchToWs().getClient();
 
-    const token = websocketClient.handshake.headers.authorization.split(' ')[1];
+    const handshake = websocketClient.handshake;
 
-    console.log('TOKEN', token);
+    const userOfUndefined =
+      this.verifyService.authenticateConnection(handshake);
 
-    if (!token) return false;
+    if (userOfUndefined === undefined) return false;
 
-    if (token && isJWT(token)) {
-      try {
-        const decoded = verify(token, jwtConstants.secret) as IUserTokenDto;
+    handshake.auth.user = userOfUndefined;
 
-        const user: IUserTokenDto = {
-          id: decoded.id,
-          email: decoded.email,
-        };
-
-        console.log('USER', user);
-
-        websocketClient.handshake.auth.user = user;
-
-        return true;
-      } catch (err) {
-        return false;
-      }
-    }
-
-    return this.usersRepository
-      .findByApiToken(token)
-      .then((user) => {
-        websocketClient.handshake.auth.user = user;
-
-        return !!user;
-      })
-      .catch(() => false);
+    return true;
   }
 }
+
+// if (!token) return false;
+
+// if (token && isJWT(token)) {
+//   try {
+//     const decoded = verify(token, jwtConstants.secret) as IUserTokenDto;
+
+//     const user: IUserTokenDto = {
+//       id: decoded.id,
+//       email: decoded.email,
+//     };
+
+//     websocketClient.handshake.auth.user = user;
+
+//     return true;
+//   } catch (err) {
+//     return false;
+//   }
+// }
+
+// return this.usersRepository
+//   .findByApiToken(token)
+//   .then((user) => {
+//     websocketClient.handshake.auth.user = user;
+
+//     return !!user;
+//   })
+//   .catch(() => false);

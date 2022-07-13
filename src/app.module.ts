@@ -1,40 +1,39 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UsersModule } from './modules/users/users.module';
-import { LinksModule } from './modules/links/links.module';
-import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
 import {
-  AcceptLanguageResolver,
+  I18nModule,
+  QueryResolver,
   CookieResolver,
   HeaderResolver,
   I18nJsonParser,
-  I18nModule,
-  QueryResolver,
+  AcceptLanguageResolver,
 } from 'nestjs-i18n';
 import { join } from 'path';
+import { APP_GUARD } from '@nestjs/core';
+import { BullModule } from '@nestjs/bull';
+import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+import { appsProcessors } from './proccessors';
+import { AppController } from './app.controller';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
+import { SharedModule } from './shared/shared.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { LinkRepository } from './modules/links/repositories/implementations/link.repository';
+import { MailModule } from './modules/mail/mail.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { UsersModule } from './modules/users/users.module';
+import { LinksModule } from './modules/links/links.module';
+import { LINK_CLICKED_PROCCESSOR_NAME } from './app.constants';
+import { MetricsModule } from './modules/metrics/metrics.module';
 import { LinkSchema } from './modules/links/schemas/link.schema';
 import { UserSchema } from './modules/users/schemas/user.schema';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
-import { LinkInfosSchema } from './modules/links/schemas/link-infos.schema';
-import { MailModule } from './modules/mail/mail.module';
-import { RefreshTokenSchema } from './modules/users/schemas/refresh-tokens.schema';
-import { DashboardModule } from './modules/dashboard/dashboard.module';
-import { ScheduleModule } from '@nestjs/schedule';
-import { SharedModule } from './shared/shared.module';
-import { EventEmitterModule } from '@nestjs/event-emitter';
-import { FeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/feed-user-data-api-token.middleware';
-import { WebsocketFeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/websocket-feed-data-api-token.middleware';
-import { BullModule } from '@nestjs/bull';
-import { appsProcessors } from './proccessors';
-import { LINK_CLICKED_PROCCESSOR_NAME } from './app.constants';
-import { GroupRepository } from './modules/links/repositories/implementations/group.repository';
 import { GroupSchema } from './modules/links/schemas/groups.schema';
-import { MetricsModule } from './modules/metrics/metrics.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { LinkInfosSchema } from './modules/links/schemas/link-infos.schema';
+import { RefreshTokenSchema } from './modules/users/schemas/refresh-tokens.schema';
+import { LinkRepository } from './modules/links/repositories/implementations/link.repository';
+import { GroupRepository } from './modules/links/repositories/implementations/group.repository';
+import { FeedUserDataApiTokenMiddleware } from './modules/auth/middlewares/feed-user-data-api-token.middleware';
 
 @Module({
   imports: [
@@ -111,8 +110,5 @@ import { MetricsModule } from './modules/metrics/metrics.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(FeedUserDataApiTokenMiddleware).forRoutes('*');
-    consumer
-      .apply(WebsocketFeedUserDataApiTokenMiddleware)
-      .forRoutes('/api/dashboard');
   }
 }

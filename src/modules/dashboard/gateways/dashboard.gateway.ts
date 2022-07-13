@@ -10,14 +10,13 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { UseGuards } from '@nestjs/common';
+import { LoadService } from '../services/load/load.service';
+import { ReadService } from '../services/read/read.service';
 import { IUserTokenDto } from '../../auth/dtos/user-token.dto';
-import { DashboardService } from '../services/dashboard/dashboard.service';
+import { VerifyService } from '../services/verify/verify.service';
 import { JwtAuthWebsocketGuard } from '../../auth/guards/jwt-auth-websocket.guard';
-import { AuthenticateService } from '../services/authenticate/authenticate.service';
-import { WebsocketFeedUserDataApiTokenMiddleware } from '../../auth/middlewares/websocket-feed-data-api-token.middleware';
 
 @WebSocketGateway(3002, {
-  middlewares: [WebsocketFeedUserDataApiTokenMiddleware],
   cors: {
     origin: '*',
   },
@@ -29,8 +28,9 @@ export class DashboardGateway
   server: Server;
 
   constructor(
-    private readonly dashboardService: DashboardService,
-    private readonly authenticated: AuthenticateService,
+    private readonly readService: ReadService,
+    private readonly loadService: LoadService,
+    private readonly verifyService: VerifyService,
   ) {}
 
   public async afterInit(server: Server) {
@@ -38,17 +38,16 @@ export class DashboardGateway
   }
 
   public async handleConnection(client: Socket) {
-    console.log('handleConnection', client.handshake.headers.authorization);
-    const token = client.handshake.headers.authorization.split(' ')[1];
+    const handshake = client.handshake;
 
-    const user = await this.authenticated.authenticateConnection(token);
+    const user = await this.verifyService.authenticateConnection(handshake);
 
     if (!user) {
       client.disconnect(true);
       return;
     }
 
-    await this.dashboardService.handleConnection(user);
+    await this.verifyService.handleConnection(user);
   }
 
   public async handleDisconnect(client) {
@@ -60,9 +59,7 @@ export class DashboardGateway
   public async dashboardChannel(@ConnectedSocket() socket: Socket) {
     const user: IUserTokenDto = socket.handshake.auth.user;
 
-    const dashboardData = await this.dashboardService.readAllDataFromCache(
-      user,
-    );
+    const dashboardData = await this.readService.readAllDataFromCache(user);
 
     return this.server.sockets.emit('dashboard_data', dashboardData);
   }

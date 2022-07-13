@@ -126,6 +126,8 @@ export class DashboardRepository implements IDashboardRepository {
       };
     });
 
+    console.log(orQueries);
+
     const aggPipeline: any[] = [
       { $match: { $or: orQueries } },
       {
@@ -321,6 +323,7 @@ export class DashboardRepository implements IDashboardRepository {
       };
     });
 
+    console.log(orQueries);
     const aggPipeline = [];
 
     aggPipeline.push({ $match: { $or: orQueries } }, ...this.clicksPipeline);

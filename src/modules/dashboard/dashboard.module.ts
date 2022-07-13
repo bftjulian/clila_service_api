@@ -5,14 +5,15 @@ import { LinkSchema } from '../links/schemas/link.schema';
 import { GroupSchema } from '../links/schemas/groups.schema';
 import { DashboardGateway } from './gateways/dashboard.gateway';
 import { LinkInfosSchema } from '../links/schemas/link-infos.schema';
-import { DashboardService } from './services/dashboard/dashboard.service';
+import { ReadService } from './services/read/read.service';
 import { RefreshTokenSchema } from '../users/schemas/refresh-tokens.schema';
 import { DashboardController } from './controllers/dashboard/dashboard.controller';
-import { AuthenticateService } from './services/authenticate/authenticate.service';
+import { VerifyService } from './services/verify/verify.service';
 import { UserRepository } from '../users/repositories/implementation/user.repository';
 import { LinkRepository } from '../links/repositories/implementations/link.repository';
 import { DashboardRepository } from './repositories/implementations/dashboard.repository';
 import { CacheDataRepository } from './repositories/implementations/cache-data.repository';
+import { LoadService } from './services/load/load.service';
 
 @Module({
   imports: [
@@ -29,10 +30,12 @@ import { CacheDataRepository } from './repositories/implementations/cache-data.r
     UserRepository,
     LinkRepository,
     DashboardGateway,
-    DashboardService,
+    ReadService,
     DashboardRepository,
     CacheDataRepository,
-    AuthenticateService,
+    VerifyService,
+    LoadService,
   ],
+  exports: [LoadService],
 })
 export class DashboardModule {}

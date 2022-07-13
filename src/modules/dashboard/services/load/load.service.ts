@@ -1,91 +1,19 @@
-import { I18nService } from 'nestjs-i18n';
-import { Result } from '../../../../shared/models/result';
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { IUserTokenDto } from '../../../../modules/auth/dtos/user-token.dto';
-import { DashboardRepository } from '../../repositories/implementations/dashboard.repository';
+import { Inject, Injectable } from '@nestjs/common';
+import { IUserTokenDto } from '../../../auth/dtos/user-token.dto';
 import { CacheDataRepository } from '../../repositories/implementations/cache-data.repository';
-import { ILinkRepository } from '../../../../modules/links/repositories/link-repository.interface';
-import { IUserRepository } from '../../../../modules/users/repositories/user-repository.interface';
-import { IDashboardRepository } from '../../repositories/interfaces/dashboard-repository.interface';
+import { DashboardRepository } from '../../repositories/implementations/dashboard.repository';
 import { ICacheDataRepository } from '../../repositories/interfaces/cache-data-repository.interface';
-import { UserRepository } from '../../../../modules/users/repositories/implementation/user.repository';
-import { LinkRepository } from '../../../../modules/links/repositories/implementations/link.repository';
+import { IDashboardRepository } from '../../repositories/interfaces/dashboard-repository.interface';
 
 @Injectable()
-export class DashboardService {
+export class LoadService {
   constructor(
-    @Inject(LinkRepository)
-    private readonly linksRepository: ILinkRepository,
-
-    @Inject(UserRepository)
-    private readonly usersRepository: IUserRepository,
-
     @Inject(DashboardRepository)
     private readonly dashboardRepository: IDashboardRepository,
 
     @Inject(CacheDataRepository)
     private readonly cacheDataRepository: ICacheDataRepository,
   ) {}
-
-  public async handleDisconnect(user: IUserTokenDto) {
-    const userId = user.id;
-
-    const now = new Date();
-
-    const cacheId = `dashboard:${userId}:logout`;
-
-    const lastLogout = {
-      userId: userId,
-      date: now.toISOString(),
-    };
-
-    await this.cacheDataRepository.create(cacheId, lastLogout);
-  }
-
-  public async handleConnection(user: IUserTokenDto) {
-    const userId = user.id;
-
-    const cacheId = `dashboard:${userId}:login`;
-
-    const isCached = await this.cacheDataRepository.read(cacheId);
-
-    if (isCached && isCached.userId === userId && isCached.login === true)
-      return;
-
-    await this.loadAllDataToCache(user);
-
-    const now = new Date();
-
-    const lastConnection = {
-      login: true,
-      userId: userId,
-      date: now.toISOString(),
-    };
-
-    await this.cacheDataRepository.create(cacheId, lastConnection);
-  }
-
-  public async readAllDataFromCache(user: IUserTokenDto) {
-    const userId = user.id;
-
-    const idPattern = `dashboard:*:${userId}:*`;
-
-    const dataCached = await this.cacheDataRepository.readManyByPattern(
-      idPattern,
-    );
-
-    return dataCached;
-  }
-
-  public async loadAllDataToCache(user: IUserTokenDto) {
-    await this.loadTotalValuesToCache(user);
-
-    await this.loadClicksToCache(user);
-
-    await this.loadLinksToCache(user);
-
-    await this.loadGroupsToCache(user);
-  }
 
   public async loadTotalValuesToCache(user: IUserTokenDto) {
     const userId = user.id;
@@ -133,6 +61,16 @@ export class DashboardService {
 
       await this.cacheDataRepository.create(cacheId, group);
     });
+  }
+
+  public async loadAllDataToCache(user: IUserTokenDto) {
+    await this.loadTotalValuesToCache(user);
+
+    await this.loadClicksToCache(user);
+
+    await this.loadLinksToCache(user);
+
+    await this.loadGroupsToCache(user);
   }
 
   public async loadClicksToCache(user: IUserTokenDto) {
@@ -183,35 +121,5 @@ export class DashboardService {
     });
 
     return groupsData;
-  }
-
-  public async dashboard(user: IUserTokenDto) {
-    try {
-      const userModel = await this.usersRepository.findById(user.id);
-      const totalLinks = await this.linksRepository.findAllByUser(userModel);
-      const infosDate = await this.linksRepository.findAllLinkInfosByDate(
-        new Date(Date.now()),
-        userModel,
-      );
-      const infosMonth = await this.linksRepository.findAllLinkInfosByMonth(
-        new Date(Date.now()),
-        userModel,
-      );
-      const infosWeek = await this.linksRepository.findAllLinkInfosByWeek(
-        new Date(Date.now()),
-        userModel,
-      );
-      const data = {
-        total_links: totalLinks.length,
-        total_days_clicks: infosDate.length,
-        infosWeek,
-        infosMonth,
-      };
-      return data;
-    } catch (error) {
-      throw new BadRequestException(
-        new Result('Error in transaction', false, {}, null),
-      );
-    }
   }
 }

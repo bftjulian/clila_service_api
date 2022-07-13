@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FakeLinkRepository } from '../../../../modules/links/repositories/fakes/link.fake.repository';
-import { LinkRepository } from '../../../../modules/links/repositories/implementations/link.repository';
-import { FakeUserRepository } from '../../../../modules/users/repositories/fakes/user.fake.repository';
-import { UserRepository } from '../../../../modules/users/repositories/implementation/user.repository';
-import { ILinkRepository } from '../../../../modules/links/repositories/link-repository.interface';
-import { IUserRepository } from '../../../../modules/users/repositories/user-repository.interface';
-import { DashboardService } from './dashboard.service';
-import { IUserTokenDto } from '../../../../modules/auth/dtos/user-token.dto';
-import { User } from '../../../../modules/users/models/users.model';
+import { FakeLinkRepository } from '../../../links/repositories/fakes/link.fake.repository';
+import { LinkRepository } from '../../../links/repositories/implementations/link.repository';
+import { FakeUserRepository } from '../../../users/repositories/fakes/user.fake.repository';
+import { UserRepository } from '../../../users/repositories/implementation/user.repository';
+import { ILinkRepository } from '../../../links/repositories/link-repository.interface';
+import { IUserRepository } from '../../../users/repositories/user-repository.interface';
+import { DashboardService } from './read.service';
+import { IUserTokenDto } from '../../../auth/dtos/user-token.dto';
+import { User } from '../../../users/models/users.model';
 
 describe('DashboardService', () => {
   let service: DashboardService;
