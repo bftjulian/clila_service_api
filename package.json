@@ -52,6 +52,7 @@
     "express-basic-auth": "^1.2.1",
     "handlebars": "^4.7.7",
     "ioredis": "^5.1.0",
+    "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.7.3",
     "mongoose": "^6.2.1",
     "nested-property": "^4.0.0",

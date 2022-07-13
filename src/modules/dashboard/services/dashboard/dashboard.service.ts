@@ -32,10 +32,10 @@ export class DashboardService {
 
     const now = new Date();
 
-    const cacheId = `dashboard:user:${userId}:logout`;
+    const cacheId = `dashboard:${userId}:logout`;
 
     const lastLogout = {
-      user: userId,
+      userId: userId,
       date: now.toISOString(),
     };
 
@@ -43,19 +43,26 @@ export class DashboardService {
   }
 
   public async handleConnection(user: IUserTokenDto) {
+    const userId = user.id;
+
+    const cacheId = `dashboard:${userId}:login`;
+
+    const isCached = await this.cacheDataRepository.read(cacheId);
+
+    if (isCached && isCached.userId === userId && isCached.login === true)
+      return;
+
     await this.loadAllDataToCache(user);
 
-    return this.readAllDataFromCache(user);
-  }
+    const now = new Date();
 
-  public async loadAllDataToCache(user: IUserTokenDto) {
-    await this.loadTotalValuesToCache(user);
+    const lastConnection = {
+      login: true,
+      userId: userId,
+      date: now.toISOString(),
+    };
 
-    await this.loadClicksToCache(user);
-
-    await this.loadLinksToCache(user);
-
-    await this.loadGroupsToCache(user);
+    await this.cacheDataRepository.create(cacheId, lastConnection);
   }
 
   public async readAllDataFromCache(user: IUserTokenDto) {
@@ -68,6 +75,16 @@ export class DashboardService {
     );
 
     return dataCached;
+  }
+
+  public async loadAllDataToCache(user: IUserTokenDto) {
+    await this.loadTotalValuesToCache(user);
+
+    await this.loadClicksToCache(user);
+
+    await this.loadLinksToCache(user);
+
+    await this.loadGroupsToCache(user);
   }
 
   public async loadTotalValuesToCache(user: IUserTokenDto) {

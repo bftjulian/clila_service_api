@@ -32,7 +32,8 @@ export class CacheDataRepository implements ICacheDataRepository {
 
     const parsedData = JSON.parse(rawData);
 
-    return { id, ...parsedData };
+    // return { id, ...parsedData };
+    return parsedData;
   }
 
   public async delete(id: any): Promise<any> {

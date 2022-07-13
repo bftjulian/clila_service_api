@@ -111,6 +111,8 @@ import { MetricsModule } from './modules/metrics/metrics.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(FeedUserDataApiTokenMiddleware).forRoutes('*');
-    consumer.apply(WebsocketFeedUserDataApiTokenMiddleware).forRoutes('*');
+    consumer
+      .apply(WebsocketFeedUserDataApiTokenMiddleware)
+      .forRoutes('/api/dashboard');
   }
 }

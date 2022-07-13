@@ -17,7 +17,7 @@ export class DashboardController {
   public async loadUserDataToCache(@Req() request) {
     const user: IUserTokenDto = request.user;
 
-    await this.dashboardService.loadAllDataToCache(user);
+    await this.dashboardService.handleConnection(user);
   }
 
   @SkipThrottle()

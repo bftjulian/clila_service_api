@@ -8,6 +8,7 @@ import { LinkInfosSchema } from '../links/schemas/link-infos.schema';
 import { DashboardService } from './services/dashboard/dashboard.service';
 import { RefreshTokenSchema } from '../users/schemas/refresh-tokens.schema';
 import { DashboardController } from './controllers/dashboard/dashboard.controller';
+import { AuthenticateService } from './services/authenticate/authenticate.service';
 import { UserRepository } from '../users/repositories/implementation/user.repository';
 import { LinkRepository } from '../links/repositories/implementations/link.repository';
 import { DashboardRepository } from './repositories/implementations/dashboard.repository';
@@ -31,6 +32,7 @@ import { CacheDataRepository } from './repositories/implementations/cache-data.r
     DashboardService,
     DashboardRepository,
     CacheDataRepository,
+    AuthenticateService,
   ],
 })
 export class DashboardModule {}
