@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Link } from '../../../links/models/link.model';
-import { Group } from 'src/modules/links/models/groups.model';
+import { Group } from '../../../links/models/groups.model';
 import { LinkInfos } from '../../../links/models/link-infos.model';
 import { IDashboardRepository } from '../interfaces/dashboard-repository.interface';
 
@@ -99,20 +99,20 @@ export class DashboardRepository implements IDashboardRepository {
       {
         $project: {
           _id: 0,
-          total_clicks: 1,
+          title: 'Total Clicks',
+          value: '$total_clicks',
         },
       },
     ];
 
     const aggregationResult = await this.linkModel.aggregate(aggPipeline);
 
-    if (!aggregationResult[0]) {
-      return {
-        total_clicks: 0,
-      };
-    } else {
-      return aggregationResult[0];
-    }
+    return {
+      total_clicks: aggregationResult[0] || {
+        title: 'Total Clicks',
+        value: 0,
+      },
+    };
   }
 
   public async readTotalClicksPerPeriod(id: string) {
@@ -169,28 +169,26 @@ export class DashboardRepository implements IDashboardRepository {
         $group: {
           _id: '',
           total_links: { $count: {} },
-          total_clicks: { $sum: '$numbers_clicks' },
+          // total_clicks: { $sum: '$numbers_clicks' },
         },
       },
       {
         $project: {
           _id: 0,
-          total_links: 1,
-          total_clicks: 1,
+          title: 'Total Links',
+          value: '$total_links',
         },
       },
     ];
 
     const aggregationResult = await this.linkModel.aggregate(aggPipeline);
 
-    if (!aggregationResult[0]) {
-      return {
-        total_links: 0,
-        total_clicks: 0,
-      };
-    } else {
-      return aggregationResult[0];
-    }
+    return {
+      total_links: aggregationResult[0] || {
+        title: 'Total Links',
+        value: 0,
+      },
+    };
   }
 
   public async readTotalLinksPerPeriod(id: string) {
@@ -244,20 +242,20 @@ export class DashboardRepository implements IDashboardRepository {
       {
         $project: {
           _id: 0,
-          total_groups: 1,
+          title: 'Total Groups',
+          value: '$total_groups',
         },
       },
     ];
 
     const aggregationResult = await this.groupModel.aggregate(aggPipeline);
 
-    if (!aggregationResult[0]) {
-      return {
-        total_groups: 0,
-      };
-    } else {
-      return aggregationResult[0];
-    }
+    return {
+      total_groups: aggregationResult[0] || {
+        title: 'Total Groups',
+        value: 0,
+      },
+    };
   }
 
   public async readTotalGroupsPerPeriod(id: string) {
@@ -323,7 +321,6 @@ export class DashboardRepository implements IDashboardRepository {
       };
     });
 
-    console.log(orQueries);
     const aggPipeline = [];
 
     aggPipeline.push({ $match: { $or: orQueries } }, ...this.clicksPipeline);

@@ -39,9 +39,9 @@ export class AppService {
 
     console.log('link', link);
 
-    if (!link || link.active === false) {
-      return 'https://site.cli.la';
-    }
+    // if (!link || link.active === false) {
+    //   return 'https://site.cli.la';
+    // }
 
     await this.redisProvider.save(`links:${hash}`, link);
 

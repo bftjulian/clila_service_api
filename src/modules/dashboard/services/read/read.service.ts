@@ -12,14 +12,44 @@ export class ReadService {
   ) {}
 
   public async readAllDataFromCache(user: IUserTokenDto) {
+    console.log(user);
+  }
+
+  public async readTotalData(
+    user: IUserTokenDto,
+    whichData: string,
+  ): Promise<number> {
     const userId = user.id;
 
-    const idPattern = `dashboard:*:${userId}:*`;
+    const cacheId = `dashboard:${whichData}:${userId}:total`;
 
-    const dataCached = await this.cacheDataRepository.readManyByPattern(
+    const data = await this.cacheDataRepository.read(cacheId);
+
+    if (!data) {
+      await this.
+    }
+
+    return data;
+  }
+
+  public async readDataGrouped(user: IUserTokenDto, whichData: string) {
+    const userId = user.id;
+
+    const idPattern = `dashboard:${whichData}:${userId}:*`;
+
+    const dataGrouped = await this.cacheDataRepository.readManyByPattern(
       idPattern,
     );
 
-    return dataCached;
+    return dataGrouped;
+  }
+
+  public async readClicksGrouped(user: IUserTokenDto) {
+    const clicksGrouped = await this.readDataGrouped(user, 'clicks');
+
+    return {
+      title: 'Clicks',
+      value: clicksGrouped,
+    };
   }
 }

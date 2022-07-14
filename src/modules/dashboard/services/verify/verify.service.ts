@@ -149,11 +149,13 @@ export class VerifyService {
   }
 
   public async handleConnection(user: IUserTokenDto) {
-    if ((await this.isUserDataCached(user)) === true) return;
+    if ((await this.isUserDataCached(user)) === true) {
+      return;
+    } else {
+      await this.loadService.loadAllDataToCache(user);
 
-    await this.loadService.loadAllDataToCache(user);
-
-    await this.cacheUserData(user);
+      await this.cacheUserData(user);
+    }
   }
 
   public async handleDisconnect(user: IUserTokenDto) {

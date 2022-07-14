@@ -59,9 +59,22 @@ export class DashboardGateway
   public async dashboardChannel(@ConnectedSocket() socket: Socket) {
     const user: IUserTokenDto = socket.handshake.auth.user;
 
-    const dashboardData = await this.readService.readAllDataFromCache(user);
+    const dataEntities = ['clicks', 'links', 'groups'];
 
-    return this.server.sockets.emit('dashboard_data', dashboardData);
+    const func = async () => {
+      await Promise.all(
+        dataEntities.map(async (dataEntity) => {
+          const readTotalData = await this.readService.readTotalData(
+            user,
+            dataEntity,
+          );
+
+          socket.emit('dashboard_data', readTotalData);
+        }),
+      );
+    };
+
+    await func();
   }
 
   @UseGuards(JwtAuthWebsocketGuard)

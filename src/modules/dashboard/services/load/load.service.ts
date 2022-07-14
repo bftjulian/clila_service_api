@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IUserTokenDto } from '../../../auth/dtos/user-token.dto';
-import { CacheDataRepository } from '../../repositories/implementations/cache-data.repository';
 import { DashboardRepository } from '../../repositories/implementations/dashboard.repository';
+import { CacheDataRepository } from '../../repositories/implementations/cache-data.repository';
 import { ICacheDataRepository } from '../../repositories/interfaces/cache-data-repository.interface';
 import { IDashboardRepository } from '../../repositories/interfaces/dashboard-repository.interface';
 
