@@ -1,11 +1,10 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Response } from 'express';
 import { Queue } from 'bull';
 import {
   FEED_DATABASE_LINK_COLLECTION,
-  LINK_CLICKED_PROCCESSOR_NAME,
+  LINK_CLICKED_PROCCESSOR_NAME
 } from './app.constants';
 import { Link } from './modules/links/models/link.model';
 import { LinkRepository } from './modules/links/repositories/implementations/link.repository';
@@ -39,9 +38,9 @@ export class AppService {
 
     console.log('link', link);
 
-    // if (!link || link.active === false) {
-    //   return 'https://site.cli.la';
-    // }
+    if (!link || link.active === false) {
+      return 'https://site.cli.la';
+    }
 
     await this.redisProvider.save(`links:${hash}`, link);
 

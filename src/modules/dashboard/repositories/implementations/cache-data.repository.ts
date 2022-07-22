@@ -24,7 +24,9 @@ export class CacheDataRepository implements ICacheDataRepository {
   public async create(id: string, data: object): Promise<any> {
     const parseData = JSON.stringify(data);
 
-    return this.client.set(id, parseData);
+    await this.client.set(id, parseData);
+
+    return data;
   }
 
   public async read(id: any): Promise<any> {
@@ -32,7 +34,6 @@ export class CacheDataRepository implements ICacheDataRepository {
 
     const parsedData = JSON.parse(rawData);
 
-    // return { id, ...parsedData };
     return parsedData;
   }
 
@@ -48,9 +49,45 @@ export class CacheDataRepository implements ICacheDataRepository {
     return values;
   }
 
+  public async deleteManyByPattern(idPattern: string) {
+    const keys = await this.client.keys(idPattern);
+
+    const keysDeleted = await Promise.all(
+      keys.map((key) => {
+        return this.client.del(key);
+      }),
+    );
+
+    return keysDeleted;
+  }
+
+  public async createHash(id: string, data: object) {
+    await this.client.hset(id, data);
+  }
+
+  public async readHash(id: string, field: string) {
+    return this.client.hget(id, field);
+  }
+
+  public async readHashAll(id: string) {
+    return await this.client.hgetall(id);
+  }
+
   public async readIds() {
     const IDPATTERN = 'dashboard:*';
 
     return this.client.keys(IDPATTERN);
+  }
+
+  public async incrementValue(id: string, value?: number) {
+    if (!!value && value > 1) {
+      await this.client.incrby(id, value);
+
+      return this.read(id);
+    } else {
+      await this.client.incr(id);
+
+      return this.read(id);
+    }
   }
 }

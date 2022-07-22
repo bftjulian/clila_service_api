@@ -1,11 +1,12 @@
-import { Process, Processor } from '@nestjs/bull';
-import { Job } from 'bull';
 import {
   FEED_DATABASE_LINK_COLLECTION,
   LINK_CLICKED_PROCCESSOR_NAME,
 } from 'src/app.constants';
-import { GroupRepository } from 'src/modules/links/repositories/implementations/group.repository';
+import { Job } from 'bull';
+import { Process, Processor } from '@nestjs/bull';
 import { LinkRepository } from 'src/modules/links/repositories/implementations/link.repository';
+import { GroupRepository } from 'src/modules/links/repositories/implementations/group.repository';
+import { DashboardIncrementerProvider } from '../modules/dashboard/providers/dashboard-incrementer.provider';
 import { DisparoproInfoClicksWebhookProvider } from 'src/shared/providers/InfoClicksWebhookProvider/implementations/disparopro-info-clicks-webhook.provider';
 
 @Processor(LINK_CLICKED_PROCCESSOR_NAME)
@@ -14,6 +15,7 @@ export class FeedClicksInfosDatabase {
     private readonly linksRepository: LinkRepository,
     private readonly groupRepository: GroupRepository,
     private readonly webhookProvider: DisparoproInfoClicksWebhookProvider,
+    private readonly dashboardIncrementerProvider: DashboardIncrementerProvider,
   ) {}
 
   @Process({
@@ -22,11 +24,16 @@ export class FeedClicksInfosDatabase {
   })
   public async feedClicksInfosDatabase(job: Job) {
     try {
-      await this.linksRepository.createLinkInfo({
+      const linkInfo = await this.linksRepository.createLinkInfo({
         create_at: new Date(),
         ip: job.data.ip,
         link: job.data.link,
       });
+
+      if (!!job.data.link.user && !!linkInfo) {
+        await this.dashboardIncrementerProvider.linkClicked(linkInfo);
+      }
+
       const link = await this.linksRepository.setClickLink(job.data.link._id);
 
       if (!job.data.link.group) return;

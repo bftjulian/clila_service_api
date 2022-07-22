@@ -34,10 +34,12 @@ export class DashboardGateway
   ) {}
 
   public async afterInit(server: Server) {
-    console.log('afterInit');
+    console.log('afterInit'.toUpperCase());
   }
 
   public async handleConnection(client: Socket) {
+    console.log('handleConnection'.toUpperCase());
+
     const handshake = client.handshake;
 
     const user = await this.verifyService.authenticateConnection(handshake);
@@ -47,44 +49,51 @@ export class DashboardGateway
       return;
     }
 
-    await this.verifyService.handleConnection(user);
+    return this.verifyService.handleConnection(user);
   }
 
   public async handleDisconnect(client) {
-    console.log('handleDisconnect');
+    console.log('handleDisconnect'.toUpperCase());
+
+    const handshake = client.handshake;
+
+    const user = await this.verifyService.authenticateConnection(handshake);
+
+    if (!user) return;
+
+    await this.verifyService.handleDisconnect(user);
   }
 
   @UseGuards(JwtAuthWebsocketGuard)
-  @SubscribeMessage('dashboard_all_data')
-  public async dashboardChannel(@ConnectedSocket() socket: Socket) {
-    const user: IUserTokenDto = socket.handshake.auth.user;
-
-    const dataEntities = ['clicks', 'links', 'groups'];
-
-    const func = async () => {
-      await Promise.all(
-        dataEntities.map(async (dataEntity) => {
-          const readTotalData = await this.readService.readTotalData(
-            user,
-            dataEntity,
-          );
-
-          socket.emit('dashboard_data', readTotalData);
-        }),
-      );
-    };
-
-    await func();
-  }
-
-  @UseGuards(JwtAuthWebsocketGuard)
-  @SubscribeMessage('dashboard_data_per_periods')
-  public async readAllDataFromCache(
+  @SubscribeMessage('dashboard_data')
+  public async dashboardChannel(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() period: any,
+    @MessageBody() userChannel: string,
   ) {
     const user: IUserTokenDto = socket.handshake.auth.user;
 
-    console.log(user, period);
+    await this.verifyService.userSocketInfo(user, socket.id, userChannel);
+
+    const totalClicks = await this.readService.readTotalClicks(user);
+
+    const totalLinks = await this.readService.readTotalLinks(user);
+
+    const totalGroups = await this.readService.readTotalGroups(user);
+
+    socket.emit(userChannel, {
+      big_numbers: [totalClicks, totalLinks, totalGroups],
+    });
+
+    const clicksGrouped = await this.readService.readClicksGrouped(user);
+
+    socket.emit(userChannel, clicksGrouped);
+
+    const linksGrouped = await this.readService.readLinksGrouped(user);
+
+    socket.emit(userChannel, linksGrouped);
+
+    const groupsGrouped = await this.readService.readGroupsGrouped(user);
+
+    socket.emit(userChannel, groupsGrouped);
   }
 }

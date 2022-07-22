@@ -1,78 +1,17 @@
 import { ObjectId } from 'bson';
 import { Model } from 'mongoose';
+import { ClicksPipeline, GroupsPipeline, LinksPipeline } from './queries';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Link } from '../../../links/models/link.model';
 import { Group } from '../../../links/models/groups.model';
 import { LinkInfos } from '../../../links/models/link-infos.model';
 import { IDashboardRepository } from '../interfaces/dashboard-repository.interface';
-
 @Injectable()
 export class DashboardRepository implements IDashboardRepository {
-  private readonly clicksPipeline: any[] = [
-    {
-      $group: {
-        _id: {
-          link: '$link',
-          date: {
-            $dateToString: { format: '%Y-%m-%dT%H:%M', date: '$create_at' },
-          },
-        },
-        clicks: { $count: {} },
-      },
-    },
-    {
-      $lookup: {
-        from: 'links',
-        localField: '_id.link',
-        foreignField: '_id',
-        as: 'link',
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        clicks: 1,
-        date: '$_id.date',
-        link: { $first: '$link' },
-      },
-    },
-    {
-      $lookup: {
-        from: 'groups',
-        localField: 'link.group',
-        foreignField: '_id',
-        as: 'group',
-      },
-    },
-    {
-      $project: {
-        clicks: 1,
-        date: 1,
-        link: 1,
-        group: { $first: '$group' },
-      },
-    },
-    {
-      $project: {
-        date: 1,
-        clicks: 1,
-        name: '$link.name',
-        link_id: '$link._id',
-        group_id: '$group._id',
-        group_name: '$group.name',
-        group_tags: '$group.tag',
-        short_link: '$link.short_link',
-        original_link: '$link.original_link',
-        total_clicks: '$link.numbers_clicks',
-      },
-    },
-    {
-      $sort: {
-        date: -1,
-      },
-    },
-  ];
+  private readonly linksPipeline: any[] = LinksPipeline;
+  private readonly clicksPipeline: any[] = ClicksPipeline;
+  private readonly groupsPipeline: any[] = GroupsPipeline;
 
   constructor(
     @InjectModel('Link')
@@ -99,7 +38,6 @@ export class DashboardRepository implements IDashboardRepository {
       {
         $project: {
           _id: 0,
-          title: 'Total Clicks',
           value: '$total_clicks',
         },
       },
@@ -107,12 +45,29 @@ export class DashboardRepository implements IDashboardRepository {
 
     const aggregationResult = await this.linkModel.aggregate(aggPipeline);
 
-    return {
-      total_clicks: aggregationResult[0] || {
-        title: 'Total Clicks',
-        value: 0,
-      },
-    };
+    const resultValue = aggregationResult[0].value || 0;
+
+    return resultValue;
+  }
+
+  public async readDataClicks(id: string) {
+    const links = await this.linkModel.find({ user: id });
+
+    const orQueries = links.map((link) => {
+      return {
+        link: {
+          $eq: new ObjectId(link.id),
+        },
+      };
+    });
+
+    const aggPipeline = [];
+
+    aggPipeline.push({ $match: { $or: orQueries } }, ...this.clicksPipeline);
+
+    const aggregationResult = await this.linkInfosModel.aggregate(aggPipeline);
+
+    return aggregationResult;
   }
 
   public async readTotalClicksPerPeriod(id: string) {
@@ -125,8 +80,6 @@ export class DashboardRepository implements IDashboardRepository {
         },
       };
     });
-
-    console.log(orQueries);
 
     const aggPipeline: any[] = [
       { $match: { $or: orQueries } },
@@ -169,13 +122,11 @@ export class DashboardRepository implements IDashboardRepository {
         $group: {
           _id: '',
           total_links: { $count: {} },
-          // total_clicks: { $sum: '$numbers_clicks' },
         },
       },
       {
         $project: {
           _id: 0,
-          title: 'Total Links',
           value: '$total_links',
         },
       },
@@ -183,12 +134,7 @@ export class DashboardRepository implements IDashboardRepository {
 
     const aggregationResult = await this.linkModel.aggregate(aggPipeline);
 
-    return {
-      total_links: aggregationResult[0] || {
-        title: 'Total Links',
-        value: 0,
-      },
-    };
+    return aggregationResult[0].value || 0;
   }
 
   public async readTotalLinksPerPeriod(id: string) {
@@ -242,7 +188,6 @@ export class DashboardRepository implements IDashboardRepository {
       {
         $project: {
           _id: 0,
-          title: 'Total Groups',
           value: '$total_groups',
         },
       },
@@ -250,12 +195,7 @@ export class DashboardRepository implements IDashboardRepository {
 
     const aggregationResult = await this.groupModel.aggregate(aggPipeline);
 
-    return {
-      total_groups: aggregationResult[0] || {
-        title: 'Total Groups',
-        value: 0,
-      },
-    };
+    return aggregationResult[0].value || 0;
   }
 
   public async readTotalGroupsPerPeriod(id: string) {
@@ -291,7 +231,7 @@ export class DashboardRepository implements IDashboardRepository {
     return aggregationResult;
   }
 
-  public async onEventReadClick(click) {
+  public async readClickEvent(click) {
     const linkId = new ObjectId(click.link);
 
     const aggPipeline = [];
@@ -299,7 +239,7 @@ export class DashboardRepository implements IDashboardRepository {
     aggPipeline.push(
       {
         $match: {
-          $and: [{ link: linkId }, { create_at: { $gte: click.date } }],
+          $and: [{ link: linkId }, { create_at: { $gte: click.create_at } }],
         },
       },
       ...this.clicksPipeline,
@@ -310,22 +250,52 @@ export class DashboardRepository implements IDashboardRepository {
     return aggregationResult;
   }
 
-  public async readDataClicks(id: string) {
-    const links = await this.linkModel.find({ user: id });
+  public async readManyLinksCreatedEvent(linkInformation) {
+    const userId = new ObjectId(linkInformation.user);
 
-    const orQueries = links.map((link) => {
-      return {
-        link: {
-          $eq: new ObjectId(link.id),
+    const aggregationPipeline = [
+      // {
+      //   $match: {
+      //     $and: [{ link: linkId }, { create_at: { $gte: link.create_at } }],
+      //   },
+      // },
+      {
+        $match: {
+          $and: [
+            { user: userId },
+            { create_at: { $gte: linkInformation.date } },
+          ],
         },
-      };
-    });
+      },
+      ...this.linksPipeline,
+    ];
 
-    const aggPipeline = [];
+    const aggregationResult = await this.linkModel.aggregate(
+      aggregationPipeline,
+    );
 
-    aggPipeline.push({ $match: { $or: orQueries } }, ...this.clicksPipeline);
+    return aggregationResult;
+  }
 
-    const aggregationResult = await this.linkInfosModel.aggregate(aggPipeline);
+  public async readGroupCreatedEvent(group: Group) {
+    const userId = new ObjectId(group.user);
+
+    const aggregationPipeline = [
+      {
+        $match: {
+          $and: [
+            { user: userId },
+            {
+              created_at: { $gte: group.created_at },
+            },
+          ],
+        },
+      },
+    ];
+
+    const aggregationResult = await this.groupModel.aggregate(
+      aggregationPipeline,
+    );
 
     return aggregationResult;
   }
@@ -333,53 +303,14 @@ export class DashboardRepository implements IDashboardRepository {
   public async readDataLinks(id: string) {
     const _id = new ObjectId(id);
 
-    const aggregationResult = await this.linkModel.aggregate([
+    const aggregationPipeline = [
       { $match: { user: _id } },
-      {
-        $group: {
-          _id: {
-            date: {
-              $dateToString: { format: '%Y-%m-%dT%H:%M', date: '$create_at' },
-            },
-            group: '$group',
-          },
-          count_links: { $count: {} },
-          total_clicks: { $sum: '$numbers_clicks' },
-        },
-      },
-      {
-        $lookup: {
-          from: 'groups',
-          localField: '_id.group',
-          foreignField: '_id',
-          as: 'group',
-        },
-      },
-      {
-        $project: {
-          _id: 0,
-          date: '$_id.date',
-          group: { $first: '$group' },
-          count_links: 1,
-          total_clicks: 1,
-        },
-      },
-      {
-        $project: {
-          date: 1,
-          group_id: '$group._id',
-          group_name: '$group.name',
-          group_tags: '$group.tags',
-          count_links: 1,
-          total_clicks: 1,
-        },
-      },
-      {
-        $sort: {
-          date: -1,
-        },
-      },
-    ]);
+      ...this.linksPipeline,
+    ];
+
+    const aggregationResult = await this.linkModel.aggregate(
+      aggregationPipeline,
+    );
 
     return aggregationResult;
   }
@@ -387,28 +318,14 @@ export class DashboardRepository implements IDashboardRepository {
   public async readDataGroups(id: string) {
     const _id = new ObjectId(id);
 
-    const aggregationResult = await this.groupModel.aggregate([
+    const aggregationPipeline = [
       { $match: { user: _id } },
-      {
-        $group: {
-          _id: {
-            date: {
-              $dateToString: { format: '%Y-%m-%dT%H:%M', date: '$createdAt' },
-            },
-          },
-          total_groups: { $count: {} },
-          total_clicks: { $sum: '$total_clicks' },
-        },
-      },
-      {
-        $project: {
-          _id: 0,
-          date: '$_id.date',
-          total_groups: 1,
-          total_clicks: 1,
-        },
-      },
-    ]);
+      ...this.groupsPipeline,
+    ];
+
+    const aggregationResult = await this.groupModel.aggregate(
+      aggregationPipeline,
+    );
 
     return aggregationResult;
   }

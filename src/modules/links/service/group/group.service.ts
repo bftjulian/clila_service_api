@@ -28,6 +28,7 @@ import { UserRepository } from '../../../users/repositories/implementation/user.
 import { urlNormalize } from '../../../../utils/urlNormalize';
 import { ConfigService } from '@nestjs/config';
 import { CreateShortLinkListsDto } from '../../dtos/create-short-links-lists.dto';
+import { DashboardIncrementerProvider } from 'src/modules/dashboard/providers/dashboard-incrementer.provider';
 
 type JobConf = {
   name?: string | undefined;
@@ -51,6 +52,7 @@ export class GroupService {
     @InjectQueue(LINKS_SHORT_MULTIPLE_PROCESSOR)
     private readonly linksMultipleQueue: Queue,
     private readonly configService: ConfigService,
+    private readonly dashboardIncrementerProvider: DashboardIncrementerProvider,
   ) {}
   public async createGroup(
     user: IUserTokenDto,
@@ -79,6 +81,8 @@ export class GroupService {
         ...data,
         user: userExist,
       });
+
+      await this.dashboardIncrementerProvider.groupCreated(group);
 
       if (!!data.original_link) {
         await this.linksRepository.createGroupRef(group);

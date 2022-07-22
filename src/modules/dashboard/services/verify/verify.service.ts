@@ -1,14 +1,14 @@
 import { verify } from 'jsonwebtoken';
 import { isJWT } from 'class-validator';
+import { LoadService } from '../load/load.service';
 import { Inject, Injectable } from '@nestjs/common';
 import { Handshake } from 'socket.io/dist/socket.d';
 import { jwtConstants } from '../../../auth/constants';
 import { IUserTokenDto } from '../../../auth/dtos/user-token.dto';
 import { IUserRepository } from 'src/modules/users/repositories/user-repository.interface';
 import { UserRepository } from '../../../users/repositories/implementation/user.repository';
-import { ICacheDataRepository } from '../../repositories/interfaces/cache-data-repository.interface';
 import { CacheDataRepository } from '../../repositories/implementations/cache-data.repository';
-import { LoadService } from '../load/load.service';
+import { ICacheDataRepository } from '../../repositories/interfaces/cache-data-repository.interface';
 
 @Injectable()
 export class VerifyService {
@@ -22,8 +22,13 @@ export class VerifyService {
     private readonly loadService: LoadService,
   ) {}
 
-  public authenticateConnection(handshake: Handshake) {
-    const token = handshake.headers.authorization.split(' ')[1];
+  public async authenticateConnection(handshake: Handshake) {
+    const authorization =
+      handshake.headers.authorization ?? String(handshake.query.authorization);
+
+    if (!authorization || authorization.length === 0) return undefined;
+
+    const token = authorization.split(' ')[1];
 
     if (!token) return undefined;
 
@@ -45,9 +50,7 @@ export class VerifyService {
       }
     }
 
-    const user = this.isUserVerified(token).then((user): IUserTokenDto => {
-      return user;
-    });
+    const user = await this.isUserVerified(token);
 
     if (!user) {
       return this.userRepository
@@ -70,22 +73,29 @@ export class VerifyService {
           return undefined;
         });
     }
-
     return user;
   }
 
   public async isUserVerified(token: string) {
     const cacheId = `dashboard:token:${token}`;
 
-    const user = await this.cacheDataRepository.read(cacheId);
+    const tokenInfo = await this.cacheDataRepository.read(cacheId);
 
-    return user;
+    return tokenInfo.user;
   }
 
   public async verifyUser(user: IUserTokenDto, token: string) {
     const cacheId = `dashboard:token:${token}`;
 
-    await this.cacheDataRepository.create(cacheId, user);
+    const tokenInfo = {
+      user: user,
+      token: token,
+      date: new Date(),
+    };
+
+    await this.cacheDataRepository.create(cacheId, tokenInfo);
+
+    await this.lockUser(user, token);
 
     return user;
   }
@@ -93,7 +103,7 @@ export class VerifyService {
   public async isUserLocked(user: IUserTokenDto) {
     const userId = user.id;
 
-    const cacheId = `dashboard:${userId}:lock`;
+    const cacheId = `dashboard:user:${userId}:lock`;
 
     const userInfo = await this.cacheDataRepository.read(cacheId);
 
@@ -106,13 +116,14 @@ export class VerifyService {
   public async lockUser(user: IUserTokenDto, apiToken: string) {
     const userId = user.id;
 
-    const cacheId = `dashboard:${userId}:lock`;
+    const cacheId = `dashboard:user:${userId}:lock`;
 
     const now = new Date();
 
     const lastConnection = {
       lock: true,
       userId: userId,
+      apiToken: apiToken,
       date: now.toISOString(),
     };
 
@@ -122,7 +133,7 @@ export class VerifyService {
   public async isUserDataCached(user: IUserTokenDto) {
     const userId = user.id;
 
-    const cacheId = `dashboard:${userId}:cache`;
+    const cacheId = `dashboard:user:${userId}:cache`;
 
     const userInfo = await this.cacheDataRepository.read(cacheId);
 
@@ -135,7 +146,7 @@ export class VerifyService {
   public async cacheUserData(user: IUserTokenDto) {
     const userId = user.id;
 
-    const cacheId = `dashboard:${userId}:cache`;
+    const cacheId = `dashboard:user:${userId}:cache`;
 
     const now = new Date();
 
@@ -146,6 +157,21 @@ export class VerifyService {
     };
 
     await this.cacheDataRepository.create(cacheId, lastConnection);
+  }
+
+  public async userSocketInfo(
+    user: IUserTokenDto,
+    socketId,
+    userChannel: string,
+  ) {
+    const cacheId = `dashboard:user:${user.id}:info`;
+
+    await this.cacheDataRepository.create(cacheId, {
+      user: user,
+      socketId: socketId,
+      userChannel: userChannel,
+      date: new Date(),
+    });
   }
 
   public async handleConnection(user: IUserTokenDto) {
@@ -163,7 +189,7 @@ export class VerifyService {
 
     const now = new Date();
 
-    const cacheId = `dashboard:${userId}:logout`;
+    const cacheId = `dashboard:user:${userId}:logout`;
 
     const lastLogout = {
       userId: userId,

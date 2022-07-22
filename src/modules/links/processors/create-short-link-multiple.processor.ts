@@ -1,6 +1,7 @@
 import { InjectQueue, OnQueueFailed, Process, Processor } from '@nestjs/bull';
 import { ConfigService } from '@nestjs/config';
 import { Job, JobOptions, Queue } from 'bull';
+import { DashboardIncrementerProvider } from 'src/modules/dashboard/providers/dashboard-incrementer.provider';
 import RedisProvider from '../../../shared/providers/RedisProvider/implementations/RedisProvider';
 import {
   CREATE_SHORT_LINK_MULTIPLE,
@@ -24,6 +25,7 @@ export class CreateShortLinkMultiple {
     private readonly verifyMaliciousLinksQueue: Queue,
     private readonly configService: ConfigService,
     private readonly redisProvider: RedisProvider,
+    private readonly dashboardIncrementerProvider: DashboardIncrementerProvider,
   ) {}
 
   @Process({
@@ -31,11 +33,22 @@ export class CreateShortLinkMultiple {
     name: CREATE_SHORT_LINK_MULTIPLE,
   })
   public async shortLinkMultiple(job: Job) {
+    const now = new Date();
+
     const createLinks = await this.linkRepository.createMany(job.data.links);
     const links = job.data.links.map((link) => {
       const l = { link: link.original_link };
       return l;
     });
+
+    const user = createLinks[0].user;
+
+    await this.dashboardIncrementerProvider.manyLinksCreated({
+      user: user,
+      date: now,
+      length: createLinks.length,
+    });
+
     const cLinksPromises = createLinks.map(async (createLink) => {
       await this.redisProvider.save(
         `links:${createLink.hash_link}`,

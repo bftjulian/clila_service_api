@@ -21,19 +21,19 @@ export class LoadService {
     const readTotalClicks = await this.dashboardRepository.readTotalClicks(
       userId,
     );
-    const cacheTotalClicksId = `dashboard:clicks:${userId}:total`;
+    const cacheTotalClicksId = `dashboard:total:clicks:${userId}`;
     await this.cacheDataRepository.create(cacheTotalClicksId, readTotalClicks);
 
     const readTotalLinks = await this.dashboardRepository.readTotalLinks(
       userId,
     );
-    const cacheTotalLinksId = `dashboard:links:${userId}:total`;
+    const cacheTotalLinksId = `dashboard:total:links:${userId}`;
     await this.cacheDataRepository.create(cacheTotalLinksId, readTotalLinks);
 
     const readTotalGroups = await this.dashboardRepository.readTotalGroups(
       userId,
     );
-    const cacheTotalGroupsId = `dashboard:groups:${userId}:total`;
+    const cacheTotalGroupsId = `dashboard:total:groups:${userId}`;
     await this.cacheDataRepository.create(cacheTotalGroupsId, readTotalGroups);
   }
 
@@ -43,21 +43,21 @@ export class LoadService {
     const readTotalClicksPerPeriod =
       await this.dashboardRepository.readTotalClicksPerPeriod(userId);
     readTotalClicksPerPeriod.map(async (click) => {
-      const cacheId = `dashboard:clicks:${userId}:${click.date}`;
+      const cacheId = `dashboard:grouped:clicks:${userId}:${click.date}`;
       await this.cacheDataRepository.create(cacheId, click);
     });
 
     const readTotalLinksPerPeriod =
       await this.dashboardRepository.readTotalLinksPerPeriod(userId);
     readTotalLinksPerPeriod.map(async (link) => {
-      const cacheId = `dashboard:links:${userId}:${link.date}`;
+      const cacheId = `dashboard:grouped:links:${userId}:${link.date}`;
       await this.cacheDataRepository.create(cacheId, link);
     });
 
     const readTotalGroupsPerPeriod =
       await this.dashboardRepository.readTotalGroupsPerPeriod(userId);
     readTotalGroupsPerPeriod.map(async (group) => {
-      const cacheId = `dashboard:groups:${userId}:${group.date}`;
+      const cacheId = `dashboard:grouped:groups:${userId}:${group.date}`;
 
       await this.cacheDataRepository.create(cacheId, group);
     });
@@ -79,7 +79,7 @@ export class LoadService {
     const clicksData = await this.dashboardRepository.readDataClicks(userId);
 
     clicksData.map(async (document) => {
-      const cacheId = `dashboard:clicks:${userId}:${document.link_id}:${document.date}`;
+      const cacheId = `dashboard:grouped:clicks:${userId}:${document.link_id}:${document.date}`;
 
       await this.cacheDataRepository.create(cacheId, document);
     });
@@ -101,7 +101,7 @@ export class LoadService {
         group = document.group;
       }
 
-      const cacheId = `dashboard:links:${userId}:${group}:${document.date}`;
+      const cacheId = `dashboard:grouped:links:${userId}:${group}:${document.date}`;
 
       await this.cacheDataRepository.create(cacheId, document);
     });
@@ -115,7 +115,7 @@ export class LoadService {
     const groupsData = await this.dashboardRepository.readDataGroups(userId);
 
     groupsData.map(async (document) => {
-      const cacheId = `dashboard:groups:${userId}:${document.date}`;
+      const cacheId = `dashboard:grouped:groups:${userId}:${document.date}`;
 
       await this.cacheDataRepository.create(cacheId, document);
     });

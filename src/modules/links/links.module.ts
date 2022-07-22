@@ -1,35 +1,37 @@
-import { BullModule } from '@nestjs/bull';
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { SharedModule } from 'src/shared/shared.module';
-import { UserRepository } from '../users/repositories/implementation/user.repository';
-import { RefreshTokenSchema } from '../users/schemas/refresh-tokens.schema';
-import { UserSchema } from '../users/schemas/user.schema';
-import { GroupController } from './controllers/group/group.controller';
-import { LinksController } from './controllers/links/links.controller';
-import { linksEventListeners } from './events/listeners';
 import {
   HASHES_PROCESSOR,
-  IMPORT_HASHES_FROM_LINKS_PROCESSOR,
   LINKS_BATCH_PROCESSOR,
   LINKS_SHORT_MULTIPLE_PROCESSOR,
   VERIFY_MALICIOUS_LINKS_PROCESSOR,
+  IMPORT_HASHES_FROM_LINKS_PROCESSOR,
 } from './links.constants';
+import { linksTasks } from './tasks';
+import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bull';
 import { linksProcessors } from './processors';
-import { GroupRepository } from './repositories/implementations/group.repository';
-import { HashRepository } from './repositories/implementations/hash.repository';
-import { LinkRepository } from './repositories/implementations/link.repository';
-import { GroupSchema } from './schemas/groups.schema';
+import { MongooseModule } from '@nestjs/mongoose';
 import { HashSchema } from './schemas/hash.schema';
-import { LinkInfosSchema } from './schemas/link-infos.schema';
 import { LinkSchema } from './schemas/link.schema';
+import { GroupSchema } from './schemas/groups.schema';
+import { SharedModule } from 'src/shared/shared.module';
+import { linksEventListeners } from './events/listeners';
+import { UserSchema } from '../users/schemas/user.schema';
 import { GroupService } from './service/group/group.service';
 import { LinksService } from './service/links/links.service';
-import { linksTasks } from './tasks';
+import { LinkInfosSchema } from './schemas/link-infos.schema';
+import { DashboardModule } from '../dashboard/dashboard.module';
+import { GroupController } from './controllers/group/group.controller';
+import { LinksController } from './controllers/links/links.controller';
+import { RefreshTokenSchema } from '../users/schemas/refresh-tokens.schema';
+import { LinkRepository } from './repositories/implementations/link.repository';
+import { HashRepository } from './repositories/implementations/hash.repository';
+import { GroupRepository } from './repositories/implementations/group.repository';
+import { UserRepository } from '../users/repositories/implementation/user.repository';
 import { LoadHashesOnRedisService } from './service/load-hashes-on-redis/load-hashes-on-redis.service';
 
 @Module({
   imports: [
+    DashboardModule,
     BullModule.registerQueue(
       { name: HASHES_PROCESSOR },
       {
